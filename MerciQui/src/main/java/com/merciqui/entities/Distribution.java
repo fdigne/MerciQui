@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Distribution implements Serializable{
@@ -18,6 +19,7 @@ public class Distribution implements Serializable{
 	private HashMap<String, Comedien> distribTitulaires ;
 	private HashMap<String, Collection<Comedien>> distribRemplacante ;
 	
-	
+	@OneToMany(mappedBy="nomRole")
+	private Collection<Role> listeRoles ;
 
 }

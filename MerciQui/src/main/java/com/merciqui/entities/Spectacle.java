@@ -5,8 +5,10 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Spectacle implements Serializable{
@@ -17,6 +19,12 @@ public class Spectacle implements Serializable{
 	private String nomSpectacle ;
 	private Collection<Calendar> listeDatesSpectacles ;
 	private Collection<Distribution> listeDistributions ;
+	
+	@ManyToMany(mappedBy="nomSalle", fetch=FetchType.EAGER)
+	private Collection<Salle> listeSalles ;
+	
+	@ManyToMany
+	private Collection<Comedien> listeComediens ;
 	
 	
 	public Spectacle() {

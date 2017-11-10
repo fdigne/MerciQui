@@ -17,5 +17,51 @@ public class Periode implements Serializable{
 	private Calendar dateDebut ;
 	private Calendar dateFin ;
 	
+	
+	public Periode() {
+		super();
+	}
+
+
+	public Long getIdPeriode() {
+		return idPeriode;
+	}
+
+
+	public void setIdPeriode(Long idPeriode) {
+		this.idPeriode = idPeriode;
+	}
+
+
+	public String getNomPeriode() {
+		return nomPeriode;
+	}
+
+
+	public void setNomPeriode(String nomPeriode) {
+		this.nomPeriode = nomPeriode;
+	}
+
+
+	public Calendar getDateDebut() {
+		return dateDebut;
+	}
+
+
+	public void setDateDebut(Calendar dateDebut) {
+		this.dateDebut = dateDebut;
+	}
+
+
+	public Calendar getDateFin() {
+		return dateFin;
+	}
+
+
+	public void setDateFin(Calendar dateFin) {
+		this.dateFin = dateFin;
+	}
+	
+	
 
 }

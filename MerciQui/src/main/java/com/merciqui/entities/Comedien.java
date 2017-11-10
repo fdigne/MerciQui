@@ -5,12 +5,21 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Comedien extends Personne implements Serializable{
 	
 	Collection<Calendar> listeDatesIndisponibles ;
+	
+	@ManyToMany(mappedBy="nomSpectacle", fetch=FetchType.EAGER)
 	Collection<Spectacle> listeSpectacles ;
+	
+	@ManyToMany
+	Collection<Role> listeRoles ;
 
 	public Comedien() {
 		super();
