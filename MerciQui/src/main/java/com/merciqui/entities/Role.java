@@ -19,7 +19,7 @@ public class Role implements Serializable{
 	
 	private String nomRole ;
 	
-	@ManyToMany(mappedBy="nomComedien")
+	@ManyToMany(mappedBy="nomPersonne")
 	private Collection<Comedien> listeComediens ;
 	
 	@ManyToOne
@@ -33,6 +33,16 @@ public class Role implements Serializable{
 	public Role(String nomRole) {
 		super();
 		this.nomRole = nomRole;
+	}
+	
+	
+
+	public Distribution getDistribution() {
+		return distribution;
+	}
+
+	public void setDistribution(Distribution distribution) {
+		this.distribution = distribution;
 	}
 
 	public Long getIdRole() {

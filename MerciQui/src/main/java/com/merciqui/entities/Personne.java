@@ -6,16 +6,15 @@ import java.util.Calendar;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
-@Entity
+@MappedSuperclass
 public class Personne implements Serializable {
 	
-	@Id @GeneratedValue
-	private Long idPersonne;
 	
 	private String id3T ;
-	private String nomClient;
-	private String prenomClient;
+	private String nomPersonne;
+	private String prenomPersonne;
 	private Calendar dateNaissance ;
 	private String numSecu ;
 	private String sexe ;
@@ -33,12 +32,12 @@ public class Personne implements Serializable {
 	
 	
 	
-	public Personne(String id3t, String nomClient, String prenomClient, Calendar dateNaissance, String numSecu,
+	public Personne(String id3t, String nomPersonne, String prenomPersonne, Calendar dateNaissance, String numSecu,
 			String sexe, String adressePostale, String adresseEmail, String numTel) {
 		super();
 		id3T = id3t;
-		this.nomClient = nomClient;
-		this.prenomClient = prenomClient;
+		this.nomPersonne = nomPersonne;
+		this.prenomPersonne = prenomPersonne;
 		this.dateNaissance = dateNaissance;
 		this.numSecu = numSecu;
 		this.sexe = sexe;
@@ -60,23 +59,17 @@ public class Personne implements Serializable {
 	}
 
 
-	public Long getIdPersonne() {
-		return idPersonne;
+	public String getNomPersonne() {
+		return nomPersonne;
 	}
-	public void setIdPersonne(Long idPersonne) {
-		this.idPersonne = idPersonne;
+	public void setNomPersonne(String nomPersonne) {
+		this.nomPersonne = nomPersonne;
 	}
-	public String getNomClient() {
-		return nomClient;
+	public String getPrenomPersonne() {
+		return prenomPersonne;
 	}
-	public void setNomClient(String nomClient) {
-		this.nomClient = nomClient;
-	}
-	public String getPrenomClient() {
-		return prenomClient;
-	}
-	public void setPrenomClient(String prenomClient) {
-		this.prenomClient = prenomClient;
+	public void setPrenomPersonne(String prenomPersonne) {
+		this.prenomPersonne = prenomPersonne;
 	}
 	public Calendar getDateNaissance() {
 		return dateNaissance;

@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Spectacle implements Serializable{
@@ -17,7 +19,11 @@ public class Spectacle implements Serializable{
 	private Long idSpectacle;
 	
 	private String nomSpectacle ;
+	
+	@ElementCollection
 	private Collection<Calendar> listeDatesSpectacles ;
+	
+	@OneToMany(mappedBy="idDistribution")
 	private Collection<Distribution> listeDistributions ;
 	
 	@ManyToMany(mappedBy="nomSalle", fetch=FetchType.EAGER)
@@ -35,6 +41,27 @@ public class Spectacle implements Serializable{
 	public Spectacle(String nomSpectacle) {
 		super();
 		this.nomSpectacle = nomSpectacle;
+	}
+
+	
+
+	public Collection<Salle> getListeSalles() {
+		return listeSalles;
+	}
+
+
+	public void setListeSalles(Collection<Salle> listeSalles) {
+		this.listeSalles = listeSalles;
+	}
+
+
+	public Collection<Comedien> getListeComediens() {
+		return listeComediens;
+	}
+
+
+	public void setListeComediens(Collection<Comedien> listeComediens) {
+		this.listeComediens = listeComediens;
 	}
 
 
