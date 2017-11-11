@@ -1,6 +1,10 @@
 package com.merciqui;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,8 +23,9 @@ import com.merciqui.entities.Spectacle;
 @SpringBootApplication
 public class MerciQuiApplication implements CommandLineRunner{
 	
-	HashMap<Role, Comedien> listeTitulaire = new HashMap<Role, Comedien>() ;
-	
+	private ArrayList<Comedien> listeComediens = new ArrayList<Comedien>();
+	private ArrayList<Comedien> listeComediens1 = new ArrayList<Comedien>();
+	private ArrayList<Comedien> listeComediens2 = new ArrayList<Comedien>();
 	@Autowired
 	private ComedienRepository comedienRepository ;
 	
@@ -60,26 +65,38 @@ public class MerciQuiApplication implements CommandLineRunner{
 		com2.setNumTel("0676947523");
 		com2.setSexe("Feminin");
 		
-		comedienRepository.save(com1);
-		comedienRepository.save(com2);
+		Comedien com3 = new Comedien() ;
+		com3.setAdresseEmail("caca@wanadoo.com");
+		com3.setId3T("FLSA");
+		com3.setAdressePostale("5A chemin des Moundinats 31470 FONSORBES");
+		com3.setNomPersonne("CACA");
+		com3.setPrenomPersonne("Robert");
+		com3.setNumSecu("2840831555494");
+		com3.setNumTel("0676947523");
+		com3.setSexe("Feminin");
 		
-		Spectacle spec = new Spectacle("PPN");
-		Role role1 = new Role("stagiaire");
-		Role role2 = new Role("Clothilde1");
-		Role role3 = new Role("Clothilde2");
+		Comedien c1 = comedienRepository.save(com1);
+		Comedien c2 = comedienRepository.save(com2);
+		Comedien c3 = comedienRepository.save(com3);
 		
-		spectacleRepository .save(spec);
-		roleRepository.save(role1) ;
-		roleRepository.save(role2);
-		roleRepository.save(role3);
+		Spectacle spec1 = spectacleRepository.save(new Spectacle("PPN"));
+		Spectacle spec2 = spectacleRepository.save(new Spectacle("FLORIMONT"));
 		
-		Distribution distrib = new Distribution() ;
-		listeTitulaire.put(role1, com1);
-		listeTitulaire.put(role2, com2);
-		listeTitulaire.put(role3, com1);
-		distrib.setDistribTitulaires(listeTitulaire);
+		Role r1 = roleRepository.save(new Role("Clothilde", spec1));
+		Role r2 = roleRepository.save(new Role("stagiaire", spec1));
+		Role r3 = roleRepository.save(new Role("Florimont", spec2));
 		
-		//distributionRepository.save(distrib);
+		Map<Role, Comedien> distribMap1 = new HashMap<Role, Comedien>();
+		distribMap1.put(r1, c1);
+		distribMap1.put(r2, c2);
+		
+		Map<Role, Comedien> distribMap2 = new HashMap<Role, Comedien>();
+		distribMap2.put(r3, c3);
+		Distribution distrib1 = distributionRepository.save(new Distribution(spec1, distribMap1));
+		Distribution distrib2 = distributionRepository.save(new Distribution(spec2, distribMap2));
+		
+		
+		
 		
 	}
 }

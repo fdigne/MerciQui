@@ -19,31 +19,25 @@ public class Role implements Serializable{
 	
 	private String nomRole ;
 	
-	@ManyToMany(mappedBy="nomPersonne")
+	@ManyToMany(mappedBy="listeRoles")
 	private Collection<Comedien> listeComediens ;
 	
 	@ManyToOne
-	@JoinColumn(name="CODE_DISTRIB")
-	private Distribution distribution ;
-
+	@JoinColumn(name="CODE_SPECTACLE")
+	private Spectacle spectacle ;
+	
+	
+	
 	public Role() {
 		super();
 	}
 
-	public Role(String nomRole) {
+	public Role(String nomRole, Spectacle spectacle) {
 		super();
 		this.nomRole = nomRole;
+		this.spectacle = spectacle ;
 	}
 	
-	
-
-	public Distribution getDistribution() {
-		return distribution;
-	}
-
-	public void setDistribution(Distribution distribution) {
-		this.distribution = distribution;
-	}
 
 	public Long getIdRole() {
 		return idRole;
@@ -68,7 +62,6 @@ public class Role implements Serializable{
 	public void setListeComediens(Collection<Comedien> listeComediens) {
 		this.listeComediens = listeComediens;
 	}
-	
-	
+
 
 }

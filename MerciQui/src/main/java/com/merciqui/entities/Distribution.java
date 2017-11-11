@@ -2,13 +2,17 @@ package com.merciqui.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 
 @Entity
 public class Distribution implements Serializable{
@@ -16,22 +20,21 @@ public class Distribution implements Serializable{
 	@Id @GeneratedValue
 	private Long idDistribution;
 	
+	@ManyToOne
+	@JoinColumn(name="CODE_SPECTACLE")
+	private Spectacle spectacle ;
 	
-	@MapKeyColumn(name = "distrib_titulaires")
-	private HashMap<Role, Comedien> distribTitulaires ;
-	@MapKeyColumn(name = "distrib_remplacante")
-	private HashMap<Role, Collection<Comedien>> distribRemplacante ;
-	
-	@OneToMany(mappedBy="nomRole")
-	private Collection<Role> listeRoles ;
+	@ElementCollection
+	private Map<Role, Comedien> distribution;
 
 	public Distribution() {
 		super();
 	}
 
-	public Distribution(HashMap<Role, Comedien> distribTitulaires) {
+	public Distribution(Spectacle spectacle, Map<Role,Comedien> distribution) {
 		super();
-		this.distribTitulaires = distribTitulaires;
+		this.spectacle = spectacle;
+		this.distribution = distribution;
 	}
 
 	public Long getIdDistribution() {
@@ -42,30 +45,24 @@ public class Distribution implements Serializable{
 		this.idDistribution = idDistribution;
 	}
 
-	public HashMap<Role, Comedien> getDistribTitulaires() {
-		return distribTitulaires;
+	public Spectacle getSpectacle() {
+		return spectacle;
 	}
 
-	public void setDistribTitulaires(HashMap<Role, Comedien> distribTitulaires) {
-		this.distribTitulaires = distribTitulaires;
+	public void setSpectacle(Spectacle spectacle) {
+		this.spectacle = spectacle;
 	}
 
-	public HashMap<Role, Collection<Comedien>> getDistribRemplacante() {
-		return distribRemplacante;
+	public Map<Role,Comedien> getDistribution() {
+		return distribution;
 	}
 
-	public void setDistribRemplacante(HashMap<Role, Collection<Comedien>> distribRemplacante) {
-		this.distribRemplacante = distribRemplacante;
-	}
-
-	public Collection<Role> getListeRoles() {
-		return listeRoles;
-	}
-
-	public void setListeRoles(Collection<Role> listeRoles) {
-		this.listeRoles = listeRoles;
+	public void setDistribution(Map<Role,Comedien> distribution) {
+		this.distribution = distribution;
 	}
 	
 	
 	
+	
+
 }
