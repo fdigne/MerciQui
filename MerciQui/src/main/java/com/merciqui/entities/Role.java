@@ -19,7 +19,7 @@ public class Role implements Serializable{
 	
 	private String nomRole ;
 	
-	@ManyToMany(mappedBy="listeRoles")
+	@OneToMany
 	private Collection<Comedien> listeComediens ;
 	
 	@ManyToOne

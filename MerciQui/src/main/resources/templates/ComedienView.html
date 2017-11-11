@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="template1">
+<head>
+<meta charset="UTF-8" />
+
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="col-md-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Consultation d'un Comedien</div>
+				<div class="panel-body">
+					<form th:action="@{/consulterComedien}" method="get">
+						<div>
+							<label>Code Comédien : </label> <input type="text"
+								name="id3T" th:value="${id3T}" />
+							<button type="submit" class="btn btn-primary">Ok</button>
+						</div>
+					</form>
+					<div class="text-danger" th:if="${exception}"
+						th:text="${exception.message}"></div>
+				</div>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">Liste des Comédiens</div>
+						<div class="panel-body">
+						<form th:action="@{/consulterComedien}" method="get">
+							<select name="id3T" onchange="this.form.submit()">
+								<option th:value="${o.id3T}" th:text="${o.id3T +'-'+o.nomPersonne+' '+o.prenomPersonne}" th:each="o:${listeComediens}"
+								th:selected="(${o.id3T} == ${id3T})" />
+							</select>
+							</form>
+						</div>
+				</div>
+			
+			<div class="panel panel-primary" th:if="${comedien}">
+				<div class="panel-heading">Informations</div>
+				<div class="panel-body">
+					<div>
+						<label>Nom : </label> <label th:text="${comedien.nomPersonne}"></label>
+					</div>
+					<div>
+						<label>Prénom : </label> <label th:text="${comedien.prenomPersonne}"></label>
+					</div>
+					<div>
+						<label>Date de Naissance : </label> <label th:text="${comedien.dateNaissance}"></label>
+					</div>
+					<div>
+						<label>Numéro de Sécurité sociale : </label> <label th:text="${comedien.numSecu}"></label>
+					</div>
+					<div>
+						<label>Sexe : </label> <label th:text="${comedien.sexe}"></label>
+					</div>
+					<div>
+						<label>Adresse Postale : </label> <label th:text="${comedien.adressePostale}"></label>
+					</div>
+					<div>
+						<label>Adresse Email : </label> <label th:text="${comedien.adresseEmail}"></label>
+					</div>
+					<div>
+						<label>Numéro de téléphone : </label> <label th:text="${comedien.numTel}"></label>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+				<div class="col-md-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Saisie d'un Comedien</div>
+				<div class="panel-body">
+					<form th:action="@{/saisieComedien}" method="post">
+						<div>
+							<label>Code Comédien : </label> <input type="text"
+								name="id3T"/></div>
+							<div>
+							<label>Nom : </label> <input type="text"
+								name="nomComedien"/></div>
+							<div>
+							<label>Prénom : </label> <input type="text"
+								name="prenomComedien"/></div>
+							<div>
+							<label>Date de naissance : </label> <input type="text"
+								name="dateNaissanceComedien"/></div>
+							<div>
+							<label>Numéro de sécurité sociale : </label> <input type="text"
+								name="numSecuComedien"/></div>
+							<div>
+							<label>Sexe : </label>
+							<select name="sexeComedien">
+									<option value="Masculin">Masculin</option>
+									<option value="Feminin">Féminin</option>
+							</select>
+							</div>
+							<div>
+							<label>Adresse postale : </label> <input type="text"
+								name="adressePostaleComedien"/></div>
+							<div>
+							<label>Adresse email : </label> <input type="text"
+								name="adresseEmailComedien"/></div>	
+							<div>
+							<label>Numéro de téléphone : </label> <input type="text"
+								name="numTelComedien"/></div>
+								
+							<button type="submit" class="btn btn-primary">Ajouter</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		</div>
+</body>
+</html>

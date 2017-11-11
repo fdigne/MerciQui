@@ -2,6 +2,7 @@ package com.merciqui.entities;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +12,11 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class Personne implements Serializable {
 	
-	
+	@Id
 	private String id3T ;
 	private String nomPersonne;
 	private String prenomPersonne;
-	private Calendar dateNaissance ;
+	private Date dateNaissance ;
 	private String numSecu ;
 	private String sexe ;
 	private String adressePostale ; 
@@ -32,7 +33,7 @@ public class Personne implements Serializable {
 	
 	
 	
-	public Personne(String id3t, String nomPersonne, String prenomPersonne, Calendar dateNaissance, String numSecu,
+	public Personne(String id3t, String nomPersonne, String prenomPersonne, Date dateNaissance, String numSecu,
 			String sexe, String adressePostale, String adresseEmail, String numTel) {
 		super();
 		id3T = id3t;
@@ -71,10 +72,10 @@ public class Personne implements Serializable {
 	public void setPrenomPersonne(String prenomPersonne) {
 		this.prenomPersonne = prenomPersonne;
 	}
-	public Calendar getDateNaissance() {
+	public Date getDateNaissance() {
 		return dateNaissance;
 	}
-	public void setDateNaissance(Calendar dateNaissance) {
+	public void setDateNaissance(Date dateNaissance) {
 		this.dateNaissance = dateNaissance;
 	}
 	public String getNumSecu() {
