@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="template1">
+<head>
+<meta charset="UTF-8" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+
+<title>Merci Qui ?</title>
+</head>
+<body>
+<div layout:fragment="content">
+		<div class="col-md-6">
+		<div class="panel panel-primary">
+				<div class="panel-heading">Liste des Spectacles</div>
+						<div class="panel-body">
+						<form th:action="@{/consulterSpectacle}" method="get">
+							<select name="nomSpectacle" onchange="this.form.submit()">
+								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" 
+								th:selected="(${o.nomSpectacle} == ${nomSpectacle})"/>
+							</select>
+							</form>
+						</div>
+				</div>
+		<div class="panel panel-primary" th:if="${spectacle}">
+				<div class="panel-heading">Informations</div>
+				<div class="panel-body">
+				<form th:action="@{/supprimerSpectacle}" method="post">
+				<input type="hidden" name="nomSpectacle" th:value="${spectacle.nomSpectacle}" />
+						<div>
+						<label>Nom : </label> <label th:text="${spectacle.nomSpectacle}"></label>
+					</div>
+					<br/>
+					<div>
+					<button type="submit" class="btn btn-primary">Supprimer Spectacle</button>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-primary" >
+				<div class="panel-heading">Saisie d'un Spectacle</div>
+				<div class="panel-body">
+					<form th:action="@{/saisieSpectacle}" method="post">
+							<div>
+							<label>Nom : </label> <input type="text"
+								name="nomSpectacle" /></div>
+							<button type="submit" class="btn btn-primary">Ajouter</button>
+					</form>
+				</div>
+			</div>
+		</div>
+</div>
+</body>
+</html>

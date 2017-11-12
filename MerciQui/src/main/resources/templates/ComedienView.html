@@ -4,7 +4,30 @@
 	layout:decorator="template1">
 <head>
 <meta charset="UTF-8" />
-
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+ jQuery(function(){
+  jQuery("#dateNaissanceComedien").datepicker(
+		  {
+				inline: true,
+				nextText: '&rarr;',
+				prevText: '&larr;',
+				yearRange: "-100:+0",
+				showOtherMonths: true,
+				//dateFormat: 'dd MM yy',
+				dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+				//showOn: "button",
+				//buttonImage: "img/calendar-blue.png",
+				//buttonImageOnly: true,
+				changeYear: true,
+				changeMonth: true,
+				
+			}
+		  );
+ });
+</script>
+<title>Merci Qui ?</title>
 </head>
 <body>
 	<div layout:fragment="content">
@@ -38,17 +61,20 @@
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Informations</div>
 				<div class="panel-body">
-					<div>
+				<form th:action="@{/supprimerComedien}" method="post">
+				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+						<div>
 						<label>Nom : </label> <label th:text="${comedien.nomPersonne}"></label>
 					</div>
 					<div>
 						<label>Prénom : </label> <label th:text="${comedien.prenomPersonne}"></label>
 					</div>
 					<div>
-						<label>Date de Naissance : </label> <label th:text="${comedien.dateNaissance}"></label>
+						<label>Date de Naissance : </label> <label type="text" th:text="${comedien.dateNaissance}"></label>
 					</div>
 					<div>
 						<label>Numéro de Sécurité sociale : </label> <label th:text="${comedien.numSecu}"></label>
+					   
 					</div>
 					<div>
 						<label>Sexe : </label> <label th:text="${comedien.sexe}"></label>
@@ -62,13 +88,17 @@
 					<div>
 						<label>Numéro de téléphone : </label> <label th:text="${comedien.numTel}"></label>
 					</div>
-					
+					<br/>
+					<div>
+					<button type="submit" class="btn btn-primary">Supprimer Comédien</button>
+					</div>
+					</form>
 				</div>
 			</div>
 		</div>
 		
 				<div class="col-md-6">
-			<div class="panel panel-primary">
+			<div class="panel panel-primary" >
 				<div class="panel-heading">Saisie d'un Comedien</div>
 				<div class="panel-body">
 					<form th:action="@{/saisieComedien}" method="post">
@@ -77,13 +107,13 @@
 								name="id3T"/></div>
 							<div>
 							<label>Nom : </label> <input type="text"
-								name="nomComedien"/></div>
+								name="nomComedien" /></div>
 							<div>
 							<label>Prénom : </label> <input type="text"
 								name="prenomComedien"/></div>
 							<div>
-							<label>Date de naissance : </label> <input type="text"
-								name="dateNaissanceComedien"/></div>
+							<label>Date de naissance : </label> <input id="dateNaissanceComedien" type="date"
+								name="dateNaissanceComedien" /></div>
 							<div>
 							<label>Numéro de sécurité sociale : </label> <input type="text"
 								name="numSecuComedien"/></div>
