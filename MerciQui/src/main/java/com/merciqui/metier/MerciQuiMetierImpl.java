@@ -2,12 +2,15 @@ package com.merciqui.metier;
 
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.merciqui.dao.ComedienRepository;
+import com.merciqui.dao.RoleRepository;
 import com.merciqui.dao.SpectacleRepository;
 import com.merciqui.entities.Comedien;
+import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
 @Service
@@ -19,6 +22,9 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	
 	@Autowired
 	private SpectacleRepository spectacleRepository ;
+	
+	@Autowired
+	private RoleRepository roleRepository ;
 
 	@Override
 	public void creerComedien(Comedien comedien) {
@@ -41,7 +47,8 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Comedien> listeComediens() {
-		Collection<Comedien> listeComediens = comedienRepository.findAll();
+		Collection<Comedien> listeComediens = comedienRepository.findAll(new Sort(Sort.Direction.ASC, "id3T"));
+		
 		return listeComediens;
 	}
 
@@ -53,13 +60,17 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Spectacle> listeSpectacles() {
-		Collection<Spectacle> listeSpectacles = spectacleRepository.findAll();
+		Collection<Spectacle> listeSpectacles = spectacleRepository.findAll(new Sort(Sort.Direction.ASC, "nomSpectacle"));
 		return listeSpectacles;
 	}
 
 	@Override
 	public void supprimerSpectacle(String nomSpectacle) {
 		Spectacle spec = consulterSpectacle(nomSpectacle);
+		Collection<Role> listeRoles = listeRolesParSpectacle(spec.getIdSpectacle());
+		for(Role r : listeRoles) {
+			supprimerRole(r);
+		}
 		spectacleRepository.delete(spec);
 		
 	}
@@ -67,6 +78,30 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public void creerSpectacle(Spectacle spectacle) {
 		spectacleRepository.save(spectacle);
+	}
+
+	@Override
+	public void creerRole(Role role) {
+		roleRepository.save(role);
+		
+	}
+
+	@Override
+	public Collection<Role> listeRoles() {
+		Collection<Role> listeRoles = roleRepository.findAll() ;
+		return listeRoles;
+	}
+
+	@Override
+	public Collection<Role> listeRolesParSpectacle(Long idSpectacle) {
+			Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
+		return listeRoles;
+	}
+
+	@Override
+	public void supprimerRole(Role role) {
+		roleRepository.delete(role);
+		
 	}
 
 }

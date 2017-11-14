@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Spectacle implements Serializable{
@@ -19,10 +21,11 @@ public class Spectacle implements Serializable{
 	@Id @GeneratedValue
 	private Long idSpectacle;
 	
+	
 	private String nomSpectacle ;
 	
 	
-	@OneToMany(mappedBy="spectacle")
+	@OneToMany(mappedBy="spectacle", fetch=FetchType.EAGER)
 	private Collection<Role> listeRoles ;
 
 	public Spectacle() {

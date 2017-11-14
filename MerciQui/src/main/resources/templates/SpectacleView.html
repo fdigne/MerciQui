@@ -5,27 +5,38 @@
 <head>
 <meta charset="UTF-8" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script type="text/javascript">
-//<![CDATA[
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	
 $(document).ready(function(){
 
-    var select = $("#nbRoles"), table = $("#roleNames"); 
-    for (var i = 1; i <= 20; i++) {
+    var select = $("#nbRoles") , table = $("#roleNames") ; 
+    
+    for (var i = 0; i <= 20; i++) {
         select.append('<option value="'+i+'">'+i+'</option>');
     }
 
+
     select.change(function () {
         var rows = '';
-        var heads = "<tr><th>Role</th><th>Comedien</th></tr>"
+        var heads = "<tr><th>Role</th><th>Comedien</th></tr>" ;
+      	var comediens = [[${listeComediens}]] ;
         for (var i = 0; i < $(this).val(); i++) {
-            rows += "<tr><td><input type='text' /></td><td><input type='text' /></td></tr>";
+            rows += "<tr><td><input type='text' name='nomRole'/></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;
+			
+             comediens.forEach(function(comedien) {
+    			rows += "<option value=\""+comedien.id3T+"\">"+comedien.id3T+" - "+comedien.nomPersonne+" "+comedien.prenomPersonne+"</option>" ;
+                });
+             rows += "</select></td></tr>";  
+             table.html(heads + rows); 
         }
-        table.html(heads + rows);
+        
+        
     });
 
 });
-//]]>
-    </script>
+/*]]>*/
+</script>
 <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 <title>Merci Qui ?</title>
 </head>
@@ -35,6 +46,8 @@ $(document).ready(function(){
 		<div class="panel panel-primary">
 				<div class="panel-heading">Liste des Spectacles</div>
 						<div class="panel-body">
+						<input type="hidden"
+								name="nomSpectacle" th:value="${nomSpectacle}" />
 						<form th:action="@{/consulterSpectacle}" method="get">
 							<select name="nomSpectacle" onchange="this.form.submit()">
 								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" 
@@ -49,7 +62,7 @@ $(document).ready(function(){
 				<form th:action="@{/supprimerSpectacle}" method="post">
 				<input type="hidden" name="nomSpectacle" th:value="${spectacle.nomSpectacle}" />
 						<div>
-						<label>Nom : </label> <label th:text="${spectacle.nomSpectacle}"></label>
+						<label>Nom : </label> <label th:text="${nomSpectacle}"></label>
 					</div>
 					<div>
 					<table class="table table-striped" >
@@ -58,7 +71,7 @@ $(document).ready(function(){
 				</tr>
 				<tr th:each="o:${listeRoles}" >
 				<td th:text="${o.nomRole}"></td>
-				<td th:text="${o.nomPersonne}"></td>
+				<td th:text="${o.comedien.nomPersonne +' '+o.comedien.prenomPersonne}"></td>
 				<td>Sarah DIGNE</td>
 				</tr>
 				</table>
@@ -81,17 +94,16 @@ $(document).ready(function(){
 								name="nomSpectacle" /></div>
 							<div><label>Nombre de rôles : </label>
 							<select id="nbRoles">
-<!-- 							<option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option>
- -->							</select>
+ 							</select>
 							</div>
 							<div>
 							<table id="roleNames" class="table table-striped" ></table>
 							</div>
-							<button type="submit" class="btn btn-primary">Ajouter</button>
+							<button type="submit" class="btn btn-primary">Ajouter le spectacle</button>
 					</form>
 				</div>
 			</div>
-		</div>
+		</div> 
 </div>
 </body>
 </html>

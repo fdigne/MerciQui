@@ -19,8 +19,9 @@ public class Role implements Serializable{
 	
 	private String nomRole ;
 	
-	@OneToMany
-	private Collection<Comedien> listeComediens ;
+	@ManyToOne
+	@JoinColumn(name="CODE_COMEDIEN")
+	private Comedien comedien ;
 	
 	@ManyToOne
 	@JoinColumn(name="CODE_SPECTACLE")
@@ -39,6 +40,14 @@ public class Role implements Serializable{
 	}
 	
 
+	public Spectacle getSpectacle() {
+		return spectacle;
+	}
+
+	public void setSpectacle(Spectacle spectacle) {
+		this.spectacle = spectacle;
+	}
+
 	public Long getIdRole() {
 		return idRole;
 	}
@@ -55,13 +64,14 @@ public class Role implements Serializable{
 		this.nomRole = nomRole;
 	}
 
-	public Collection<Comedien> getListeComediens() {
-		return listeComediens;
+	public Comedien getComedien() {
+		return comedien;
 	}
 
-	public void setListeComediens(Collection<Comedien> listeComediens) {
-		this.listeComediens = listeComediens;
+	public void setComedien(Comedien comedien) {
+		this.comedien = comedien;
 	}
 
+	
 
 }

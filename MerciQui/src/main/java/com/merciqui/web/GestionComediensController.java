@@ -1,5 +1,6 @@
 package com.merciqui.web;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class GestionComediensController {
 		Comedien com = new Comedien();
 		com.setAdresseEmail(adresseEmailComedien);
 		com.setAdressePostale(adressePostaleComedien);
-		com.setId3T(id3T);
+		com.setId3T(id3T.toUpperCase());
 		com.setNomPersonne(nomComedien);
 		com.setPrenomPersonne(prenomComedien);
 		com.setNumSecu(numSecuComedien);
