@@ -50,8 +50,7 @@ $(document).ready(function(){
 								name="nomSpectacle" th:value="${nomSpectacle}" />
 						<form th:action="@{/consulterSpectacle}" method="get">
 							<select name="nomSpectacle" onchange="this.form.submit()">
-								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" 
-								th:selected="(${o.nomSpectacle} == ${nomSpectacle})"/>
+								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" />
 							</select>
 							</form>
 						</div>

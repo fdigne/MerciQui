@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.merciqui.dao.ComedienRepository;
+import com.merciqui.dao.EvenementRepository;
 import com.merciqui.dao.RoleRepository;
 import com.merciqui.dao.SpectacleRepository;
 import com.merciqui.entities.Comedien;
+import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
@@ -22,6 +24,9 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	
 	@Autowired
 	private SpectacleRepository spectacleRepository ;
+	
+	@Autowired
+	private EvenementRepository evenementRepository ;
 	
 	@Autowired
 	private RoleRepository roleRepository ;
@@ -102,6 +107,35 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	public void supprimerRole(Role role) {
 		roleRepository.delete(role);
 		
+	}
+
+	@Override
+	public Evenement creerEvenement(Evenement evenement) {
+		evenementRepository.save(evenement);
+		return evenement;
+		
+	}
+
+	@Override
+	public void supprimerEvenement(Evenement evenement) {
+		evenementRepository.delete(evenement);		
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenements() {
+		return evenementRepository.findAll();
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Evenement consulterEvenement(Long idEvenement) {
+		Evenement evenement = evenementRepository.findOne(idEvenement);
+		return evenement;
 	}
 
 }

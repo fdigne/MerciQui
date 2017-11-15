@@ -1,8 +1,10 @@
 package com.merciqui.metier;
 
 import java.util.Collection;
+import java.util.Date;
 
 import com.merciqui.entities.Comedien;
+import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
@@ -26,6 +28,14 @@ public interface IMerciQuiMetier {
 	public void supprimerRole(Role role) ;
 	public Collection<Role> listeRoles();
 	public Collection<Role> listeRolesParSpectacle(Long idSpectacle) ;
+	
+	//Gestion des Evenements
+	public Evenement consulterEvenement(Long idEvenement);
+	public Evenement creerEvenement(Evenement evenement);
+	public void supprimerEvenement(Evenement evenement);
+	public Collection<Evenement> listeEvenements();
+	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle);
+
 	
 	
 
