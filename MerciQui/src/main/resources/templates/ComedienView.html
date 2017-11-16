@@ -17,9 +17,6 @@
 				showOtherMonths: true,
 				dateFormat: 'dd/mm/yy',
 				dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-				//showOn: "button",
-				//buttonImage: "img/calendar-blue.png",
-				//buttonImageOnly: true,
 				changeYear: true,
 				changeMonth: true,
 				
@@ -32,20 +29,6 @@
 <body>
 	<div layout:fragment="content">
 		<div class="col-md-6">
-			<div class="panel panel-primary">
-				<div class="panel-heading">Consultation d'un Comedien</div>
-				<div class="panel-body">
-					<form th:action="@{/consulterComedien}" method="get">
-						<div>
-							<label>Code Comédien : </label> <input type="text"
-								name="id3T" th:value="${id3T}" />
-							<button type="submit" class="btn btn-primary">Ok</button>
-						</div>
-					</form>
-					<div class="text-danger" th:if="${exception}"
-						th:text="${exception.message}"></div>
-				</div>
-			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">Liste des Comédiens</div>
 						<div class="panel-body">
@@ -87,6 +70,9 @@
 					</div>
 					<div>
 						<label>Numéro de téléphone : </label> <label th:text="${comedien.numTel}"></label>
+					</div>
+					<div>
+						<label>Nombre de dates programmées : </label> <label th:text="${nbreDates}"></label>
 					</div>
 					<br/>
 					<div>

@@ -123,19 +123,42 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Evenement> listeEvenements() {
-		return evenementRepository.findAll();
+		return evenementRepository.findAll(new Sort(Sort.Direction.ASC, "dateEvenement"));
 	}
 
 	@Override
 	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return evenementRepository.getListEvenementsParSpectacle(idSpectacle);
 	}
 
 	@Override
-	public Evenement consulterEvenement(Long idEvenement) {
+	public Evenement consulterEvenement(String idEvenement) {
 		Evenement evenement = evenementRepository.findOne(idEvenement);
 		return evenement;
 	}
+
+	@Override
+	public int getNombreDatesTotal(String id3T) {
+			
+		return evenementRepository.getNbreDatesByComedien(id3T);
+	}
+
+	@Override
+	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, String id3t) {
+		int nbreDates = 0 ;
+		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
+		for(Evenement ev : listeEvenements) {
+			Collection<Comedien> listeComediens = ev.getListeComediens();
+			for (Comedien com : listeComediens) {
+				if(com.getId3T().equals(id3t)) {
+					nbreDates++ ;
+				}
+			}
+		}
+		return nbreDates;
+	}
+
+	
 
 }

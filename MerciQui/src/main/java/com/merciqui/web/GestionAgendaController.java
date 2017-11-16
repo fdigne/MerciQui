@@ -43,6 +43,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 
+import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Role;
 import com.merciqui.metier.IMerciQuiMetier;
@@ -99,24 +100,28 @@ public class GestionAgendaController {
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
 								String nomSpectacle, String nomSalle) {
 		
-		Evenement ev = merciquimetier.creerEvenement(new Evenement(mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle));
-
-		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-				.setApplicationName(APPLICATION_NAME).build();
+		
+		//update MySQL
 		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
+		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 		String descriptionEvent ="Distribution :\n\n" ;
 		for(Role role : listeRoles) {
 			EventAttendee attendee = new EventAttendee();
 			attendee.setDisplayName(role.getComedien().getNomPersonne()+" "+role.getComedien().getPrenomPersonne());
 			attendee.setEmail(role.getComedien().getAdresseEmail());
 			comediens.add(attendee);
+			listeComediensDistrib.add(role.getComedien());
 			descriptionEvent += attendee.getDisplayName() +"\n" ;
 		}
 		
+		
+		//Update le Google Calendar
+		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+				.setApplicationName(APPLICATION_NAME).build();
+		
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		Event myEvent = new Event()
-				.setId("event"+String.valueOf(ev.getIdEvenement()))
 				.setSummary(nomSpectacle)
 				.setAttendees((List<EventAttendee>) comediens)
 				.setDescription(descriptionEvent)
@@ -139,6 +144,8 @@ public class GestionAgendaController {
 		String calendarId = "primary";
 		try {
 			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(true).execute();
+			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
+			merciquimetier.creerEvenement(ev);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,16 +156,14 @@ public class GestionAgendaController {
 	
 	@PostMapping("/supprimerEvenement")
 	public String saisieEvenement(Model model, String idEvenement) {
-		Long idEvent= Long.valueOf(idEvenement);
-		Evenement evenement = merciquimetier.consulterEvenement(idEvent);
+		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 		
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
 		
 		try {
-			//Event event = client.events().get("primary", evenement.getIdEventGoogle()).execute();
-			client.events().delete("primary", "event"+idEvenement).setSendNotifications(true).execute();
+			client.events().delete("primary", idEvenement).setSendNotifications(true).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

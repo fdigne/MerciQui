@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
 <script type="text/javascript" th:inline="javascript">
 /*<![CDATA[*/
 	
@@ -20,13 +21,14 @@ $(document).ready(function(){
     select.change(function () {
         var rows = '';
         var heads = "<tr><th>Role</th><th>Comedien</th></tr>" ;
-      	var comediens = [[${listeComediens}]] ;
+      	var comediens = [[${itemsComediens}]] ;
         for (var i = 0; i < $(this).val(); i++) {
-            rows += "<tr><td><input type='text' name='nomRole'/></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;
-			
-             comediens.forEach(function(comedien) {
-    			rows += "<option value=\""+comedien.id3T+"\">"+comedien.id3T+" - "+comedien.nomPersonne+" "+comedien.prenomPersonne+"</option>" ;
-                });
+            
+            rows += "<tr><td><input type='text' name='nomRole'/></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;        
+            comediens.forEach(function(comedien) {
+    			rows += "<option value=\""+comedien[0]+"\">"+comedien[0]+" - "+comedien[1]+" "+comedien[2]+"</option>" ;
+               });
+         
              rows += "</select></td></tr>";  
              table.html(heads + rows); 
         }
@@ -50,7 +52,8 @@ $(document).ready(function(){
 								name="nomSpectacle" th:value="${nomSpectacle}" />
 						<form th:action="@{/consulterSpectacle}" method="get">
 							<select name="nomSpectacle" onchange="this.form.submit()">
-								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" />
+								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}"
+								th:selected="(${o.nomSpectacle} == ${nomSpectacle})" />
 							</select>
 							</form>
 						</div>
@@ -96,10 +99,28 @@ $(document).ready(function(){
  							</select>
 							</div>
 							<div>
-							<table id="roleNames" class="table table-striped" ></table>
+							<table id="roleNames" class="table table-striped" >
+							
+							</table>
 							</div>
 							<button type="submit" class="btn btn-primary">Ajouter le spectacle</button>
 					</form>
+				</div>
+			</div>
+			<div class="panel panel-primary" th:if="${spectacle}">
+				<div class="panel-heading">Détail Spectacle</div>
+				<div class="panel-body">
+					
+							<div>
+							<table id="roleNames" class="table table-striped" >
+							<tr><th>Représentations</th><th th:each="o:${listeRoles}"><a th:href="${'/consulterComedien?id3T=' + o.comedien.id3T}" th:text="${o.comedien.nomPersonne +' '+o.comedien.prenomPersonne}"></a></th></tr>
+							<tr><th>Compagnie 37</th><td th:each="o:${listeRoles}"></td></tr>
+							<tr th:each="e:${listeEvenements37}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeRoles}"><label >1</label></td></tr>
+							<tr><th>Compagnie 333+1</th><td th:each="o:${listeRoles}"></td></tr>
+							<tr th:each="e:${listeEvenements333}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeRoles}"><label >1</label></td></tr>
+							<tr><th>Total</th><th th:text="${mapTotalDate.get(o.comedien.id3T)}" th:each="o:${listeRoles}"></th></tr>
+							</table>
+							</div>
 				</div>
 			</div>
 		</div> 

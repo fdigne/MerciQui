@@ -1,29 +1,21 @@
 package com.merciqui.entities;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Comedien extends Personne implements Serializable{
 	
 	
-	/*@OneToMany(mappedBy="comedien", fetch=FetchType.EAGER)
-	private Collection<Role> listeRoles ;
-	*/
+	@ManyToMany(mappedBy="listeComediens", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Collection<Evenement> listeEvenements ;
+	
 
 	public Comedien() {
 		super();
@@ -34,14 +26,13 @@ public class Comedien extends Personne implements Serializable{
 		super(id3t, nomClient, prenomClient, dateNaissance, numSecu, sexe, adressePostale, adresseEmail, numTel);
 	}
 
-	/*public Collection<Role> getListeRoles() {
-		return listeRoles;
+	
+	public Collection<Evenement> getListeEvenements() {
+		return listeEvenements;
 	}
 
-	public void setListeRoles(Collection<Role> listeRoles) {
-		this.listeRoles = listeRoles;
+	public void setListeEvenements(Collection<Evenement> listeEvenements) {
+		this.listeEvenements = listeEvenements;
 	}
-*/
-	
 
 }

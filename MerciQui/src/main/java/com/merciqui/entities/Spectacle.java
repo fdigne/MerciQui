@@ -25,10 +25,11 @@ public class Spectacle implements Serializable{
 	private String nomSpectacle ;
 	
 	
+	
 	@OneToMany(mappedBy="spectacle", fetch=FetchType.LAZY)
 	private Collection<Role> listeRoles ;
 	
-	@OneToMany(mappedBy="spectacle", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="spectacle", fetch=FetchType.EAGER)
 	private Collection<Evenement> listeEvenements ;
 
 	public Spectacle() {
@@ -58,6 +59,26 @@ public class Spectacle implements Serializable{
 
 	public void setNomSpectacle(String nomSpectacle) {
 		this.nomSpectacle = nomSpectacle;
+	}
+
+
+	public Collection<Role> getListeRoles() {
+		return listeRoles;
+	}
+
+
+	public void setListeRoles(Collection<Role> listeRoles) {
+		this.listeRoles = listeRoles;
+	}
+
+
+	public Collection<Evenement> getListeEvenements() {
+		return listeEvenements;
+	}
+
+
+	public void setListeEvenements(Collection<Evenement> listeEvenements) {
+		this.listeEvenements = listeEvenements;
 	}
 
 	

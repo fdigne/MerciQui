@@ -33,6 +33,10 @@ public class GestionComediensController {
 			if(id3T != null) {
 				Comedien com = merciquimetier.consulterComedien(id3T);
 				model.addAttribute("comedien", com);
+				int nbrDates = merciquimetier.getNombreDatesTotal(id3T);
+				model.addAttribute("nbreDates", String.valueOf(nbrDates));
+				System.out.println(nbrDates);
+				
 			}
 			
 			List<Comedien> listeComediens = (List<Comedien>) merciquimetier.listeComediens();

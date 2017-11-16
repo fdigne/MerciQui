@@ -2,18 +2,20 @@ package com.merciqui.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
 public class Evenement implements Serializable{
 	
-@Id @GeneratedValue
-private Long idEvenement;
+@Id
+private String idEvenement;
 
 private Date dateEvenement;
 
@@ -23,22 +25,29 @@ private String nomSalle ;
 @JoinColumn(name="CODE_SPECTACLE")
 private Spectacle spectacle;
 
+
+
+@ManyToMany
+private Set<Comedien> listeComediens = new HashSet<Comedien>(0);
+
 public Evenement() {
 	super();
 }
 
-public Evenement(Date dateEvenement, Spectacle spectacle, String nomSalle) {
+public Evenement(String idEvenement, Date dateEvenement, Spectacle spectacle, String nomSalle, Set<Comedien> listeComediens) {
 	super();
+	this.idEvenement = idEvenement ;
 	this.nomSalle = nomSalle ;
 	this.dateEvenement = dateEvenement;
 	this.spectacle = spectacle;
+	this.listeComediens = listeComediens ;
 }
 
-public Long getIdEvenement() {
+public String getIdEvenement() {
 	return idEvenement;
 }
 
-public void setIdEvenement(Long idEvenement) {
+public void setIdEvenement(String idEvenement) {
 	this.idEvenement = idEvenement;
 }
 
@@ -65,6 +74,16 @@ public String getNomSalle() {
 public void setNomSalle(String nomSalle) {
 	this.nomSalle = nomSalle;
 }
+
+
+public Set<Comedien> getListeComediens() {
+	return listeComediens;
+}
+
+public void setListeComediens(Set<Comedien> listeComediens) {
+	this.listeComediens = listeComediens;
+}
+
 
 
 
