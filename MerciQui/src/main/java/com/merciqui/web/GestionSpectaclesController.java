@@ -3,7 +3,9 @@ package com.merciqui.web;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +37,8 @@ public class GestionSpectaclesController {
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
 		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
-		Map<String, Integer> mapTotalDateParSpectacle = new HashMap<String, Integer>(); ;
+		Map<String, Integer> mapTotalDateParSpectacle = new HashMap<String, Integer>();
+		Map<Long, Collection<Comedien>> mapListeRemplasByRole = new HashMap<Long, Collection<Comedien>>();
 		
 		if(nomSpectacle != null) {
 			Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
@@ -45,8 +48,11 @@ public class GestionSpectaclesController {
 			for(Role role : listeRoles) {
 				int totalDates = merciquimetier.getNombreDatesParSpectacleParComedien(spec.getIdSpectacle(), role.getComedien().getId3T());
 				mapTotalDateParSpectacle.put(role.getComedien().getId3T(), totalDates);
+				Collection<Comedien> listeRemplacants = merciquimetier.getListeRemplacants(role.getIdRole());
+				mapListeRemplasByRole.put(role.getIdRole(), listeRemplacants);
 			}
 			model.addAttribute("mapTotalDate", mapTotalDateParSpectacle);
+			model.addAttribute("mapListeRemplasByRole",mapListeRemplasByRole );
 			Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spec.getIdSpectacle());
 			for(Evenement ev : listeEvenements) {
 				if(ev.getNomSalle().equals("3T")) {
@@ -80,12 +86,14 @@ public class GestionSpectaclesController {
 	}
 			
 	@PostMapping("/saisieSpectacle")
-	public String saisieSpectacle(Model model, String nomSpectacle, String[] nomRole, String[] id3T) {
+	public String saisieSpectacle(Model model, String nomSpectacle, String[] nomRole, String[] id3T, String[] id3TRempl) {
 		try {
 		Spectacle spectacle = new Spectacle();
 		spectacle.setNomSpectacle(nomSpectacle);
 		merciquimetier.creerSpectacle(spectacle);
 		int indexRole = 0 ;
+		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
+		Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
 		
 		for(String s : nomRole) {
 			Role role = new Role() ;
@@ -94,11 +102,16 @@ public class GestionSpectaclesController {
 			role.setNomRole(s);
 			role.setSpectacle(merciquimetier.consulterSpectacle(nomSpectacle));
 			role.setComedien(comedien);
+			for(String r : id3TRempl) {
+				Comedien remp = merciquimetier.consulterComedien(r) ;
+				listeRemplas.put(s, remp);
+				listeRemplasSQL.add(remp);
+			}
+			role.setListeRemplas(listeRemplasSQL);
 			indexRole++ ;
 			merciquimetier.creerRole(role);
 			
 		}
-		
 		}
 		catch (Exception e) {
 			model.addAttribute("error", e);

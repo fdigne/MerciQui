@@ -34,7 +34,8 @@
 						<div class="panel-body">
 						<form th:action="@{/consulterComedien}" method="get">
 							<select name="id3T" onchange="this.form.submit()">
-								<option th:value="${o.id3T}" th:text="${o.id3T +'-'+o.nomPersonne+' '+o.prenomPersonne}" th:each="o:${listeComediens}"
+							<option disabled="true" selected="true">Choisir un comédien</option>
+								<option th:value="${o.id3T}" th:text="${o.nomPersonne+' '+o.prenomPersonne}" th:each="o:${listeComediens}"
 								th:selected="(${o.id3T} == ${id3T})" />
 							</select>
 							</form>
@@ -56,7 +57,7 @@
 						<label>Date de Naissance : </label> <label th:type="date" th:text="${comedien.dateNaissance}"></label>
 					</div>
 					<div>
-						<label>Numéro de Sécurité sociale : </label> <label th:text="${comedien.numSecu}"></label>
+						<label>Numéro de Sécurité sociale : </label> <label th:text="${comedien.id3T}"></label>
 					   
 					</div>
 					<div>
@@ -88,9 +89,6 @@
 				<div class="panel-heading">Saisie d'un Comedien</div>
 				<div class="panel-body">
 					<form th:action="@{/saisieComedien}" method="post">
-						<div>
-							<label>Code Comédien : </label> <input type="text"
-								name="id3T"/></div>
 							<div>
 							<label>Nom : </label> <input type="text"
 								name="nomComedien" /></div>
@@ -102,7 +100,7 @@
 								name="dateNaissanceComedien" /></div>
 							<div>
 							<label>Numéro de sécurité sociale : </label> <input type="text"
-								name="numSecuComedien"/></div>
+								name="numSecuComedien" required="true" /></div>
 							<div>
 							<label>Sexe : </label>
 							<select name="sexeComedien">
@@ -115,13 +113,29 @@
 								name="adressePostaleComedien"/></div>
 							<div>
 							<label>Adresse email : </label> <input type="text"
-								name="adresseEmailComedien"/></div>	
+								name="adresseEmailComedien" required="true"/></div>	
 							<div>
 							<label>Numéro de téléphone : </label> <input type="text"
 								name="numTelComedien"/></div>
 								
 							<button type="submit" class="btn btn-primary">Ajouter</button>
 					</form>
+				</div>
+			</div>
+			<div class="panel panel-primary" th:if="${comedien}">
+				<div class="panel-heading">Détail Comédien</div>
+				<div class="panel-body">
+					
+							<div>
+							<table id="roleNames" class="table table-striped" >
+							<tr><th>Représentations</th><th th:text="${comedien.nomPersonne +' '+comedien.prenomPersonne}"></th></tr>
+							<tr><th>Compagnie 37</th><td></td></tr>
+							<tr th:each="e:${mapTotalDatesSpectacle37}"><td><a th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}" th:text="${e.key}"></a></td><td th:text="${e.value}"></td></tr>
+							<tr><th>Compagnie 333+1</th><td></td></tr>
+							<tr th:each="e:${mapTotalDatesSpectacle333}"><td ><a th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}" th:text="${e.key}"></a></td><td th:text="${e.value}"></td></tr>
+							<tr><th>Total</th><th th:text="${nbreDates}"></th></tr>
+							</table>
+							</div>
 				</div>
 			</div>
 		</div>

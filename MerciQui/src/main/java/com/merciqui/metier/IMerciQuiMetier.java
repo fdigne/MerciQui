@@ -17,6 +17,7 @@ public interface IMerciQuiMetier {
 	public Collection<Comedien> listeComediens();
 	public int getNombreDatesTotal(String id3T);
 	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, String id3T);
+	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3t, String nomSalle);
 	
 	//Gestion des Spectacles
 	public Spectacle consulterSpectacle(String nomSpectacle);
@@ -30,6 +31,7 @@ public interface IMerciQuiMetier {
 	public void supprimerRole(Role role) ;
 	public Collection<Role> listeRoles();
 	public Collection<Role> listeRolesParSpectacle(Long idSpectacle) ;
+	public Collection<Comedien> getListeRemplacants(Long idRole);
 	
 	//Gestion des Evenements
 	public Evenement consulterEvenement(String idEvenement);
@@ -37,5 +39,7 @@ public interface IMerciQuiMetier {
 	public void supprimerEvenement(Evenement evenement);
 	public Collection<Evenement> listeEvenements();
 	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle);
+	public Collection<Evenement> listeEvenementsParComedien(String id3T);
+	public Collection<Evenement> listeEvenementParSalle(String nomSalle);
 	
 }

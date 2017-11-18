@@ -1,5 +1,6 @@
 package com.merciqui.metier;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,16 +19,16 @@ import com.merciqui.entities.Spectacle;
 @Service
 @Transactional
 public class MerciQuiMetierImpl implements IMerciQuiMetier{
-	
+
 	@Autowired
 	private ComedienRepository comedienRepository ;
 	
 	@Autowired
 	private SpectacleRepository spectacleRepository ;
-	
+
 	@Autowired
 	private EvenementRepository evenementRepository ;
-	
+
 	@Autowired
 	private RoleRepository roleRepository ;
 
@@ -38,14 +39,14 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public void supprimerComedien(String id3T) {
-		
+
 		comedienRepository.delete(id3T);
 	}
 
 	@Override
 	public Comedien consulterComedien(String id3T) {
 		Comedien com = comedienRepository.findOne(id3T) ;
-		
+
 		if (com == null ) throw new RuntimeException("Comédien introuvable") ; 
 		return com;
 	}
@@ -53,7 +54,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public Collection<Comedien> listeComediens() {
 		Collection<Comedien> listeComediens = comedienRepository.findAll(new Sort(Sort.Direction.ASC, "id3T"));
-		
+
 		return listeComediens;
 	}
 
@@ -77,7 +78,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 			supprimerRole(r);
 		}
 		spectacleRepository.delete(spec);
-		
+
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public void creerRole(Role role) {
 		roleRepository.save(role);
-		
+
 	}
 
 	@Override
@@ -99,21 +100,21 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Role> listeRolesParSpectacle(Long idSpectacle) {
-			Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
+		Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
 		return listeRoles;
 	}
 
 	@Override
 	public void supprimerRole(Role role) {
 		roleRepository.delete(role);
-		
+
 	}
 
 	@Override
 	public Evenement creerEvenement(Evenement evenement) {
 		evenementRepository.save(evenement);
 		return evenement;
-		
+
 	}
 
 	@Override
@@ -128,7 +129,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle) {
-		
+
 		return evenementRepository.getListEvenementsParSpectacle(idSpectacle);
 	}
 
@@ -140,7 +141,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public int getNombreDatesTotal(String id3T) {
-			
+
 		return evenementRepository.getNbreDatesByComedien(id3T);
 	}
 
@@ -159,6 +160,50 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 		return nbreDates;
 	}
 
-	
+	@Override
+	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3T, String nomSalle) {
+		int nbreDates = 0 ;
+		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
+		for(Evenement ev : listeEvenements) {
+			if(ev.getNomSalle().equals(nomSalle)) {
+				for(Comedien com : ev.getListeComediens()) {
+					if(com.getId3T().equals(id3T)) {
+						nbreDates ++ ;
+					}
+				}
+			}
+			
+		}
+		return nbreDates;
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenementsParComedien(String id3T) {
+		Collection<Evenement> listeEvenements = listeEvenements();
+		Collection<Evenement> listeEvenementsParComedien = new ArrayList<Evenement>(); 
+		for (Evenement ev : listeEvenements) {
+			for(Comedien com : ev.getListeComediens()) {
+				if(com.getId3T().equals(id3T)) {
+					listeEvenementsParComedien.add(ev);
+				}
+			}
+		}
+
+		return listeEvenementsParComedien;
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenementParSalle(String nomSalle) {
+		return evenementRepository.getListEvenementsParSalle(nomSalle);
+	}
+
+	@Override
+	public Collection<Comedien> getListeRemplacants(Long idRole) {
+		Collection<Comedien> listeRemplas = new ArrayList<Comedien>();
+		for(String s : roleRepository.getListeRemplacants(idRole)) {
+			listeRemplas.add(consulterComedien(s));
+		}
+		return listeRemplas;
+	}
 
 }

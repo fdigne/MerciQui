@@ -15,12 +15,11 @@ public class Personne implements Serializable {
 	
 	@Id 
 	@Column(unique=true)
-	private String id3T ;
+	private String id3T ; //numSecu
 	
 	private String nomPersonne;
 	private String prenomPersonne;
 	private Date dateNaissance ;
-	private String numSecu ;
 	private String sexe ;
 	private String adressePostale ; 
 	private String adresseEmail ;
@@ -36,14 +35,13 @@ public class Personne implements Serializable {
 	
 	
 	
-	public Personne(String id3t, String nomPersonne, String prenomPersonne, Date dateNaissance, String numSecu,
+	public Personne(String id3t, String nomPersonne, String prenomPersonne, Date dateNaissance,
 			String sexe, String adressePostale, String adresseEmail, String numTel) {
 		super();
 		id3T = id3t;
 		this.nomPersonne = nomPersonne;
 		this.prenomPersonne = prenomPersonne;
 		this.dateNaissance = dateNaissance;
-		this.numSecu = numSecu;
 		this.sexe = sexe;
 		this.adressePostale = adressePostale;
 		this.adresseEmail = adresseEmail;
@@ -81,12 +79,7 @@ public class Personne implements Serializable {
 	public void setDateNaissance(Date dateNaissance) {
 		this.dateNaissance = dateNaissance;
 	}
-	public String getNumSecu() {
-		return numSecu;
-	}
-	public void setNumSecu(String numSecu) {
-		this.numSecu = numSecu;
-	}
+	
 	public String getSexe() {
 		return sexe;
 	}

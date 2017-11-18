@@ -15,4 +15,10 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	
 	@Query("select o from Evenement o where o.spectacle.idSpectacle=:x")
 	Collection<Evenement> getListEvenementsParSpectacle(@Param("x")Long idSpectacle);
+	
+	@Query(value ="SELECT liste_evenements_id_evenement FROM evenement_liste_comediens WHERE liste_comediens_id3t = ?1", nativeQuery = true)
+	Collection<String> getListEvenementsParComedien(@Param("x")String id3T);
+	
+	@Query("select o from Evenement o where o.nomSalle=:x")
+	Collection<Evenement> getListEvenementsParSalle(@Param("x")String nomSalle);
 }

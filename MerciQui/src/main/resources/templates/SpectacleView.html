@@ -5,23 +5,26 @@
 <head>
 <meta charset="UTF-8" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-
+<script src="/javascript/chosen.jquery.js" type="text/javascript"></script>
+  <script src="/javascript/prism.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/javascript/init.js" type="text/javascript" charset="utf-8"></script>
+ 
 <script type="text/javascript" th:inline="javascript">
 /*<![CDATA[*/
-	
-$(document).ready(function(){
 
+$(document).ready(function(){
     var select = $("#nbRoles") , table = $("#roleNames") ; 
-    
     for (var i = 0; i <= 20; i++) {
         select.append('<option value="'+i+'">'+i+'</option>');
     }
 
 
     select.change(function () {
+    
         var rows = '';
-        var heads = "<tr><th>Role</th><th>Comedien</th></tr>" ;
+        var heads = "<tr><th>Role</th><th>Comedien</th><th>Remplaçants</th></tr>" ;
       	var comediens = [[${itemsComediens}]] ;
+      	
         for (var i = 0; i < $(this).val(); i++) {
             
             rows += "<tr><td><input type='text' name='nomRole'/></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;        
@@ -29,16 +32,24 @@ $(document).ready(function(){
     			rows += "<option value=\""+comedien[0]+"\">"+comedien[0]+" - "+comedien[1]+" "+comedien[2]+"</option>" ;
                });
          
-             rows += "</select></td></tr>";  
+             rows += "</select></td><td><div><select name='id3TRempl' data-placeholder='Choisir un comédien' multiple='true' class='chosen-select' tabindex='8'><option value=''></option>";
+             comediens.forEach(function(comedien) {
+     			rows += "<option value=\""+comedien[0]+"\">"+comedien[0]+" - "+comedien[1]+" "+comedien[2]+"</option>" ;
+             });
+                              
+             rows+= "</select></div></td></tr>";  
              table.html(heads + rows); 
         }
-        
-        
+    	$(".chosen-select").chosen(); 
+          
     });
+    
 
 });
+
 /*]]>*/
 </script>
+
 <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 <title>Merci Qui ?</title>
 </head>
@@ -52,6 +63,7 @@ $(document).ready(function(){
 								name="nomSpectacle" th:value="${nomSpectacle}" />
 						<form th:action="@{/consulterSpectacle}" method="get">
 							<select name="nomSpectacle" onchange="this.form.submit()">
+								<option disabled="true" selected="true">Choisir un spectacle</option>
 								<option th:value="${o.nomSpectacle}" th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}"
 								th:selected="(${o.nomSpectacle} == ${nomSpectacle})" />
 							</select>
@@ -74,7 +86,8 @@ $(document).ready(function(){
 				<tr th:each="o:${listeRoles}" >
 				<td th:text="${o.nomRole}"></td>
 				<td th:text="${o.comedien.nomPersonne +' '+o.comedien.prenomPersonne}"></td>
-				<td>Sarah DIGNE</td>
+				<td><table><tr th:each="c:${mapListeRemplasByRole.get(o.idRole)}"><td th:text="${c.nomPersonne +' '+c.prenomPersonne}"></td></tr></table>
+				</td>
 				</tr>
 				</table>
 					</div>
@@ -125,5 +138,6 @@ $(document).ready(function(){
 			</div>
 		</div> 
 </div>
+
 </body>
 </html>

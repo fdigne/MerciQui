@@ -2,8 +2,13 @@ package com.merciqui.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,6 +31,13 @@ public class Role implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="CODE_SPECTACLE")
 	private Spectacle spectacle ;
+	
+	@ElementCollection
+	@CollectionTable(
+	        name="liste_remplacants",
+	        joinColumns=@JoinColumn(name="ROLE_ID")
+	  )
+	private Set<Comedien> listeRemplas ;
 	
 	
 	
@@ -71,6 +83,16 @@ public class Role implements Serializable{
 	public void setComedien(Comedien comedien) {
 		this.comedien = comedien;
 	}
+
+	public Set<Comedien> getListeRemplas() {
+		return listeRemplas;
+	}
+
+	public void setListeRemplas(Set<Comedien> listeRemplas) {
+		this.listeRemplas = listeRemplas;
+	}
+
+	
 
 	
 
