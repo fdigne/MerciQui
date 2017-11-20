@@ -2,6 +2,7 @@ package com.merciqui.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Role implements Serializable{
@@ -26,18 +28,14 @@ public class Role implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="CODE_COMEDIEN")
-	private Comedien comedien ;
+	private Comedien comedienTitulaire ;
 	
 	@ManyToOne
 	@JoinColumn(name="CODE_SPECTACLE")
 	private Spectacle spectacle ;
 	
-	@ElementCollection
-	@CollectionTable(
-	        name="liste_remplacants",
-	        joinColumns=@JoinColumn(name="ROLE_ID")
-	  )
-	private Set<Comedien> listeRemplas ;
+	@ManyToMany
+	private Set<Comedien> listeRemplas  = new HashSet<Comedien>(0);;;
 	
 	
 	
@@ -76,12 +74,13 @@ public class Role implements Serializable{
 		this.nomRole = nomRole;
 	}
 
-	public Comedien getComedien() {
-		return comedien;
+	
+	public Comedien getComedienTitulaire() {
+		return comedienTitulaire;
 	}
 
-	public void setComedien(Comedien comedien) {
-		this.comedien = comedien;
+	public void setComedienTitulaire(Comedien comedienTitulaire) {
+		this.comedienTitulaire = comedienTitulaire;
 	}
 
 	public Set<Comedien> getListeRemplas() {
@@ -92,6 +91,9 @@ public class Role implements Serializable{
 		this.listeRemplas = listeRemplas;
 	}
 
+	
+
+	
 	
 
 	

@@ -21,4 +21,5 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	
 	@Query("select o from Evenement o where o.nomSalle=:x")
 	Collection<Evenement> getListEvenementsParSalle(@Param("x")String nomSalle);
+	
 }

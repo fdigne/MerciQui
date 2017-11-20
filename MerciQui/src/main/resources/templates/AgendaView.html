@@ -100,6 +100,7 @@
 					<button type="submit" class="btn btn-primary">Ajouter
 						Evènement</button>
 				</form>
+				<div class="text-danger" th:if="${error}" th:text="${error}"></div>
 			</div>
 		</div>
 		<div class="panel panel-primary">
@@ -111,8 +112,7 @@
 							</select>
 							<button type="submit" class="btn btn-primary">Supprimer</button>
 					</form>
-					<div class="text-danger" th:if="${exception}"
-						th:text="${exception.message}"></div>
+					
 				</div>
 			</div>
 		</div>

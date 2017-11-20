@@ -40,14 +40,17 @@ public class GestionSpectaclesController {
 		Map<String, Integer> mapTotalDateParSpectacle = new HashMap<String, Integer>();
 		Map<Long, Collection<Comedien>> mapListeRemplasByRole = new HashMap<Long, Collection<Comedien>>();
 		
+		
 		if(nomSpectacle != null) {
 			Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
 			model.addAttribute("spectacle", spec);
+			Collection<Comedien> listeComediensParSpectacle = merciquimetier.getListeComediensParSpectacles(spec.getIdSpectacle());
+			model.addAttribute("listeComediensParSpectacle", listeComediensParSpectacle);
 			Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(spec.getIdSpectacle());
 			model.addAttribute("listeRoles", listeRoles);
 			for(Role role : listeRoles) {
-				int totalDates = merciquimetier.getNombreDatesParSpectacleParComedien(spec.getIdSpectacle(), role.getComedien().getId3T());
-				mapTotalDateParSpectacle.put(role.getComedien().getId3T(), totalDates);
+				int totalDates = merciquimetier.getNombreDatesParSpectacleParComedien(spec.getIdSpectacle(), role.getComedienTitulaire().getId3T());
+				mapTotalDateParSpectacle.put(role.getComedienTitulaire().getId3T(), totalDates);
 				Collection<Comedien> listeRemplacants = merciquimetier.getListeRemplacants(role.getIdRole());
 				mapListeRemplasByRole.put(role.getIdRole(), listeRemplacants);
 			}
@@ -90,24 +93,26 @@ public class GestionSpectaclesController {
 		try {
 		Spectacle spectacle = new Spectacle();
 		spectacle.setNomSpectacle(nomSpectacle);
-		merciquimetier.creerSpectacle(spectacle);
+		
 		int indexRole = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
-		Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
-		
+		merciquimetier.creerSpectacle(spectacle);
 		for(String s : nomRole) {
 			Role role = new Role() ;
 			Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
-			
 			role.setNomRole(s);
 			role.setSpectacle(merciquimetier.consulterSpectacle(nomSpectacle));
-			role.setComedien(comedien);
-			for(String r : id3TRempl) {
-				Comedien remp = merciquimetier.consulterComedien(r) ;
-				listeRemplas.put(s, remp);
-				listeRemplasSQL.add(remp);
-			}
-			role.setListeRemplas(listeRemplasSQL);
+			role.setComedienTitulaire(comedien);
+				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
+				for(String r : id3TRempl) {
+					String[] id3TR = r.split("\\.");
+					if (id3TR[0].equals(String.valueOf(indexRole))) {
+						Comedien remp = merciquimetier.consulterComedien(id3TR[1]) ;
+						listeRemplas.put(s, remp);
+						listeRemplasSQL.add(remp);
+					}
+				}
+			role.setListeRemplas(listeRemplasSQL);	
 			indexRole++ ;
 			merciquimetier.creerRole(role);
 			

@@ -29,12 +29,12 @@ $(document).ready(function(){
             
             rows += "<tr><td><input type='text' name='nomRole'/></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;        
             comediens.forEach(function(comedien) {
-    			rows += "<option value=\""+comedien[0]+"\">"+comedien[0]+" - "+comedien[1]+" "+comedien[2]+"</option>" ;
+    			rows += "<option value=\""+comedien[0]+"\">"+comedien[1]+" "+comedien[2]+"</option>" ;
                });
          
              rows += "</select></td><td><div><select name='id3TRempl' data-placeholder='Choisir un comédien' multiple='true' class='chosen-select' tabindex='8'><option value=''></option>";
              comediens.forEach(function(comedien) {
-     			rows += "<option value=\""+comedien[0]+"\">"+comedien[0]+" - "+comedien[1]+" "+comedien[2]+"</option>" ;
+     			rows += "<option value=\""+i+"\."+comedien[0]+"\">"+comedien[1]+" "+comedien[2]+"</option>" ;
              });
                               
              rows+= "</select></div></td></tr>";  
@@ -85,7 +85,7 @@ $(document).ready(function(){
 				</tr>
 				<tr th:each="o:${listeRoles}" >
 				<td th:text="${o.nomRole}"></td>
-				<td th:text="${o.comedien.nomPersonne +' '+o.comedien.prenomPersonne}"></td>
+				<td th:text="${o.comedienTitulaire.nomPersonne +' '+o.comedienTitulaire.prenomPersonne}"></td>
 				<td><table><tr th:each="c:${mapListeRemplasByRole.get(o.idRole)}"><td th:text="${c.nomPersonne +' '+c.prenomPersonne}"></td></tr></table>
 				</td>
 				</tr>
@@ -126,12 +126,12 @@ $(document).ready(function(){
 					
 							<div>
 							<table id="roleNames" class="table table-striped" >
-							<tr><th>Représentations</th><th th:each="o:${listeRoles}"><a th:href="${'/consulterComedien?id3T=' + o.comedien.id3T}" th:text="${o.comedien.nomPersonne +' '+o.comedien.prenomPersonne}"></a></th></tr>
-							<tr><th>Compagnie 37</th><td th:each="o:${listeRoles}"></td></tr>
-							<tr th:each="e:${listeEvenements37}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeRoles}"><label >1</label></td></tr>
-							<tr><th>Compagnie 333+1</th><td th:each="o:${listeRoles}"></td></tr>
-							<tr th:each="e:${listeEvenements333}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeRoles}"><label >1</label></td></tr>
-							<tr><th>Total</th><th th:text="${mapTotalDate.get(o.comedien.id3T)}" th:each="o:${listeRoles}"></th></tr>
+							<tr><th>Représentations</th><th th:each="o:${listeComediensParSpectacle}"><a th:href="${'/consulterComedien?id3T=' + o.id3T}" th:text="${o.nomPersonne +' '+o.prenomPersonne}"></a></th></tr>
+							<tr><th>Compagnie 37</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
+							<tr th:each="e:${listeEvenements37}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeComediensParSpectacle}"><label>1</label></td></tr>
+							<tr><th>Compagnie 333+1</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
+							<tr th:each="e:${listeEvenements333}"><td th:text="${e.dateEvenement}"></td><td th:each="o:${listeComediensParSpectacle}"><label >1</label></td></tr>
+							<tr><th>Total</th><th th:text="${mapTotalDate.get(o.id3T)}" th:each="o:${listeComediensParSpectacle}"></th></tr>
 							</table>
 							</div>
 				</div>

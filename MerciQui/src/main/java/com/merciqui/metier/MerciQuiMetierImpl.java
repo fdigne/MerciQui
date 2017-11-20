@@ -1,18 +1,25 @@
 package com.merciqui.metier;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.merciqui.dao.ComedienRepository;
 import com.merciqui.dao.EvenementRepository;
+import com.merciqui.dao.PeriodeRepository;
 import com.merciqui.dao.RoleRepository;
 import com.merciqui.dao.SpectacleRepository;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
+import com.merciqui.entities.Periode;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
@@ -31,9 +38,14 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Autowired
 	private RoleRepository roleRepository ;
+	
+	@Autowired
+	private PeriodeRepository periodeRepository ;
+
 
 	@Override
 	public void creerComedien(Comedien comedien) {
+		
 		comedienRepository.save(comedien);
 	}
 
@@ -119,7 +131,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public void supprimerEvenement(Evenement evenement) {
-		evenementRepository.delete(evenement);		
+		for (Comedien comedien : evenement.getListeComediens()) {
+			comedien.getListeIndispos().remove(evenement.getPeriode());
+			comedienRepository.save(comedien);
+		}
+		evenementRepository.delete(evenement);
+		
 	}
 
 	@Override
@@ -204,6 +221,30 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 			listeRemplas.add(consulterComedien(s));
 		}
 		return listeRemplas;
+	}
+
+	@Override
+	public Periode creerPeriode(Periode periode) {
+		periodeRepository.save(periode);
+			return periode ;
+	}
+
+	@Override
+	public Collection<Comedien> getListeComediensParSpectacles(Long idSpectacle) {
+		Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
+		Collection<Comedien> listeComediensparSpectacle = new ArrayList<Comedien>();
+		for(Role role : listeRoles) {
+			listeComediensparSpectacle.add(role.getComedienTitulaire());
+			for(Comedien com : role.getListeRemplas()) {
+				listeComediensparSpectacle.add(com);
+			}
+		}
+		return listeComediensparSpectacle;
+	}
+
+	@Override
+	public Periode consulterPeriode(Periode periode) {
+		return periodeRepository.findOne(periode.getIdPeriode());
 	}
 
 }

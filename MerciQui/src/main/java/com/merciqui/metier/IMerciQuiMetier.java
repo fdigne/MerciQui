@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
+import com.merciqui.entities.Periode;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
@@ -18,6 +19,7 @@ public interface IMerciQuiMetier {
 	public int getNombreDatesTotal(String id3T);
 	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, String id3T);
 	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3t, String nomSalle);
+	public Collection<Comedien> getListeComediensParSpectacles(Long idSpectacle);
 	
 	//Gestion des Spectacles
 	public Spectacle consulterSpectacle(String nomSpectacle);
@@ -41,5 +43,9 @@ public interface IMerciQuiMetier {
 	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle);
 	public Collection<Evenement> listeEvenementsParComedien(String id3T);
 	public Collection<Evenement> listeEvenementParSalle(String nomSalle);
+	
+	//Gestion des Periodes
+	public Periode creerPeriode(Periode periode);
+	public Periode consulterPeriode(Periode periode);
 	
 }

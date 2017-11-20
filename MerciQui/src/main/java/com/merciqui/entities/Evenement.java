@@ -25,6 +25,10 @@ private String nomSalle ;
 @JoinColumn(name="CODE_SPECTACLE")
 private Spectacle spectacle;
 
+@ManyToOne
+@JoinColumn(name="ID_PERIODE")
+private Periode periode ;
+
 
 
 @ManyToMany
@@ -82,6 +86,14 @@ public Set<Comedien> getListeComediens() {
 
 public void setListeComediens(Set<Comedien> listeComediens) {
 	this.listeComediens = listeComediens;
+}
+
+public Periode getPeriode() {
+	return periode;
+}
+
+public void setPeriode(Periode periode) {
+	this.periode = periode;
 }
 
 
