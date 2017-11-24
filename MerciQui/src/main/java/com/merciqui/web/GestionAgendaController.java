@@ -3,8 +3,8 @@ package com.merciqui.web;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,18 +53,40 @@ import com.merciqui.entities.Periode;
 import com.merciqui.entities.Role;
 import com.merciqui.metier.IMerciQuiMetier;
 
+
+
+
 @Controller
 public class GestionAgendaController {
 
-	private final static Log logger = LogFactory.getLog(GestionAgendaController.class);
-	private static final String APPLICATION_NAME = "Merci Qui";
-	private static HttpTransport httpTransport;
-	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+	public final static Log logger = LogFactory.getLog(GestionAgendaController.class);
+	public static final String APPLICATION_NAME = "Merci Qui";
+	public static HttpTransport httpTransport;
+	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static com.google.api.services.calendar.Calendar client;
+	
+	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
+	static {
+    seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
+    seasons.put("AutomneFin" , Calendar.DECEMBER);
+    seasons.put("HiverDebut" , Calendar.JANUARY);
+    seasons.put("HiverFin" , Calendar.MARCH);
+    seasons.put("PrintempsDebut" , Calendar.APRIL);
+    seasons.put("PrintempsFin" , Calendar.JUNE);
+    seasons.put("EteDebut" , Calendar.JULY);
+    seasons.put("EteFin" , Calendar.AUGUST);
+
+    
+};
+
+
+
 
 	GoogleClientSecrets clientSecrets;
 	GoogleAuthorizationCodeFlow flow;
-	Credential credential;
+
+	static Credential credential;
+
 
 	@Value("${google.client.client-id}")
 	private String clientId;
@@ -73,16 +94,9 @@ public class GestionAgendaController {
 	private String clientSecret;
 	@Value("${google.client.redirectUri}")
 	private String redirectURI;
+	
 
 	private Set<Event> events = new HashSet<>();
-
-	final DateTime date1 = new DateTime("2017-05-05T16:30:00.000+05:30");
-	final DateTime date2 = new DateTime(new Date());
-
-	public void setEvents(Set<Event> events) {
-		this.events = events;
-	}
-
 
 
 	@Autowired
@@ -103,19 +117,78 @@ public class GestionAgendaController {
 	}
 
 	@RequestMapping("/consulterCalendrier")
-	public String consulterCalendrier(Model model, String idEvenement, String error) {
+	public String consulterCalendrier(Model model, String idEvenement, String error, String yearFilterEvent, String periodFilterEvent, String monthFilterEvent) {
+		model.addAttribute("idEvenement", idEvenement);
+		model.addAttribute("yearFilterEvent", yearFilterEvent);
+		model.addAttribute("periodFilterEvent", periodFilterEvent);
+		model.addAttribute("monthFilterEvent", monthFilterEvent);
+
+		if(idEvenement != null) {
+			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
+			model.addAttribute("evenement", evenement);
+			model.addAttribute("listeRoles", merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle()));
+			model.addAttribute("listeComediensParEv", evenement.getListeComediens());
+			model.addAttribute("listeComediensParSpectacle", merciquimetier.getListeComediensParSpectacles(evenement.getSpectacle().getIdSpectacle()));
+
+		}
+		
 		
 		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
-		model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
+		
+		if(yearFilterEvent == null) {
+			yearFilterEvent = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, Integer.valueOf(yearFilterEvent));
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.DAY_OF_MONTH,1);
+		cal.set(Calendar.HOUR_OF_DAY,  0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		if(monthFilterEvent != null) {
+			cal.set(Calendar.MONTH, Integer.valueOf(monthFilterEvent));
+		}
+		if(periodFilterEvent != null) {
+			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Debut"));
+		}
+		
+		Date dateDebutFiltre = cal.getTime();
+		cal.set(Calendar.MONTH, Calendar.DECEMBER);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		if(monthFilterEvent != null) {
+			cal.set(Calendar.MONTH, Integer.valueOf(monthFilterEvent));
+		}
+		if(periodFilterEvent != null) {
+			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Fin"));
+		}
+		
+		
+		Date dateFinFiltre = cal.getTime();
+		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
+		
+		for (Evenement evenementFiltre : merciquimetier.listeEvenements()) {
+			Date dateEvenement = evenementFiltre.getDateEvenement();
+			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
+				listeEvenementsFiltres.add(evenementFiltre);
+			}
+		}
+		
+		model.addAttribute("listeEvenements", listeEvenementsFiltres);
+		
 		model.addAttribute("error", error);
 		
 		return "AgendaView";
 	}
+	
 
 	@PostMapping("/saisieEvenement")
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
-			String nomSpectacle, String nomSalle, String idEvenement) {
-
+			String nomSpectacle, String nomSalle, String idEvenement, boolean notifications) {
+		
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		java.util.Calendar cal = java.util.Calendar.getInstance();
 		cal.setTime(dateDebut);
@@ -128,11 +201,13 @@ public class GestionAgendaController {
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 		String descriptionEvent ="Distribution :\n\n" ;
-		
+		Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
 		for(Role role : listeRoles) {
 				try {
 				Comedien com = setDistribution(role, periodeIndispo);
+				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
+				attendee.setId(com.getId3T());
 				attendee.setDisplayName(com.getNomPersonne()+" "+com.getPrenomPersonne())
 				.setEmail(com.getAdresseEmail());
 				comediens.add(attendee);
@@ -171,12 +246,15 @@ public class GestionAgendaController {
 		EventDateTime end = new EventDateTime()
 				.setDateTime(endDateTime);    
 		myEvent.setEnd(end);
+		
+		myEvent.setColorId("3");
 
 		String calendarId = "primary";
 		try {
-			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(true).execute();
+			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(notifications).execute();
 			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
+			ev.setDistribution(mapDistribution);
 			merciquimetier.creerEvenement(ev);
 			
 			return "redirect:/consulterCalendrier?idEvenement="+ev.getIdEvenement() ;
@@ -194,6 +272,7 @@ public class GestionAgendaController {
 		boolean isIndispoTit = false ;
 		Collection<Comedien> listeRemplacantDistrib= new ArrayList<Comedien>();
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
+		
 
 		for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
 			
@@ -235,9 +314,59 @@ public class GestionAgendaController {
 	private static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
 		return start1.before(end2) && start2.before(end1);
 	}
+	
+	@PostMapping("/modifierEvenement")
+	public String modifierEvenement(Model model, String idEvenement, String[] id3T) {
+		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+				.setApplicationName(APPLICATION_NAME).build();
+		
+		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
+		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
+		String descriptionEvent ="Distribution :\n\n" ;
+		Map<Long, Comedien> distribution = new HashMap<Long, Comedien>();
+		
+		merciquimetier.supprimerEvenement(evenement);
+		
+		try {
+			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
+			List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
+			for (String s : id3T) {
+				String[] keyValue = s.split("\\.");
+				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
+				distribution.put(Long.valueOf(keyValue[0]),comedien);
+					
+				for (EventAttendee eva : listeAttendees ) {
+					
+							listeAttendees.remove(eva) ;
+							EventAttendee attendee = new EventAttendee();
+							attendee.setId(comedien.getId3T());
+							attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
+							.setEmail(comedien.getAdresseEmail());
+							listeAttendees.add(attendee);
+							listeComediensDistrib.add(comedien);
+							descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
+					}
+				myEvent.setAttendees(listeAttendees) ;
+				myEvent.setDescription(descriptionEvent);
+			}	
+
+			
+			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(true).execute();
+			evenement.setListeComediens(listeComediensDistrib);
+			evenement.setDistribution(distribution);
+			
+			merciquimetier.creerEvenement(evenement);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	return "redirect:/consulterCalendrier?idEvenement="+idEvenement ;	
+	}
 
 	@PostMapping("/supprimerEvenement")
-	public String saisieEvenement(Model model, String idEvenement) {
+	public String supprimerEvenement(Model model, String idEvenement) {
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 
@@ -251,7 +380,8 @@ public class GestionAgendaController {
 		}
 		return "redirect:/";		
 	}
-
+	
+	
 	private Date mefDateEvenementSQL(String dateEvenement, String heureEvenement) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		java.util.Date utilDate;
@@ -316,8 +446,10 @@ public class GestionAgendaController {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 			flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
 					Collections.singleton(CalendarScopes.CALENDAR)).build();
+			
 		}
 		authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
 		return authorizationUrl.build();
 	}
+	
 }

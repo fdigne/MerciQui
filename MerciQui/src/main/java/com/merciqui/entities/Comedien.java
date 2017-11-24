@@ -20,7 +20,7 @@ import javax.persistence.OneToMany;
 public class Comedien extends Personne implements Serializable{
 	
 	
-	@ManyToMany(mappedBy="listeComediens", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy="listeComediens", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	private Collection<Evenement> listeEvenements ;
 	
 	@OneToMany(mappedBy="comedienTitulaire")

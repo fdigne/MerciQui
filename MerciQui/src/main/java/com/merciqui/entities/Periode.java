@@ -19,6 +19,7 @@ public class Periode {
 	
 	private Date dateDebut ;
 	private Date dateFin;
+	private boolean isVacances ;
 	
 	@ManyToMany(mappedBy="listeIndispos", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Collection<Comedien> listeComediens ;
@@ -63,6 +64,12 @@ public class Periode {
 	}
 	public void setListeEvenements(Collection<Evenement> listeEvenements) {
 		this.listeEvenements = listeEvenements;
+	}
+	public boolean isVacances() {
+		return isVacances;
+	}
+	public void setVacances(boolean isVacances) {
+		this.isVacances = isVacances;
 	}
 	
 	

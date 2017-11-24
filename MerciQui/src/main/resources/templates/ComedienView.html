@@ -22,7 +22,102 @@
 				
 			}
 		  );
+	  jQuery("#dateDebutIndispo").datepicker(
+			  {
+					inline: true,
+					nextText: '&rarr;',
+					prevText: '&larr;',
+					yearRange: "-100:+0",
+					showOtherMonths: true,
+					dateFormat: 'dd/mm/yy',
+					dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+					changeYear: true,
+					changeMonth: true,
+					
+				}
+			  );
+		  jQuery("#dateFinIndispo").datepicker(
+				  {
+						inline: true,
+						nextText: '&rarr;',
+						prevText: '&larr;',
+						yearRange: "-100:+0",
+						showOtherMonths: true,
+						dateFormat: 'dd/mm/yy',
+						dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+						changeYear: true,
+						changeMonth: true,
+						
+					}
+				  );
  });
+</script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function(){
+var yearFilter = document.getElementById("yearFilter");
+var monthFilter = document.getElementById("monthFilter");
+var periodFilter = document.getElementById("periodFilter");
+
+var year = /*[[${yearFilter}]]*/ ;
+var currentYear = new Date().getFullYear();
+if(year != null){
+currentYear = year ;
+	
+}
+
+for (var i = 2050; i >= 2017; i--) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.innerHTML = i;
+    
+		if(i == currentYear) {
+			option.selected = true ;
+			}
+    yearFilter.appendChild(option);
+}
+
+var months = ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
+var monthSelected = /*[[${monthFilter}]]*/
+for (var j = 0 ; j <= 11 ; j++ ){
+	var option = document.createElement("option");
+	option.value = j ;
+	if (j == monthSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = months[j];
+	monthFilter.appendChild(option);
+}
+
+var periode = ["Automne" , "Hiver", "Printemps", "Ete"] ;
+var periodSelected = /*[[${periodFilter}]]*/
+for (var z = 0 ; z <= 3 ; z++ ){
+	var option = document.createElement("option");
+	option.value = periode[z] ;
+	if (periode[z] == periodSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = periode[z];
+	periodFilter.appendChild(option);
+}
+
+$("#yearFilter").change(function(){
+	monthFilter.value = null ;
+	periodFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+$("#monthFilter").change(function(){
+	periodFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+
+$("#periodFilter").change(function(){
+	monthFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+
+});
+/*]]>*/
 </script>
 <title>Merci Qui ?</title>
 </head>
@@ -45,43 +140,90 @@
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Informations</div>
 				<div class="panel-body">
-				<form th:action="@{/supprimerComedien}" method="post">
+				<form th:action="@{/modifierComedien}" method="post" >
 				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
 						<div>
-						<label>Nom : </label> <label th:text="${comedien.nomPersonne}"></label>
-					</div>
-					<div>
-						<label>Prénom : </label> <label th:text="${comedien.prenomPersonne}"></label>
-					</div>
-					<div>
-						<label>Date de Naissance : </label> <label th:type="date" th:text="${comedien.dateNaissance}"></label>
-					</div>
-					<div>
-						<label>Numéro de Sécurité sociale : </label> <label th:text="${comedien.id3T}"></label>
-					   
-					</div>
-					<div>
-						<label>Sexe : </label> <label th:text="${comedien.sexe}"></label>
-					</div>
-					<div>
-						<label>Adresse Postale : </label> <label th:text="${comedien.adressePostale}"></label>
-					</div>
-					<div>
-						<label>Adresse Email : </label> <label th:text="${comedien.adresseEmail}"></label>
-					</div>
-					<div>
-						<label>Numéro de téléphone : </label> <label th:text="${comedien.numTel}"></label>
-					</div>
+							<label>Nom : </label> <input type="text"
+								name="nomComedien" th:value="${comedien.nomPersonne}"/></div>
+							<div>
+							<label>Prénom : </label> <input type="text"
+								name="prenomComedien" th:value="${comedien.prenomPersonne}" /></div>
+							<div>
+							<label>Date de naissance : </label> <input id="dateNaissanceComedien" type="date"
+								name="dateNaissanceComedien" th:value="${comedien.dateNaissance}" /></div>
+							<div>
+							<label>Numéro de sécurité sociale : </label> <input type="text"
+								name="numSecuComedien" required="true" th:value="${comedien.id3T}" /></div>
+							<div>
+							<label>Sexe : </label>
+							<select name="sexeComedien">
+									<option value="Masculin" th:selected = "(${comedien.sexe == 'Masculin'})">Masculin</option>
+									<option value="Feminin" th:selected = "(${comedien.sexe == 'Feminin'})">Féminin</option>
+							</select>
+							</div>
+							<div>
+							<label>Adresse postale : </label> <input type="text"
+								name="adressePostaleComedien" th:value="${comedien.adressePostale}"/></div>
+							<div>
+							<label>Adresse email : </label> <input type="text"
+								name="adresseEmailComedien" required="true" th:value="${comedien.adresseEmail}"/></div>	
+							<div>
+							<label>Numéro de téléphone : </label> <input type="text"
+								name="numTelComedien" th:value="${comedien.numTel}"/></div>
+					
+					<br/><br/>
 					<div>
 						<label>Nombre de dates programmées : </label> <label th:text="${nbreDates}"></label>
 					</div>
 					<br/>
+					<div>
+					<button type="submit" class="btn btn-primary">Modifier Comédien</button>
+					</div>
+					<br/>
+					</form>
+					<form th:action="@{/supprimerComedien}" method="post" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce comédien ?');">
+				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
 					<div>
 					<button type="submit" class="btn btn-primary">Supprimer Comédien</button>
 					</div>
 					</form>
 				</div>
 			</div>
+			<div class="panel panel-primary" th:if="${comedien}">
+				<div class="panel-heading">Indisponibilités</div>
+				<div class="panel-body">
+				<form th:action="@{/ajouterIndispo}" method="post" >
+				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+				<table class="table table-striped">
+				<caption style="text-align :center">Nouvelle Indispo</caption>
+				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
+				<tr><td><input id="dateDebutIndispo" type="date" name="dateDebutIndispo"></input></td>
+					<td><input id="dateFinIndispo" type="date" name="dateFinIndispo"></input></td>
+					<td><button type="submit" class="btn btn-primary">Ajouter</button></td></tr>
+				</table>
+				</form>
+				<br/>
+				
+				<div>
+				<table class="table table-striped">
+				<caption style="text-align :center">Liste Indispos</caption>
+				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
+				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="date" name="dateDebutIndispo" th:text="${o.dateDebut}"></label>
+				</td>
+					<td><label id="dateFinIndispo" type="date" name="dateFinIndispo" th:text="${o.dateFin}"></label></td>
+					<td>
+					<form th:action="@{/supprimerIndispo}" method="post" >
+					<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+					<input type="hidden" th:name="idPeriode" th:value="${o.idPeriode}" />
+					<button type="submit" class="btn btn-primary">Supprimer</button>
+					</form>
+					</td></tr>
+				</table>
+				</div>
+				
+			</div>
+			
+		</div>
 		</div>
 		
 				<div class="col-md-6">
@@ -125,7 +267,17 @@
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Détail Comédien</div>
 				<div class="panel-body">
-					
+					<form id="filterForm" th:action="@{/consulterComedien}" method="get">
+							<input type="hidden"
+								name="id3T" th:value="${id3T}" />
+							
+							<div>
+							<select id="yearFilter" name="yearFilter" ></select>
+							<select id="periodFilter" name="periodFilter"><option disabled="true" selected="true">Période</option></select>
+							<select id="monthFilter" name="monthFilter"><option disabled="true" selected="true">Mois</option></select>
+							</div>
+							</form>
+							<br/>
 							<div>
 							<table id="roleNames" class="table table-striped" >
 							<tr><th>Représentations</th><th th:text="${comedien.nomPersonne +' '+comedien.prenomPersonne}"></th></tr>

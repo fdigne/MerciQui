@@ -16,7 +16,7 @@
 				inline: true,
 				nextText: '&rarr;',
 				prevText: '&larr;',
-				yearRange: "-100:+0",
+				yearRange: "-0:+50",
 				showOtherMonths: true,
 				dateFormat: 'dd/mm/yy',
 				dayNamesMin: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
@@ -31,13 +31,119 @@
 		  );
  });
 </script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function(){
+var yearFilter = document.getElementById("yearFilter");
+var periodFilter = document.getElementById("periodFilter");
 
+var year = /*[[${yearFilter}]]*/ ;
+var currentYear = new Date().getFullYear();
+if(year != null){
+currentYear = year ;
+	
+}
+
+for (var i = 2050; i >= 2017; i--) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.innerHTML = i;
+    
+		if(i == currentYear) {
+			option.selected = true ;
+			}
+    yearFilter.appendChild(option);
+}
+
+var periode = ["Automne" , "Hiver", "Printemps", "Ete"] ;
+var periodSelected = /*[[${periodFilter}]]*/
+for (var z = 0 ; z <= 3 ; z++ ){
+	var option = document.createElement("option");
+	option.value = periode[z] ;
+	if (periode[z] == periodSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = periode[z];
+	periodFilter.appendChild(option);
+}
+
+
+});
+/*]]>*/
+</script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function(){
+var yearFilter = document.getElementById("yearFilterEvent");
+var monthFilter = document.getElementById("monthFilterEvent");
+var periodFilter = document.getElementById("periodFilterEvent");
+
+var year = /*[[${yearFilterEvent}]]*/ ;
+var currentYear = new Date().getFullYear();
+if(year != null){
+currentYear = year ;
+	
+}
+
+for (var i = 2050; i >= 2017; i--) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.innerHTML = i;
+    
+		if(i == currentYear) {
+			option.selected = true ;
+			}
+    yearFilter.appendChild(option);
+}
+
+var months = ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
+var monthSelected = /*[[${monthFilterEvent}]]*/
+for (var j = 0 ; j <= 11 ; j++ ){
+	var option = document.createElement("option");
+	option.value = j ;
+	if (j == monthSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = months[j];
+	monthFilter.appendChild(option);
+}
+
+var periode = ["Automne" , "Hiver", "Printemps", "Ete"] ;
+var periodSelected = /*[[${periodFilterEvent}]]*/
+for (var z = 0 ; z <= 3 ; z++ ){
+	var option = document.createElement("option");
+	option.value = periode[z] ;
+	if (periode[z] == periodSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = periode[z];
+	periodFilter.appendChild(option);
+}
+
+$("#yearFilterEvent").change(function(){
+	monthFilter.value = null ;
+	periodFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+$("#monthFilterEvent").change(function(){
+	periodFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+
+$("#periodFilterEvent").change(function(){
+	monthFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+
+});
+/*]]>*/
+</script>
 <title>Merci Qui ?</title>
 </head>
 <body>
 	<div layout:fragment="content">
 		<div class="panel panel-primary">
-			<iframe
+			<iframe id="googleFrame"
 				src="https://calendar.google.com/calendar/embed?src=les3tcafetheatreagenda%40gmail.com"
 				style="border: 0" width="800" height="600"> </iframe>
 		</div>
@@ -70,7 +176,7 @@
 						<option value="17:30">17:30</option>
 						<option value="18:00">18:00</option>
 						<option value="18:30">18:30</option>
-						<option value="19:00">19:00</option>
+						<option value="19:00" selected="true">19:00</option>
 						<option value="19:30">19:30</option>
 						<option value="20:00">20:00</option>
 						<option value="20:30">20:30</option>
@@ -93,8 +199,10 @@
 						<option value="3T D'A COTE">3T D'À CÔTÉ</option>
 						<option value="GRANDE SALLE">GRANDE SALLE</option>
 						<option value="PRIVÉ">PRIVÉ</option>
-						
 						</select>
+					</div>
+					<div>
+					<input class="checkbox-primary" name="notifications" type="checkbox" /><label>Notifications</label>
 					</div>
 
 					<button type="submit" class="btn btn-primary">Ajouter
@@ -106,15 +214,84 @@
 		<div class="panel panel-primary">
 				<div class="panel-heading">Liste des Evènements</div>
 				<div class="panel-body">
-					<form th:action="@{/supprimerEvenement}" method="post">
-							<select name="idEvenement">
-								<option th:value="${o.idEvenement}" th:text="${o.dateEvenement +' - '+ o.spectacle.nomSpectacle}" th:each="o:${listeEvenements}" />
-							</select>
-							<button type="submit" class="btn btn-primary">Supprimer</button>
-					</form>
+					<form id="filterForm" th:action="@{/consulterCalendrier}" method="get">
+					<div>
+							<select id="yearFilterEvent" name="yearFilterEvent" ></select>
+							<select id="periodFilterEvent" name="periodFilterEvent"><option disabled="true" selected="true">Période</option></select>
+							<select id="monthFilterEvent" name="monthFilterEvent"><option disabled="true" selected="true">Mois</option></select>
+							</div>
+							<br/>
+							<select name="idEvenement" onchange="this.form.submit()">
+							<option disabled="true" selected="true">Choisir un evènement</option>
+								<option th:value="${o.idEvenement}" th:text="${o.dateEvenement +' - '+ o.spectacle.nomSpectacle}" th:each="o:${listeEvenements}" 
+								th:selected="(${o.idEvenement} == ${idEvenement})"/>
+							</select>					
+ 				</form>
 					
 				</div>
 			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">Envoyer les calendriers</div>
+				<div class="panel-body">
+					<form th:action="@{/sendEmail}" method="get" onsubmit="return confirm('Etes-vous sur de vouloir valider le calendrier ?');">
+							<select id="yearFilter" name="yearFilter" ></select>
+							<select id="periodFilter" name="periodFilter"><option disabled="true" selected="true">Période</option></select>
+							<button type="submit" class="btn btn-primary">Valider l'agenda</button>				
+ 				</form>
+					
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+		<div class="panel panel-primary" th:if="${evenement}">
+			<div class="panel-heading">Informations Evènement</div>
+			<div class="panel-body">
+				<form th:action="@{/modifierEvenement}" method="post">
+				<input type="hidden" name="idEvenement" th:value="${evenement.idEvenement}" />
+					<div>
+						<label>Date : </label> <label id="dateEvenement" type="datetime" th:text="${evenement.dateEvenement}" />
+					</div>
+
+					<div>
+						<label>Spectacle : </label> <a th:href="${'/consulterSpectacle?nomSpectacle=' + evenement.spectacle.nomSpectacle}"><label name="nomSpectacle" th:text="${evenement.spectacle.nomSpectacle}" /></a>
+								
+					</div>
+					<div>
+						<label>Salle : </label> <label name="nomSalle" th:text="${evenement.nomSalle}" />
+					</div>
+					<br/>
+					<div>
+					<label>Distribution : </label>
+					</div>
+					<div>
+					<table class="table table-striped" >
+				<tr>
+				<th>Nom Rôle</th><th>Nom Comédien</th>
+				</tr>
+				<tr th:each="o:${listeRoles}" >
+				<td th:text="${o.nomRole}"></td>
+				<td><select name="id3T"><option th:value="${o.idRole+'.'+e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediensParSpectacle}" th:selected="${e == evenement.distribution.get(o.idRole)}" ></option></select></td>
+				</tr>
+				</table>
+					</div>
+					<div>
+					<button type="submit" class="btn btn-primary">Modifier
+						Evènement</button>
+						</div>
+						<br/>
+				</form>
+				<div class="text-danger" th:if="${error}" th:text="${error}"></div>
+			
+			<div>
+			<form th:action="@{/supprimerEvenement}" method="post" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet evenement ?');">
+			<input type="hidden" name="idEvenement" th:value="${evenement.idEvenement}" />
+			
+			<button type="submit" class="btn btn-primary">Supprimer
+						Evènement</button>
+			</form>
+			</div>
+			</div>
+		</div>
 		</div>
 	</div>
 </body>

@@ -25,60 +25,66 @@ import com.merciqui.entities.Spectacle;
 
 @Service
 @Transactional
-public class MerciQuiMetierImpl implements IMerciQuiMetier{
+public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	@Autowired
-	private ComedienRepository comedienRepository ;
-	
-	@Autowired
-	private SpectacleRepository spectacleRepository ;
+	private ComedienRepository comedienRepository;
 
 	@Autowired
-	private EvenementRepository evenementRepository ;
+	private SpectacleRepository spectacleRepository;
 
 	@Autowired
-	private RoleRepository roleRepository ;
-	
-	@Autowired
-	private PeriodeRepository periodeRepository ;
+	private EvenementRepository evenementRepository;
 
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Autowired
+	private PeriodeRepository periodeRepository;
 
 	@Override
 	public void creerComedien(Comedien comedien) {
-		
+
 		comedienRepository.save(comedien);
 	}
 
 	@Override
 	public void supprimerComedien(String id3T) {
+		Comedien comedien = comedienRepository.findOne(id3T);
+		for (Role r : comedien.getListeRoles()) {
+			r.setComedienTitulaire(null);
+			roleRepository.save(r);
+		}
+		comedienRepository.delete(comedien);
 
-		comedienRepository.delete(id3T);
 	}
 
 	@Override
 	public Comedien consulterComedien(String id3T) {
-		Comedien com = comedienRepository.findOne(id3T) ;
+		Comedien com = comedienRepository.findOne(id3T);
 
-		if (com == null ) throw new RuntimeException("Comédien introuvable") ; 
+		if (com == null)
+			throw new RuntimeException("Comédien introuvable");
 		return com;
 	}
 
 	@Override
 	public Collection<Comedien> listeComediens() {
-		Collection<Comedien> listeComediens = comedienRepository.findAll(new Sort(Sort.Direction.ASC, "id3T"));
+		Collection<Comedien> listeComediens = comedienRepository.findAll(new Sort(Sort.Direction.ASC, "nomPersonne"));
 
 		return listeComediens;
 	}
 
 	@Override
 	public Spectacle consulterSpectacle(String nomSpectacle) {
-		Spectacle spec =spectacleRepository.findOne(nomSpectacle);
+		Spectacle spec = spectacleRepository.findOne(nomSpectacle);
 		return spec;
 	}
 
 	@Override
 	public Collection<Spectacle> listeSpectacles() {
-		Collection<Spectacle> listeSpectacles = spectacleRepository.findAll(new Sort(Sort.Direction.ASC, "nomSpectacle"));
+		Collection<Spectacle> listeSpectacles = spectacleRepository
+				.findAll(new Sort(Sort.Direction.ASC, "nomSpectacle"));
 		return listeSpectacles;
 	}
 
@@ -86,7 +92,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	public void supprimerSpectacle(String nomSpectacle) {
 		Spectacle spec = consulterSpectacle(nomSpectacle);
 		Collection<Role> listeRoles = listeRolesParSpectacle(spec.getIdSpectacle());
-		for(Role r : listeRoles) {
+		for (Role r : listeRoles) {
 			supprimerRole(r);
 		}
 		spectacleRepository.delete(spec);
@@ -106,7 +112,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public Collection<Role> listeRoles() {
-		Collection<Role> listeRoles = roleRepository.findAll() ;
+		Collection<Role> listeRoles = roleRepository.findAll();
 		return listeRoles;
 	}
 
@@ -131,12 +137,17 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public void supprimerEvenement(Evenement evenement) {
+		evenement.setDistribution(null);
+		
+		evenementRepository.save(evenement);
 		for (Comedien comedien : evenement.getListeComediens()) {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
+			
 		}
-		evenementRepository.delete(evenement);
 		
+		evenementRepository.delete(evenement);
+
 	}
 
 	@Override
@@ -164,13 +175,13 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 
 	@Override
 	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, String id3t) {
-		int nbreDates = 0 ;
+		int nbreDates = 0;
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
-		for(Evenement ev : listeEvenements) {
+		for (Evenement ev : listeEvenements) {
 			Collection<Comedien> listeComediens = ev.getListeComediens();
 			for (Comedien com : listeComediens) {
-				if(com.getId3T().equals(id3t)) {
-					nbreDates++ ;
+				if (com.getId3T().equals(id3t)) {
+					nbreDates++;
 				}
 			}
 		}
@@ -178,18 +189,19 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	}
 
 	@Override
-	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3T, String nomSalle) {
-		int nbreDates = 0 ;
+	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3T, String nomSalle, Date dateDebutFiltre, Date dateFinFiltre) {
+		int nbreDates = 0;
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
-		for(Evenement ev : listeEvenements) {
-			if(ev.getNomSalle().equals(nomSalle)) {
-				for(Comedien com : ev.getListeComediens()) {
-					if(com.getId3T().equals(id3T)) {
-						nbreDates ++ ;
+		for (Evenement ev : listeEvenements) {
+			if(ev.getDateEvenement().compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(ev.getDateEvenement())> 0) {
+			if (ev.getNomSalle().equals(nomSalle)) {
+				for (Comedien com : ev.getListeComediens()) {
+					if (com.getId3T().equals(id3T)) {
+						nbreDates++;
 					}
 				}
 			}
-			
+			}
 		}
 		return nbreDates;
 	}
@@ -197,10 +209,10 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public Collection<Evenement> listeEvenementsParComedien(String id3T) {
 		Collection<Evenement> listeEvenements = listeEvenements();
-		Collection<Evenement> listeEvenementsParComedien = new ArrayList<Evenement>(); 
+		Collection<Evenement> listeEvenementsParComedien = new ArrayList<Evenement>();
 		for (Evenement ev : listeEvenements) {
-			for(Comedien com : ev.getListeComediens()) {
-				if(com.getId3T().equals(id3T)) {
+			for (Comedien com : ev.getListeComediens()) {
+				if (com.getId3T().equals(id3T)) {
 					listeEvenementsParComedien.add(ev);
 				}
 			}
@@ -217,7 +229,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public Collection<Comedien> getListeRemplacants(Long idRole) {
 		Collection<Comedien> listeRemplas = new ArrayList<Comedien>();
-		for(String s : roleRepository.getListeRemplacants(idRole)) {
+		for (String s : roleRepository.getListeRemplacants(idRole)) {
 			listeRemplas.add(consulterComedien(s));
 		}
 		return listeRemplas;
@@ -226,17 +238,20 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 	@Override
 	public Periode creerPeriode(Periode periode) {
 		periodeRepository.save(periode);
-			return periode ;
+		return periode;
 	}
 
 	@Override
 	public Collection<Comedien> getListeComediensParSpectacles(Long idSpectacle) {
 		Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
 		Collection<Comedien> listeComediensparSpectacle = new ArrayList<Comedien>();
-		for(Role role : listeRoles) {
+		for (Role role : listeRoles) {
 			listeComediensparSpectacle.add(role.getComedienTitulaire());
-			for(Comedien com : role.getListeRemplas()) {
-				listeComediensparSpectacle.add(com);
+			for (Comedien com : role.getListeRemplas()) {
+				if (!listeComediensparSpectacle.contains(com)) {
+					listeComediensparSpectacle.add(com);
+
+				}
 			}
 		}
 		return listeComediensparSpectacle;
@@ -247,4 +262,25 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier{
 		return periodeRepository.findOne(periode.getIdPeriode());
 	}
 
+	@Override
+	public Spectacle consulterSpectacle(Spectacle spectacle) {
+		return spectacleRepository.findOne(spectacle.getIdSpectacle());
+	}
+
+	@Override
+	public Role consulterRole(Long idRole) {
+			return roleRepository.findOne(idRole);
+	}
+
+	@Override
+	public void supprimerPeriode(Long idPeriode) {
+			periodeRepository.delete(idPeriode);
+	}
+
+	@Override
+	public Periode consulterPeriode(Long idPeriode) {
+		return periodeRepository.findOne(idPeriode);
+	}
+
+	
 }

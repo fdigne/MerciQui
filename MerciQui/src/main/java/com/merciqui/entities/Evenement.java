@@ -3,9 +3,12 @@ package com.merciqui.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -29,7 +32,8 @@ private Spectacle spectacle;
 @JoinColumn(name="ID_PERIODE")
 private Periode periode ;
 
-
+@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+private Map<Long, Comedien> distribution ;
 
 @ManyToMany
 private Set<Comedien> listeComediens = new HashSet<Comedien>(0);
@@ -94,6 +98,14 @@ public Periode getPeriode() {
 
 public void setPeriode(Periode periode) {
 	this.periode = periode;
+}
+
+public Map<Long, Comedien> getDistribution() {
+	return distribution;
+}
+
+public void setDistribution(Map<Long, Comedien> distribution) {
+	this.distribution = distribution;
 }
 
 
