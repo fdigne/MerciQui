@@ -139,12 +139,14 @@ public class GestionMailsController {
 		}
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Integer.valueOf(yearFilter));
+		cal.set(Calendar.DAY_OF_MONTH,1);
 		cal.set(Calendar.HOUR_OF_DAY,  0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
 		
 		Date dateDebutFiltre = cal.getTime();
+		System.out.println("Début filtre "+dateDebutFiltre);
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -157,8 +159,11 @@ public class GestionMailsController {
 		
 		for (Evenement evenementFiltre : listeEvenementParComedien) {
 			Date dateEvenement = evenementFiltre.getDateEvenement();
+			System.out.println(dateEvenement);
+			System.out.println(dateEvenement.compareTo(dateDebutFiltre));
 				if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
 					listeEvenementsFiltres.add(evenementFiltre);
+					System.out.println(evenementFiltre.getDateEvenement());
 				}
 		}
 		

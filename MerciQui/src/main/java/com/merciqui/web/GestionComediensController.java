@@ -110,7 +110,7 @@ public class GestionComediensController {
 							listeEvenementsFiltres.add(evenementFiltre);
 						}
 						
-				for (Evenement ev : listeEvenementParComedien) {
+				for (Evenement ev : listeEvenementsFiltres) {
 					if(ev.getNomSalle().equals("3T") || ev.getNomSalle().equals("PRIVÉ")) {
 						
 						listeEvenements37.add(ev);
@@ -132,6 +132,8 @@ public class GestionComediensController {
 				mapTotalDateParSpectacle333.put(ev.getSpectacle().getNomSpectacle(), totalDates333);
 				
 			}
+			
+			
 			model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
 			model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
 			model.addAttribute("nbreDates", String.valueOf(listeEvenementsFiltres.size()));

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="template1">
+<head>
+<meta charset="UTF-8" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function(){
+var yearFilter = document.getElementById("yearFilter");
+var periodFilter = document.getElementById("periodFilter");
+
+var year = /*[[${yearFilter}]]*/ ;
+var currentYear = new Date().getFullYear();
+if(year != null){
+currentYear = year ;
+	
+}
+
+for (var i = 2050; i >= 2017; i--) {
+    var option = document.createElement("option");
+    option.value = i;
+    option.innerHTML = i;
+    
+		if(i == currentYear) {
+			option.selected = true ;
+			}
+    yearFilter.appendChild(option);
+}
+
+
+var periode = ["Automne" , "Hiver", "Printemps", "Ete"] ;
+var periodSelected = /*[[${periodFilter}]]*/
+for (var z = 0 ; z <= 3 ; z++ ){
+	var option = document.createElement("option");
+	option.value = periode[z] ;
+	if (periode[z] == periodSelected){
+		option.selected = true ;
+		}
+	option.innerHTML = periode[z];
+	periodFilter.appendChild(option);
+}
+
+$("#yearFilter").change(function(){
+	periodFilter.value = null ;  
+	document.getElementById("filterForm").submit();
+});
+
+
+$("#periodFilter").change(function(){
+	document.getElementById("filterForm").submit();
+});
+
+});
+/*]]>*/
+</script>
+
+<title>Merci Qui ?</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="panel panel-primary">
+				<div class="panel-heading">Récapitulatif</div>
+				<div class="panel-body">
+					<form id="filterForm" th:action="@{/recapitulatifIndex}" method="get">
+							
+							<div>
+							<select id="yearFilter" name="yearFilter" ></select>
+							<select id="periodFilter" name="periodFilter"><option disabled="true" selected="true">Période</option></select>
+							</div>
+							</form>
+							<br/>
+							<div>
+							<table id="recapTable" class="table  table-bordered" >
+							<tr style="background-color : #F9F9F9"><th>Comédiens</th><th th:text="${m}" th:each="m:${listeMois}" style="text-align :center"></th><th style="text-align :center">TOTAL</th></tr>
+							<tr th:each="o:${listeComediens}"><td>
+							<tr style="background-color : #F9F9F9"><th><a th:href="${'/consulterComedien?id3T=' + o.id3T}" th:text="${o.nomPersonne +' '+o.prenomPersonne}"></a></th><th th:each="m:${listeMois}" th:text="${mapTotalDateParComedienParMois?.get(o.id3T+mapMoisCalendarInt.get(m))}" style="text-align :center"></th><th th:text="${mapTotalDateParComedien?.get(o.id3T)}" style="color:red; text-align :center"></th></tr>
+							<tr th:each="s:${mapSpectaclesParComedien?.get(o)}"><td>
+							<tr th:each="spec : ${s}"><td th:text="${spec.nomSpectacle}"></td><td th:text="${mapTotalDateParSpectacleParMois.get(o.id3T+spec.nomSpectacle+mapMoisCalendarInt.get(m))}" style="text-align :center" th:each="m:${listeMois}"></td><th th:text="${mapTotalDateParSpectacleParComedien.get(spec.nomSpectacle+o.id3T)}" style="text-align :center"></th></tr>
+							</td>
+							</tr>
+							</td></tr>
+							</table>
+							</div>
+				</div>
+			</div>
+			</div>
+</body>
+</html>
