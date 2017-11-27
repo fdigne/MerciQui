@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +40,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar.Colors;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
@@ -79,6 +81,16 @@ public class GestionAgendaController {
     
 };
 
+private static final Map<String, String> mapSalleCouleur = new HashMap<String, String>();
+static {
+	mapSalleCouleur.put("3T", "6");
+	mapSalleCouleur.put("3T D'A COTE", "2");
+	mapSalleCouleur.put("GRANDE SALLE", "3");
+	mapSalleCouleur.put("PRIVÉ", "4");
+
+	
+};
+
 
 
 
@@ -117,11 +129,12 @@ public class GestionAgendaController {
 	}
 
 	@RequestMapping("/consulterCalendrier")
-	public String consulterCalendrier(Model model, String idEvenement, String error, String yearFilterEvent, String periodFilterEvent, String monthFilterEvent) {
+	public String consulterCalendrier(Model model, String idEvenement, String error, String yearFilterEvent, String periodFilterEvent, String monthFilterEvent, String errorModif) {
 		model.addAttribute("idEvenement", idEvenement);
 		model.addAttribute("yearFilterEvent", yearFilterEvent);
 		model.addAttribute("periodFilterEvent", periodFilterEvent);
 		model.addAttribute("monthFilterEvent", monthFilterEvent);
+		
 
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
@@ -180,6 +193,8 @@ public class GestionAgendaController {
 		model.addAttribute("listeEvenements", listeEvenementsFiltres);
 		
 		model.addAttribute("error", error);
+		model.addAttribute("errorModif", errorModif);
+
 		
 		return "AgendaView";
 	}
@@ -228,11 +243,11 @@ public class GestionAgendaController {
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
 
-
 		Event myEvent = new Event()
 				.setSummary(nomSpectacle)
 				.setAttendees((List<EventAttendee>) comediens)
 				.setDescription(descriptionEvent)
+				.setColorId(mapSalleCouleur.get(nomSalle))
 				.setLocation(nomSalle);
 		DateTime startDateTime = new DateTime(dateDebut);
 
@@ -247,7 +262,7 @@ public class GestionAgendaController {
 				.setDateTime(endDateTime);    
 		myEvent.setEnd(end);
 		
-		myEvent.setColorId("3");
+		
 
 		String calendarId = "primary";
 		try {
@@ -325,7 +340,7 @@ public class GestionAgendaController {
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> distribution = new HashMap<Long, Comedien>();
 		
-		merciquimetier.supprimerEvenement(evenement);
+		
 		
 		try {
 			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
@@ -333,8 +348,17 @@ public class GestionAgendaController {
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
+				boolean comedienIndispo = false ;
+				for (Periode p : comedien.getListeIndispos()) {
+					if (isOverlapping(p.getDateDebut(), p.getDateFin(), evenement.getPeriode().getDateDebut(), evenement.getPeriode().getDateFin())) {
+						comedienIndispo = true ;
+					}
+				}
+				if (comedienIndispo) {
+					return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
+				}
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
-					
+				merciquimetier.supprimerEvenement(evenement);	
 				for (EventAttendee eva : listeAttendees ) {
 					
 							listeAttendees.remove(eva) ;

@@ -278,6 +278,7 @@ $("#periodFilterEvent").change(function(){
 					<button type="submit" class="btn btn-primary">Modifier
 						Evènement</button>
 						</div>
+						<div class="text-danger" th:if="${errorModif}" th:text="${errorModif}"></div>
 						<br/>
 				</form>
 				<div class="text-danger" th:if="${error}" th:text="${error}"></div>
