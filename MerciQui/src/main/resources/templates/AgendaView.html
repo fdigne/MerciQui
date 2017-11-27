@@ -135,6 +135,15 @@ $("#periodFilterEvent").change(function(){
 	document.getElementById("filterForm").submit();
 });
 
+$("#nomSalle").change(function(){
+	var input = document.getElementById("lieuEvent") ;
+	if (this.value == "PRIVÉ")	{
+		input.type = "text";
+		}
+	else{
+		input.type = "hidden";
+		}
+});
 });
 /*]]>*/
 </script>
@@ -194,13 +203,17 @@ $("#periodFilterEvent").change(function(){
 							</select>
 					</div>
 					<div>
-						<label>Salle : </label> <select name="nomSalle">
+						<label>Salle : </label> <select id="nomSalle" name="nomSalle">
 						<option value="3T">3T</option>
 						<option value="3T D'A COTE">3T D'À CÔTÉ</option>
 						<option value="GRANDE SALLE">GRANDE SALLE</option>
 						<option value="PRIVÉ">PRIVÉ</option>
 						</select>
 					</div>
+					<div>
+					<input id="lieuEvent" name="lieuEvent" type="hidden" placeholder="Entrez le lieu"></input>
+					</div>
+					<br/>
 					<div>
 					<input class="checkbox-primary" name="notifications" type="checkbox" /><label>Notifications</label>
 					</div>

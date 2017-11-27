@@ -135,6 +135,7 @@ static {
 		model.addAttribute("periodFilterEvent", periodFilterEvent);
 		model.addAttribute("monthFilterEvent", monthFilterEvent);
 		
+		
 
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
@@ -202,7 +203,7 @@ static {
 
 	@PostMapping("/saisieEvenement")
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
-			String nomSpectacle, String nomSalle, String idEvenement, boolean notifications) {
+			String nomSpectacle, String nomSalle, String lieuEvent, String idEvenement, boolean notifications) {
 		
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -213,10 +214,12 @@ static {
 		 if (! salleDispo(periodeIndispo, nomSalle)) {
 			 return "redirect:/consulterCalendrier?error=La salle "+nomSalle+" n'est pas disponible !";
 		 }
+		
 		//update MySQL
 		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
+		
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
 		for(Role role : listeRoles) {
@@ -271,6 +274,9 @@ static {
 		String calendarId = "primary";
 		try {
 			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(notifications).execute();
+			if (nomSalle.equals("PRIVÉ")) {
+				 nomSalle =nomSalle+ " - "+lieuEvent;
+			 }
 			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
 			ev.setDistribution(mapDistribution);
