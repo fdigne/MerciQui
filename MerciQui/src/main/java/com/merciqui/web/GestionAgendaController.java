@@ -210,7 +210,9 @@ static {
 		cal.add(java.util.Calendar.HOUR_OF_DAY,2); 
 		Date dateFin = cal.getTime();
 		 Periode periodeIndispo = merciquimetier.creerPeriode(new Periode(dateDebut, dateFin));
-
+		 if (! salleDispo(periodeIndispo, nomSalle)) {
+			 return "redirect:/consulterCalendrier?error=La salle "+nomSalle+" n'est pas disponible !";
+		 }
 		//update MySQL
 		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
@@ -235,6 +237,8 @@ static {
 				catch (Exception e) {
 					return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+role.getNomRole();
 				}
+				
+				
 				
 				}
 				
@@ -282,6 +286,17 @@ static {
 
 		
 			
+	private boolean salleDispo(Periode periodeIndispo, String nomSalle) {
+		Collection<Evenement> listeEvenements = merciquimetier.listeEvenementParSalle(nomSalle);
+		boolean isDispo = true ;
+		for (Evenement ev : listeEvenements) {
+			if (isOverlapping(periodeIndispo.getDateDebut(), periodeIndispo.getDateFin(), ev.getPeriode().getDateDebut(), ev.getPeriode().getDateFin())) {
+				isDispo = false ;
+			}
+		}
+		return isDispo;
+	}
+
 	private Comedien setDistribution(Role role, Periode periode){
 		Comedien distribComedien = new Comedien();
 		boolean isIndispoTit = false ;
