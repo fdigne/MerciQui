@@ -138,14 +138,14 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public void supprimerEvenement(Evenement evenement) {
 		evenement.setDistribution(null);
-		
+
 		evenementRepository.save(evenement);
 		for (Comedien comedien : evenement.getListeComediens()) {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
-			
+
 		}
-		
+
 		evenementRepository.delete(evenement);
 
 	}
@@ -194,13 +194,13 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
 		for (Evenement ev : listeEvenements) {
 			if(ev.getDateEvenement().compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(ev.getDateEvenement())> 0) {
-			if (ev.getNomSalle().equals(nomSalle)) {
-				for (Comedien com : ev.getListeComediens()) {
-					if (com.getId3T().equals(id3T)) {
-						nbreDates++;
+				if (ev.getNomSalle().equals(nomSalle)) {
+					for (Comedien com : ev.getListeComediens()) {
+						if (com.getId3T().equals(id3T)) {
+							nbreDates++;
+						}
 					}
 				}
-			}
 			}
 		}
 		return nbreDates;
@@ -247,7 +247,9 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		Collection<Comedien> listeComediensparSpectacle = new ArrayList<Comedien>();
 		for (Role role : listeRoles) {
 			if (role.getComedienTitulaire() != null) {
-			listeComediensparSpectacle.add(role.getComedienTitulaire());
+				if (!listeComediensparSpectacle.contains(role.getComedienTitulaire())) {
+					listeComediensparSpectacle.add(role.getComedienTitulaire());
+				}
 			}
 			for (Comedien com : role.getListeRemplas()) {
 				if (!listeComediensparSpectacle.contains(com)) {
@@ -271,12 +273,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	@Override
 	public Role consulterRole(Long idRole) {
-			return roleRepository.findOne(idRole);
+		return roleRepository.findOne(idRole);
 	}
 
 	@Override
 	public void supprimerPeriode(Long idPeriode) {
-			periodeRepository.delete(idPeriode);
+		periodeRepository.delete(idPeriode);
 	}
 
 	@Override
@@ -284,5 +286,5 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		return periodeRepository.findOne(idPeriode);
 	}
 
-	
+
 }

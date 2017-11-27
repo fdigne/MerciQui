@@ -164,7 +164,7 @@ $("#periodFilter").change(function(){
 				<option>Pas de comédien titulaire</option>
 				<option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediens}" th:selected="${o.comedienTitulaire.id3T == e.id3T}"></option></select></td>
 				<td><select name="id3TRemplModif" multiple="true" class="chosen-select" tabindex="8">
-				<option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" 
+				<option th:value="${o.nomRole+'.'+e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" 
 						th:each="e:${listeComediens}" th:selected="${o.listeRemplas.contains(e)}"></option>
 				</select></td>
 				</tr>

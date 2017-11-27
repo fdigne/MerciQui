@@ -250,7 +250,7 @@ for (Comedien c : listeComediensParSpectacle) {
 		int indexRole = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		for(Role s : spec.getListeRoles()) {
-			
+				
 				if (id3TModif[indexRole].equals("Pas de comédien titulaire")) {
 					s.setComedienTitulaire(null);
 				}
@@ -258,15 +258,17 @@ for (Comedien c : listeComediensParSpectacle) {
 					Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
 					s.setComedienTitulaire(comedien);	
 				}
-					
-				
+						
 				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
 				if(id3TRemplModif != null) {
 				for(String r : id3TRemplModif) {
-					if (! listeRemplas.containsKey(r)) {
-						Comedien remp = merciquimetier.consulterComedien(r) ;
-						listeRemplas.put(r, remp);
+					String[] key = r.split("\\.");
+					if (s.getNomRole().equals(key[0])) {
+					if (! listeRemplas.containsKey(key[1])) {
+						Comedien remp = merciquimetier.consulterComedien(key[1]) ;
+						listeRemplas.put(key[1], remp);
 						listeRemplasSQL.add(remp);
+					}
 					}
 				}
 			

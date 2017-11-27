@@ -139,7 +139,7 @@ public class RecapitulatifController {
 				listeEvenementsFiltres.add(evenementFiltre);
 			}
 		}
-
+		
 		//Calcul des spectacles pour chaque comédien
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 		for (Spectacle spectacle : merciquimetier.listeSpectacles()) {
@@ -161,18 +161,18 @@ public class RecapitulatifController {
 						if (! mapSpectaclesParComedien.get(rempla).contains(role.getSpectacle())) {
 							Collection<Spectacle> listeSpec = mapSpectaclesParComedien.get(rempla);
 							listeSpec.add(role.getSpectacle());
-							mapSpectaclesParComedien.put(role.getComedienTitulaire(), listeSpec);
+							mapSpectaclesParComedien.put(rempla, listeSpec);
 						}
+					}
 						else {
 							Collection<Spectacle> listeSpec = new ArrayList<Spectacle>();
 							listeSpec.add(role.getSpectacle());
 							mapSpectaclesParComedien.put(rempla, listeSpec);	
-						}
+						
 					}
 				}
 			}
 		}
-
 		//////TRAITEMENT DES MAPS POUR CHAQUE EVENEMENT FILTRE ET POUR CHAQUE COMEDIEN
 
 		for (Evenement ev : listeEvenementsFiltres) {
