@@ -246,7 +246,9 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		Collection<Role> listeRoles = roleRepository.getListeRolesParSpectacle(idSpectacle);
 		Collection<Comedien> listeComediensparSpectacle = new ArrayList<Comedien>();
 		for (Role role : listeRoles) {
+			if (role.getComedienTitulaire() != null) {
 			listeComediensparSpectacle.add(role.getComedienTitulaire());
+			}
 			for (Comedien com : role.getListeRemplas()) {
 				if (!listeComediensparSpectacle.contains(com)) {
 					listeComediensparSpectacle.add(com);

@@ -30,7 +30,7 @@ $(document).ready(function(){
       	
         for (var i = 0; i < $(this).val(); i++) {
             
-            rows += "<tr><td><input type='text' name='nomRole' /></td><td><select name='id3T'><option disabled selected value>Choisir un comédien</option>" ;        
+            rows += "<tr><td><input type='text' name='nomRole' /></td><td><select name='id3T'><option selected value>Choisir un comédien</option>" ;        
             comediens.forEach(function(comedien) {
     			rows += "<option value=\""+comedien[0]+"\">"+comedien[1]+" "+comedien[2]+"</option>" ;
                });
@@ -156,9 +156,13 @@ $("#periodFilter").change(function(){
 				</tr>
 				<tr th:each="o:${listeRoles}" >
 				<td><input th:name="nomRoleModif" th:value="${o.nomRole}"></input></td>
-				<td><select name="id3TModif"><option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediens}" th:selected="${o.comedienTitulaire.id3T == e.id3T}" ></option></select></td>
-				<!-- <td><table><tr th:each="c:${mapListeRemplasByRole.get(o.idRole)}"><td th:text="${c.nomPersonne +' '+c.prenomPersonne}"></td></tr></table>
-				</td> -->
+				<td>
+				<select name="id3TModif" th:if="! ${o.comedienTitulaire}">
+				<option selected="true">Pas de comédien titulaire</option>
+				<option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediens}"></option></select>
+				<select name="id3TModif" th:if="${o.comedienTitulaire}">
+				<option>Pas de comédien titulaire</option>
+				<option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediens}" th:selected="${o.comedienTitulaire.id3T == e.id3T}"></option></select></td>
 				<td><select name="id3TRemplModif" multiple="true" class="chosen-select" tabindex="8">
 				<option th:value="${e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" 
 						th:each="e:${listeComediens}" th:selected="${o.listeRemplas.contains(e)}"></option>

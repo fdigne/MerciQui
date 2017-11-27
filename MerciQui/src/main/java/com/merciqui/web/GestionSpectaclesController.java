@@ -204,19 +204,22 @@ for (Comedien c : listeComediensParSpectacle) {
 			
 	@PostMapping("/saisieSpectacle")
 	public String saisieSpectacle(Model model, String nomSpectacle, String[] nomRole, String[] id3T, String[] id3TRempl) {
-		try {
 		Spectacle spectacle = new Spectacle();
 		spectacle.setNomSpectacle(nomSpectacle);
 		
 		int indexRole = 0 ;
+		int indexRoleTit = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		merciquimetier.creerSpectacle(spectacle);
 		for(String s : nomRole) {
+			System.out.println(id3T[indexRoleTit]);
 			Role role = new Role() ;
-			Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
+				if (!id3T[indexRole].equals("")) {
+					Comedien comedien = merciquimetier.consulterComedien(id3T[indexRoleTit]) ;
+					role.setComedienTitulaire(comedien);	
+				}
 			role.setNomRole(s);
 			role.setSpectacle(merciquimetier.consulterSpectacle(nomSpectacle));
-			role.setComedienTitulaire(comedien);
 				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
 				if(id3TRempl != null) {
 				for(String r : id3TRempl) {
@@ -231,13 +234,9 @@ for (Comedien c : listeComediensParSpectacle) {
 			role.setListeRemplas(listeRemplasSQL);	
 				}
 			indexRole++ ;
+			indexRoleTit++ ;
 			merciquimetier.creerRole(role);
 			
-		}
-		}
-		catch (Exception e) {
-			model.addAttribute("error", e);
-			return "redirect:/consulterSpectacle?nomSpectacle="+nomSpectacle+"&error="+e.getMessage() ;
 		}
 	
 	return "redirect:/consulterSpectacle?nomSpectacle="+nomSpectacle ;
@@ -250,14 +249,18 @@ for (Comedien c : listeComediensParSpectacle) {
 		merciquimetier.creerSpectacle(spec);
 		int indexRole = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
-		
 		for(Role s : spec.getListeRoles()) {
-			Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
-			s.setNomRole(nomRoleModif[indexRole]);
-			s.setSpectacle(merciquimetier.consulterSpectacle(nouveauNomSpectacle));
-			s.setComedienTitulaire(comedien);
+			
+				if (id3TModif[indexRole].equals("Pas de comédien titulaire")) {
+					s.setComedienTitulaire(null);
+				}
+				else {
+					Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
+					s.setComedienTitulaire(comedien);	
+				}
+					
+				
 				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
-				System.out.println(id3TRemplModif);
 				if(id3TRemplModif != null) {
 				for(String r : id3TRemplModif) {
 					if (! listeRemplas.containsKey(r)) {
@@ -293,7 +296,7 @@ for (Comedien c : listeComediensParSpectacle) {
 			}
 		}
 		
-		return "redirect:/consulterSpectacle?nomSpectacle="+nouveauNomSpectacle ;	
+		return "redirect:/consulterSpectacle?nomSpectacle="+nouveauNomSpectacle ;
 	}
 	
 	@PostMapping("/supprimerSpectacle")
