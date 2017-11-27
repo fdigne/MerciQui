@@ -114,7 +114,6 @@ public class GestionSpectaclesController {
 			
 			if(yearFilter == null) {
 				yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-				System.out.println(yearFilter);
 				
 			}
 			Calendar cal = Calendar.getInstance();
@@ -163,9 +162,15 @@ for (Comedien c : listeComediensParSpectacle) {
 			
 			for(Evenement ev : listeEvenementsFiltres) {
 				for (Entry<Long, Comedien> entry : ev.getDistribution().entrySet()) {
-						int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
-						nbreDates = nbreDates +1 ;
-						mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
+						if (mapTotalDateParSpectacle.containsKey(entry.getValue().getId3T())) {
+							int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
+							nbreDates = nbreDates +1 ;
+							mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
+						}
+						else {
+							mapTotalDateParSpectacle.put(entry.getValue().getId3T(),1);
+						}
+						
 					}
 	
 				
@@ -246,7 +251,8 @@ for (Comedien c : listeComediensParSpectacle) {
 	public String modifierSpectacle(Model model, String nomSpectacle,String nouveauNomSpectacle, String[] nomRoleModif, String[] id3TModif, String[] id3TRemplModif) {
 		Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
 		spec.setNomSpectacle(nouveauNomSpectacle);
-		merciquimetier.creerSpectacle(spec);
+		merciquimetier.creerSpectacle(spec); //modifie le nom du spectacle
+		Date currentDate = new Date();
 		int indexRole = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		for(Role s : spec.getListeRoles()) {
@@ -278,6 +284,7 @@ for (Comedien c : listeComediensParSpectacle) {
 					s.setListeRemplas(null);
 				}
 			indexRole++ ;
+			
 			merciquimetier.creerRole(s);
 			
 		}

@@ -173,6 +173,15 @@ public class RecapitulatifController {
 				}
 			}
 		}
+		for (Evenement ev : merciquimetier.listeEvenements()) {
+			for (Entry<Long, Comedien> entry :ev.getDistribution().entrySet()) {
+				if (! mapSpectaclesParComedien.get(entry.getValue()).contains(merciquimetier.consulterRole(entry.getKey()).getSpectacle())) {
+					Collection<Spectacle> listeSpec = mapSpectaclesParComedien.get(entry.getValue());
+					listeSpec.add(merciquimetier.consulterRole(entry.getKey()).getSpectacle());
+					mapSpectaclesParComedien.put(entry.getValue(), listeSpec);
+				}
+			}
+		}
 		//////TRAITEMENT DES MAPS POUR CHAQUE EVENEMENT FILTRE ET POUR CHAQUE COMEDIEN
 
 		for (Evenement ev : listeEvenementsFiltres) {
