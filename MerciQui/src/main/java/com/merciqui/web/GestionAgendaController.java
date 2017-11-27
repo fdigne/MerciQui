@@ -331,7 +331,7 @@ static {
 	}
 	
 	@PostMapping("/modifierEvenement")
-	public String modifierEvenement(Model model, String idEvenement, String[] id3T) {
+	public String modifierEvenement(Model model, String idEvenement, String[] id3T, boolean notificationsModif) {
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
 		
@@ -374,8 +374,7 @@ static {
 				myEvent.setDescription(descriptionEvent);
 			}	
 
-			
-			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(true).execute();
+			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();
 			evenement.setListeComediens(listeComediensDistrib);
 			evenement.setDistribution(distribution);
 			
@@ -390,7 +389,7 @@ static {
 	}
 
 	@PostMapping("/supprimerEvenement")
-	public String supprimerEvenement(Model model, String idEvenement) {
+	public String supprimerEvenement(Model model, String idEvenement, boolean notificationsSuppr) {
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 
@@ -398,7 +397,7 @@ static {
 				.setApplicationName(APPLICATION_NAME).build();
 
 		try {
-			client.events().delete("primary", idEvenement).setSendNotifications(true).execute();
+			client.events().delete("primary", idEvenement).setSendNotifications(notificationsSuppr).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

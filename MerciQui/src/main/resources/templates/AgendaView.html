@@ -275,6 +275,9 @@ $("#periodFilterEvent").change(function(){
 				</table>
 					</div>
 					<div>
+					<input class="checkbox-primary" name="notificationsModif" type="checkbox" /><label>Notifications</label>
+					</div>
+					<div>
 					<button type="submit" class="btn btn-primary">Modifier
 						Evènement</button>
 						</div>
@@ -286,7 +289,9 @@ $("#periodFilterEvent").change(function(){
 			<div>
 			<form th:action="@{/supprimerEvenement}" method="post" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet evenement ?');">
 			<input type="hidden" name="idEvenement" th:value="${evenement.idEvenement}" />
-			
+			<div>
+					<input class="checkbox-primary" name="notificationsSuppr" type="checkbox" /><label>Notifications</label>
+					</div>
 			<button type="submit" class="btn btn-primary">Supprimer
 						Evènement</button>
 			</form>
