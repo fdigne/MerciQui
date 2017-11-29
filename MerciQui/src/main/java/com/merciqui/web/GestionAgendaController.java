@@ -311,36 +311,39 @@ public class GestionAgendaController {
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
 
 
-		for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
+		if (role.getComedienTitulaire() != null) {
+			for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
 
-			if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
-				isIndispoTit = true ;
-				for(Comedien rempl : role.getListeRemplas()) {
-					boolean isIndispoRempl = false ;
-					for(Periode pr : rempl.getListeIndispos()) {
-						if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
-							isIndispoRempl =true ;
-
-						}
-					}
-					if (! isIndispoRempl) {
-
-						listeRemplacantDistrib.add(rempl);
-					}
-				}
-
-				for (Comedien comDispo : listeRemplacantDistrib) {
-					int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
-					mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
-				}
-				Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
-						Comparator.comparingInt(Entry::getValue));
-				distribComedien =  merciquimetier.consulterComedien(min.getKey());
-
-
-			} 
+				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
+					isIndispoTit = true ;
+				} 
+			}
 		}
-		if(! isIndispoTit) {
+		for(Comedien rempl : role.getListeRemplas()) {
+			boolean isIndispoRempl = false ;
+			for(Periode pr : rempl.getListeIndispos()) {
+				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
+					isIndispoRempl =true ;
+
+				}
+			}
+			if (! isIndispoRempl) {
+
+				listeRemplacantDistrib.add(rempl);
+			}
+		}
+
+		for (Comedien comDispo : listeRemplacantDistrib) {
+			int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
+			mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
+		}
+		Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
+				Comparator.comparingInt(Entry::getValue));
+		distribComedien =  merciquimetier.consulterComedien(min.getKey());
+
+
+		
+		if(! isIndispoTit && role.getComedienTitulaire() != null) {
 			distribComedien = role.getComedienTitulaire();
 		}
 
@@ -372,18 +375,18 @@ public class GestionAgendaController {
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
 				if (! evenement.getDistribution().containsValue(comedien)) {
 
-				boolean comedienIndispo = false ;
-				
+					boolean comedienIndispo = false ;
+
 					for (Periode p : comedien.getListeIndispos()) {
 						if (isOverlapping(p.getDateDebut(), p.getDateFin(), evenement.getPeriode().getDateDebut(), evenement.getPeriode().getDateFin())) {
 							comedienIndispo = true ;
 						}
 					}
-				if (comedienIndispo) {
-					return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
+					if (comedienIndispo) {
+						return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
+					}
 				}
-				}
-				
+
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
 				merciquimetier.supprimerEvenement(evenement);	
 				for (EventAttendee eva : listeAttendees ) {
