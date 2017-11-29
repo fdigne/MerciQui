@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +39,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.Calendar.Colors;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
@@ -311,39 +309,42 @@ public class GestionAgendaController {
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
 
 
-		if (role.getComedienTitulaire() != null) {
+		if (role.getComedienTitulaire() == null) {
+			isIndispoTit = true ;
+		}
+		if (! isIndispoTit) {
 			for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
 
 				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
 					isIndispoTit = true ;
 				} 
 			}
-		}
-		for(Comedien rempl : role.getListeRemplas()) {
-			boolean isIndispoRempl = false ;
-			for(Periode pr : rempl.getListeIndispos()) {
-				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
-					isIndispoRempl =true ;
 
+		}
+		if (role.getListeRemplas() != null && isIndispoTit) {
+			for(Comedien rempl : role.getListeRemplas()) {
+				boolean isIndispoRempl = false ;
+				for(Periode pr : rempl.getListeIndispos()) {
+					if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
+						isIndispoRempl =true ;
+
+					}
+				}
+				if (! isIndispoRempl) {
+
+					listeRemplacantDistrib.add(rempl);
 				}
 			}
-			if (! isIndispoRempl) {
 
-				listeRemplacantDistrib.add(rempl);
+			for (Comedien comDispo : listeRemplacantDistrib) {
+				int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
+				mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
 			}
+			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
+					Comparator.comparingInt(Entry::getValue));
+			distribComedien =  merciquimetier.consulterComedien(min.getKey());
 		}
-
-		for (Comedien comDispo : listeRemplacantDistrib) {
-			int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
-			mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
-		}
-		Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
-				Comparator.comparingInt(Entry::getValue));
-		distribComedien =  merciquimetier.consulterComedien(min.getKey());
-
-
-		
-		if(! isIndispoTit && role.getComedienTitulaire() != null) {
+		if(! isIndispoTit) {
 			distribComedien = role.getComedienTitulaire();
 		}
 
@@ -439,11 +440,8 @@ public class GestionAgendaController {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		java.util.Date utilDate;
 		try {
-			System.out.println(heureEvenement);
 			utilDate = sdf.parse(dateEvenement+" "+heureEvenement);
-			System.out.println(utilDate);
 			java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());	
-			System.out.println(sqlDate);
 			return sqlDate;	
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -456,7 +454,6 @@ public class GestionAgendaController {
 		java.util.Date utilDate;
 		try {
 			utilDate = sdf.parse(dateEvenement + " "+heureEvenement);
-			DateTime datetime = new DateTime(utilDate);
 			return utilDate ;
 		} catch (ParseException e) {
 			e.printStackTrace();
