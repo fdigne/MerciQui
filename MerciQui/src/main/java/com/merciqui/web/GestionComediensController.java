@@ -111,7 +111,7 @@ public class GestionComediensController {
 						}
 						
 				for (Evenement ev : listeEvenementsFiltres) {
-					if(ev.getNomSalle().equals("3T") || ev.getNomSalle().equals("PRIVÉ")) {
+					if(ev.getCompagnie().equals("Compagnie 37")) {
 						
 						listeEvenements37.add(ev);
 					}

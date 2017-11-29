@@ -174,7 +174,7 @@ for (Comedien c : listeComediensParSpectacle) {
 					}
 	
 				
-				if(ev.getNomSalle().equals("3T")) {
+				if(ev.getCompagnie().equals("Compagnie 37")) {
 					listeEvenements37.add(ev);
 					
 				}

@@ -66,30 +66,30 @@ public class GestionAgendaController {
 	public static HttpTransport httpTransport;
 	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static com.google.api.services.calendar.Calendar client;
-	
+
 	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
 	static {
-    seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-    seasons.put("AutomneFin" , Calendar.DECEMBER);
-    seasons.put("HiverDebut" , Calendar.JANUARY);
-    seasons.put("HiverFin" , Calendar.MARCH);
-    seasons.put("PrintempsDebut" , Calendar.APRIL);
-    seasons.put("PrintempsFin" , Calendar.JUNE);
-    seasons.put("EteDebut" , Calendar.JULY);
-    seasons.put("EteFin" , Calendar.AUGUST);
+		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
+		seasons.put("AutomneFin" , Calendar.DECEMBER);
+		seasons.put("HiverDebut" , Calendar.JANUARY);
+		seasons.put("HiverFin" , Calendar.MARCH);
+		seasons.put("PrintempsDebut" , Calendar.APRIL);
+		seasons.put("PrintempsFin" , Calendar.JUNE);
+		seasons.put("EteDebut" , Calendar.JULY);
+		seasons.put("EteFin" , Calendar.AUGUST);
 
-    
-};
 
-private static final Map<String, String> mapSalleCouleur = new HashMap<String, String>();
-static {
-	mapSalleCouleur.put("3T", "6");
-	mapSalleCouleur.put("3T D'A COTE", "2");
-	mapSalleCouleur.put("GRANDE SALLE", "3");
-	mapSalleCouleur.put("PRIVÉ", "4");
+	};
 
-	
-};
+	private static final Map<String, String> mapSalleCouleur = new HashMap<String, String>();
+	static {
+		mapSalleCouleur.put("3T", "6");
+		mapSalleCouleur.put("3T D'A COTE", "2");
+		mapSalleCouleur.put("GRANDE SALLE", "3");
+		mapSalleCouleur.put("PRIVÉ", "4");
+
+
+	};
 
 
 
@@ -106,7 +106,7 @@ static {
 	private String clientSecret;
 	@Value("${google.client.redirectUri}")
 	private String redirectURI;
-	
+
 
 	private Set<Event> events = new HashSet<>();
 
@@ -118,14 +118,14 @@ static {
 	public String index(Model model) {
 		return "redirect:/login/google";
 	}
-	
+
 	@RequestMapping("/agendaView")
 	public String agendaView(Model model) {
 		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
 		model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
-		
-		
-	return "AgendaView" ;	
+
+
+		return "AgendaView" ;	
 	}
 
 	@RequestMapping("/consulterCalendrier")
@@ -134,8 +134,8 @@ static {
 		model.addAttribute("yearFilterEvent", yearFilterEvent);
 		model.addAttribute("periodFilterEvent", periodFilterEvent);
 		model.addAttribute("monthFilterEvent", monthFilterEvent);
-		
-		
+
+
 
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
@@ -145,13 +145,13 @@ static {
 			model.addAttribute("listeComediensParSpectacle", merciquimetier.getListeComediensParSpectacles(evenement.getSpectacle().getIdSpectacle()));
 
 		}
-		
-		
+
+
 		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
-		
+
 		if(yearFilterEvent == null) {
 			yearFilterEvent = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-			
+
 		}
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Integer.valueOf(yearFilterEvent));
@@ -166,7 +166,7 @@ static {
 		if(periodFilterEvent != null) {
 			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Debut"));
 		}
-		
+
 		Date dateDebutFiltre = cal.getTime();
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -179,51 +179,51 @@ static {
 		if(periodFilterEvent != null) {
 			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Fin"));
 		}
-		
-		
+
+
 		Date dateFinFiltre = cal.getTime();
 		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-		
+
 		for (Evenement evenementFiltre : merciquimetier.listeEvenements()) {
 			Date dateEvenement = evenementFiltre.getDateEvenement();
 			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
 				listeEvenementsFiltres.add(evenementFiltre);
 			}
 		}
-		
+
 		model.addAttribute("listeEvenements", listeEvenementsFiltres);
-		
+
 		model.addAttribute("error", error);
 		model.addAttribute("errorModif", errorModif);
 
-		
+
 		return "AgendaView";
 	}
-	
+
 
 	@PostMapping("/saisieEvenement")
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
-			String nomSpectacle, String nomSalle, String lieuEvent, String idEvenement, boolean notifications) {
-		
+			String nomSpectacle, String nomSalle, String lieuEvent,String compagnie, String idEvenement, boolean notifications) {
+
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		java.util.Calendar cal = java.util.Calendar.getInstance();
 		cal.setTime(dateDebut);
 		cal.add(java.util.Calendar.HOUR_OF_DAY,2); 
 		Date dateFin = cal.getTime();
-		 Periode periodeIndispo = merciquimetier.creerPeriode(new Periode(dateDebut, dateFin));
-		 if (! salleDispo(periodeIndispo, nomSalle)) {
-			 return "redirect:/consulterCalendrier?error=La salle "+nomSalle+" n'est pas disponible !";
-		 }
-		
+		Periode periodeIndispo = merciquimetier.creerPeriode(new Periode(dateDebut, dateFin));
+		if (! salleDispo(periodeIndispo, nomSalle)) {
+			return "redirect:/consulterCalendrier?error=La salle "+nomSalle+" n'est pas disponible !";
+		}
+
 		//update MySQL
 		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
-		
+
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
 		for(Role role : listeRoles) {
-				try {
+			try {
 				Comedien com = setDistribution(role, periodeIndispo);
 				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
@@ -236,20 +236,22 @@ static {
 				listeIndispos.add(periodeIndispo);
 				com.setListeIndispos(listeIndispos);
 				listeComediensDistrib.add(com);
-				}
-				catch (Exception e) {
-					return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+role.getNomRole();
-				}
-				
-				
-				
-				}
-				
-		
+			}
+			catch (Exception e) {
+				return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+role.getNomRole();
+			}
+
+
+
+		}
+
+
 		//Update le Google Calendar
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
-
+		if (nomSalle.equals("PRIVÉ")) {
+			nomSalle =nomSalle+ " - "+lieuEvent;
+		}
 		Event myEvent = new Event()
 				.setSummary(nomSpectacle)
 				.setAttendees((List<EventAttendee>) comediens)
@@ -268,30 +270,29 @@ static {
 		EventDateTime end = new EventDateTime()
 				.setDateTime(endDateTime);    
 		myEvent.setEnd(end);
-		
-		
+
+
 
 		String calendarId = "primary";
 		try {
 			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(notifications).execute();
-			if (nomSalle.equals("PRIVÉ")) {
-				 nomSalle =nomSalle+ " - "+lieuEvent;
-			 }
+
 			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
 			ev.setDistribution(mapDistribution);
+			ev.setCompagnie(compagnie);
 			merciquimetier.creerEvenement(ev);
-			
+
 			return "redirect:/consulterCalendrier?idEvenement="+ev.getIdEvenement() ;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "redirect:/consulterCalendrier?error="+e.getMessage();
 		}
-		
+
 	}
 
-		
-			
+
+
 	private boolean salleDispo(Periode periodeIndispo, String nomSalle) {
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenementParSalle(nomSalle);
 		boolean isDispo = true ;
@@ -308,89 +309,93 @@ static {
 		boolean isIndispoTit = false ;
 		Collection<Comedien> listeRemplacantDistrib= new ArrayList<Comedien>();
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
-		
+
 
 		for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
-			
-				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
-					isIndispoTit = true ;
-					for(Comedien rempl : role.getListeRemplas()) {
-						boolean isIndispoRempl = false ;
-						for(Periode pr : rempl.getListeIndispos()) {
-							if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
-								isIndispoRempl =true ;
 
-							}
-						}
-						if (! isIndispoRempl) {
+			if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
+				isIndispoTit = true ;
+				for(Comedien rempl : role.getListeRemplas()) {
+					boolean isIndispoRempl = false ;
+					for(Periode pr : rempl.getListeIndispos()) {
+						if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
+							isIndispoRempl =true ;
 
-							listeRemplacantDistrib.add(rempl);
 						}
 					}
+					if (! isIndispoRempl) {
 
-					for (Comedien comDispo : listeRemplacantDistrib) {
-						int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
-						mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
+						listeRemplacantDistrib.add(rempl);
 					}
-					Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
-							Comparator.comparingInt(Entry::getValue));
-					distribComedien =  merciquimetier.consulterComedien(min.getKey());
-
-
-				} 
-			}
-				if(! isIndispoTit) {
-				distribComedien = role.getComedienTitulaire();
 				}
-				
-				return distribComedien ;
-		}	
-		
+
+				for (Comedien comDispo : listeRemplacantDistrib) {
+					int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
+					mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
+				}
+				Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
+						Comparator.comparingInt(Entry::getValue));
+				distribComedien =  merciquimetier.consulterComedien(min.getKey());
+
+
+			} 
+		}
+		if(! isIndispoTit) {
+			distribComedien = role.getComedienTitulaire();
+		}
+
+		return distribComedien ;
+	}	
+
 
 	private static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
 		return start1.before(end2) && start2.before(end1);
 	}
-	
+
 	@PostMapping("/modifierEvenement")
-	public String modifierEvenement(Model model, String idEvenement, String[] id3T, boolean notificationsModif) {
+	public String modifierEvenement(Model model, String idEvenement, String[] id3T, boolean notificationsModif, String compagnieModif) {
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
-		
+
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> distribution = new HashMap<Long, Comedien>();
-		
-		
-		
+
+
+
 		try {
 			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
 			List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
+				if (! evenement.getDistribution().containsValue(comedien)) {
+
 				boolean comedienIndispo = false ;
-				for (Periode p : comedien.getListeIndispos()) {
-					if (isOverlapping(p.getDateDebut(), p.getDateFin(), evenement.getPeriode().getDateDebut(), evenement.getPeriode().getDateFin())) {
-						comedienIndispo = true ;
+				
+					for (Periode p : comedien.getListeIndispos()) {
+						if (isOverlapping(p.getDateDebut(), p.getDateFin(), evenement.getPeriode().getDateDebut(), evenement.getPeriode().getDateFin())) {
+							comedienIndispo = true ;
+						}
 					}
-				}
 				if (comedienIndispo) {
 					return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
+				}
 				}
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
 				merciquimetier.supprimerEvenement(evenement);	
 				for (EventAttendee eva : listeAttendees ) {
-					
-							listeAttendees.remove(eva) ;
-							EventAttendee attendee = new EventAttendee();
-							attendee.setId(comedien.getId3T());
-							attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
-							.setEmail(comedien.getAdresseEmail());
-							listeAttendees.add(attendee);
-							listeComediensDistrib.add(comedien);
-							descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
-					}
+
+					listeAttendees.remove(eva) ;
+					EventAttendee attendee = new EventAttendee();
+					attendee.setId(comedien.getId3T());
+					attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
+					.setEmail(comedien.getAdresseEmail());
+					listeAttendees.add(attendee);
+					listeComediensDistrib.add(comedien);
+					descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
+				}
 				myEvent.setAttendees(listeAttendees) ;
 				myEvent.setDescription(descriptionEvent);
 			}	
@@ -398,15 +403,15 @@ static {
 			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();
 			evenement.setListeComediens(listeComediensDistrib);
 			evenement.setDistribution(distribution);
-			
+			evenement.setCompagnie(compagnieModif);
 			merciquimetier.creerEvenement(evenement);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-	return "redirect:/consulterCalendrier?idEvenement="+idEvenement ;	
+
+
+
+		return "redirect:/consulterCalendrier?idEvenement="+idEvenement ;	
 	}
 
 	@PostMapping("/supprimerEvenement")
@@ -424,8 +429,8 @@ static {
 		}
 		return "redirect:/";		
 	}
-	
-	
+
+
 	private Date mefDateEvenementSQL(String dateEvenement, String heureEvenement) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		java.util.Date utilDate;
@@ -490,10 +495,10 @@ static {
 			httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 			flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
 					Collections.singleton(CalendarScopes.CALENDAR)).build();
-			
+
 		}
 		authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
 		return authorizationUrl.build();
 	}
-	
+
 }

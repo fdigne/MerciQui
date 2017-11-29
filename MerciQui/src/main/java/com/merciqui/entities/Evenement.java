@@ -24,6 +24,8 @@ private Date dateEvenement;
 
 private String nomSalle ;
 
+private String compagnie ;
+
 @ManyToOne
 @JoinColumn(name="CODE_SPECTACLE")
 private Spectacle spectacle;
@@ -106,6 +108,14 @@ public Map<Long, Comedien> getDistribution() {
 
 public void setDistribution(Map<Long, Comedien> distribution) {
 	this.distribution = distribution;
+}
+
+public String getCompagnie() {
+	return compagnie;
+}
+
+public void setCompagnie(String compagnie) {
+	this.compagnie = compagnie;
 }
 
 

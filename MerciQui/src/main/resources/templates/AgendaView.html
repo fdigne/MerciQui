@@ -137,6 +137,15 @@ $("#periodFilterEvent").change(function(){
 
 $("#nomSalle").change(function(){
 	var input = document.getElementById("lieuEvent") ;
+	var compagnie = document.getElementById("compagnie") ;
+	var salleChoisie = this.options[this.selectedIndex].text ;
+	if (salleChoisie == "3T" || salleChoisie == "PRIVÉ"){
+		compagnie.options.namedItem("compagnie37").selected=true;
+		}
+	else {
+		compagnie.options.namedItem("compagnie333").selected=true;
+		}
+	
 	if (this.value == "PRIVÉ")	{
 		input.type = "text";
 		}
@@ -204,6 +213,7 @@ $("#nomSalle").change(function(){
 					</div>
 					<div>
 						<label>Salle : </label> <select id="nomSalle" name="nomSalle">
+						<option disabled="true" selected="true">Choisir une salle</option>
 						<option value="3T">3T</option>
 						<option value="3T D'A COTE">3T D'À CÔTÉ</option>
 						<option value="GRANDE SALLE">GRANDE SALLE</option>
@@ -213,6 +223,14 @@ $("#nomSalle").change(function(){
 					<div>
 					<input id="lieuEvent" name="lieuEvent" type="hidden" placeholder="Entrez le lieu"></input>
 					</div>
+					<div>
+					<label>Compagnie : </label>
+					<select id="compagnie" name="compagnie">
+						<option disabled="true" selected="true">Choisir une compagnie</option>
+						<option id="compagnie37" name="compagnie37" value="Compagnie 37">Compagnie 37</option>
+						<option id="compagnie333" name="compagnie333" value="Compagnie 333+1">Compagnie 333+1</option>
+						</select>
+						</div>
 					<br/>
 					<div>
 					<input class="checkbox-primary" name="notifications" type="checkbox" /><label>Notifications</label>
@@ -271,6 +289,15 @@ $("#nomSalle").change(function(){
 					</div>
 					<div>
 						<label>Salle : </label> <label name="nomSalle" th:text="${evenement.nomSalle}" />
+					</div>
+					<div>
+						<div>
+					<label>Compagnie : </label>
+					<select id="compagnieModif" name="compagnieModif">
+						<option id="compagnie37" name="compagnie37" value="Compagnie 37" th:selected="${evenement.compagnie == 'Compagnie 37'}">Compagnie 37</option>
+						<option id="compagnie333" name="compagnie333" value="Compagnie 333+1" th:selected="${evenement.compagnie == 'Compagnie 333+1'}">Compagnie 333+1</option>
+						</select>
+						</div>
 					</div>
 					<br/>
 					<div>
