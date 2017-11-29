@@ -204,7 +204,7 @@ $("#periodFilter").change(function(){
 					</form>
 				</div>
 			</div>
-			<div class="panel panel-primary" th:if="${spectacle}">
+			<div class="panel panel-primary" th:if="${spectacle}" style="display: table">
 				<div class="panel-heading">Détail Spectacle</div>
 				<div class="panel-body">
 							<form id="filterForm" th:action="@{/consulterSpectacle}" method="get">
