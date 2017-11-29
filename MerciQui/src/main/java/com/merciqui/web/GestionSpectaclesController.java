@@ -213,14 +213,17 @@ for (Comedien c : listeComediensParSpectacle) {
 		spectacle.setNomSpectacle(nomSpectacle);
 		
 		int indexRole = 0 ;
-		int indexRoleTit = 0 ;
+		
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		merciquimetier.creerSpectacle(spectacle);
 		for(String s : nomRole) {
-			System.out.println(id3T[indexRoleTit]);
+			
 			Role role = new Role() ;
-				if (!id3T[indexRole].equals("")) {
-					Comedien comedien = merciquimetier.consulterComedien(id3T[indexRoleTit]) ;
+			if (id3T[indexRole].equals("Pas de comédien titulaire")) {
+				role.setComedienTitulaire(null);
+			}
+			else {
+					Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
 					role.setComedienTitulaire(comedien);	
 				}
 			role.setNomRole(s);
@@ -239,7 +242,6 @@ for (Comedien c : listeComediensParSpectacle) {
 			role.setListeRemplas(listeRemplasSQL);	
 				}
 			indexRole++ ;
-			indexRoleTit++ ;
 			merciquimetier.creerRole(role);
 			
 		}
@@ -252,7 +254,6 @@ for (Comedien c : listeComediensParSpectacle) {
 		Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
 		spec.setNomSpectacle(nouveauNomSpectacle);
 		merciquimetier.creerSpectacle(spec); //modifie le nom du spectacle
-		Date currentDate = new Date();
 		int indexRole = 0 ;
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		for(Role s : spec.getListeRoles()) {
