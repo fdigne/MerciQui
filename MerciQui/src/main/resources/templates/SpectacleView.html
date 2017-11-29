@@ -13,6 +13,9 @@
 /*<![CDATA[*/
 
 $(document).ready(function(){
+
+
+	
     var select = $("#nbRoles") , tableSaisie = $("#roleNames") ;
 
 //LISTE DE CHOIX NOMBRE DE ROLES POUR SPECTACLE
@@ -119,6 +122,17 @@ $("#periodFilter").change(function(){
 });
 /*]]>*/
 </script>
+<script>
+$(document).ready(function(){
+	$(".dateEvenementModif").each(function(){
+	var dateLabel = $(this).text() ;
+	console.log(dateLabel) ;
+	var reg2 = new RegExp("[- :]+", "g") ;
+	var tab = dateLabel.split(reg2);
+	$(this).text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]);
+	});	
+});
+</script>
 <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 <title>Merci Qui ?</title>
 </head>
@@ -222,9 +236,9 @@ $("#periodFilter").change(function(){
 							<table id="roleNames" class="table table-striped table-bordered" >
 							<tr><th>Représentations</th><th th:each="o:${listeComediensParSpectacle}"><a th:href="${'/consulterComedien?id3T=' + o.id3T}" th:text="${o.nomPersonne +' '+o.prenomPersonne}" th:if="${o}"></a></th></tr>
 							<tr><th>Compagnie 37</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
-							<tr th:each="e:${listeEvenements37}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label th:text="${e.dateEvenement}" ></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
+							<tr th:each="e:${listeEvenements37}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}" ></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
 							<tr><th>Compagnie 333+1</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
-							<tr th:each="e:${listeEvenements333}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label th:text="${e.dateEvenement}"></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
+							<tr th:each="e:${listeEvenements333}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}"></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
 							<tr><th>Total</th><th th:text="${mapTotalDate.get(o.id3T)}" th:each="o:${listeComediensParSpectacle}" th:if="${o}" style="text-align :center"></th></tr>
 							</table>
 							</div>
