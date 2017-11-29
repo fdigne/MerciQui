@@ -92,7 +92,8 @@ public class RecapitulatifController {
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		model.addAttribute("listeComediens", listeComediens);
 		model.addAttribute("mapMoisCalendarInt", mapMoisCalendarInt);
-
+		model.addAttribute("yearFilter", yearFilter);
+		model.addAttribute("periodFilter", periodFilter);
 		if (yearFilter == null) {
 			yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 		}
