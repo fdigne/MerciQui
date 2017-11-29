@@ -383,6 +383,7 @@ public class GestionAgendaController {
 					return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
 				}
 				}
+				
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
 				merciquimetier.supprimerEvenement(evenement);	
 				for (EventAttendee eva : listeAttendees ) {
