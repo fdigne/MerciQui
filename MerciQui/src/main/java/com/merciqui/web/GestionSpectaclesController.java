@@ -255,9 +255,9 @@ for (Comedien c : listeComediensParSpectacle) {
 		spec.setNomSpectacle(nouveauNomSpectacle);
 		merciquimetier.creerSpectacle(spec); //modifie le nom du spectacle
 		int indexRole = 0 ;
-		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
+		//Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		for(Role s : spec.getListeRoles()) {
-				
+			Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();		
 				if (id3TModif[indexRole].equals("Pas de comédien titulaire")) {
 					s.setComedienTitulaire(null);
 				}
