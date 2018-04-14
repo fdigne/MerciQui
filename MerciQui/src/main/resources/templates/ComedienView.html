@@ -197,8 +197,8 @@ $("#periodFilter").change(function(){
 				<table class="table table-striped">
 				<caption style="text-align :center">Nouvelle Indispo</caption>
 				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
-				<tr><td><input id="dateDebutIndispo" type="date" name="dateDebutIndispo"></input></td>
-					<td><input id="dateFinIndispo" type="date" name="dateFinIndispo"></input></td>
+				<tr><td><input id="dateDebutIndispo" type="datetime" name="dateDebutIndispo"></input></td>
+					<td><input id="dateFinIndispo" type="datetime" name="dateFinIndispo"></input></td>
 					<td><button type="submit" class="btn btn-primary">Ajouter</button></td></tr>
 				</table>
 				</form>
@@ -208,9 +208,9 @@ $("#periodFilter").change(function(){
 				<table class="table table-striped">
 				<caption style="text-align :center">Liste Indispos</caption>
 				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
-				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="date" name="dateDebutIndispo" th:text="${o.dateDebut}"></label>
+				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="datetime" name="dateDebutIndispo" th:text="${o.dateDebut}"></label>
 				</td>
-					<td><label id="dateFinIndispo" type="date" name="dateFinIndispo" th:text="${o.dateFin}"></label></td>
+					<td><label id="dateFinIndispo" type="datetime" name="dateFinIndispo" th:text="${o.dateFin}"></label></td>
 					<td>
 					<form th:action="@{/supprimerIndispo}" method="post" >
 					<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
