@@ -371,6 +371,7 @@ public class GestionAgendaController {
 		try {
 			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
 			List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
+			listeAttendees.clear();
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
@@ -389,27 +390,23 @@ public class GestionAgendaController {
 				}
 
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
-				merciquimetier.supprimerEvenement(evenement);	
-				for (EventAttendee eva : listeAttendees ) {
+				comedien.getListeIndispos().add(evenement.getPeriode());
+				merciquimetier.creerComedien(comedien);
+				EventAttendee attendee = new EventAttendee();
+				attendee.setId(comedien.getId3T());
+				attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
+				.setEmail(comedien.getAdresseEmail());
+				listeAttendees.add(attendee);
+				listeComediensDistrib.add(comedien);
+				descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
 
-					listeAttendees.remove(eva) ;
-					EventAttendee attendee = new EventAttendee();
-					attendee.setId(comedien.getId3T());
-					attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
-					.setEmail(comedien.getAdresseEmail());
-					listeAttendees.add(attendee);
-					listeComediensDistrib.add(comedien);
-					descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
-				}
-				myEvent.setAttendees(listeAttendees) ;
-				myEvent.setDescription(descriptionEvent);
-			}	
-
-			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();
-			evenement.setListeComediens(listeComediensDistrib);
+			}
+			myEvent.setAttendees(listeAttendees) ;
+			myEvent.setDescription(descriptionEvent);
+			merciquimetier.supprimerEvenement(evenement);
 			evenement.setDistribution(distribution);
-			evenement.setCompagnie(compagnieModif);
 			merciquimetier.creerEvenement(evenement);
+			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
