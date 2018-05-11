@@ -135,17 +135,16 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	}
 
+	
 	@Override
 	public void supprimerEvenement(Evenement evenement) {
-		evenement.setDistribution(null);
-
-		evenementRepository.save(evenement);
-		for (Comedien comedien : evenement.getListeComediens()) {
+		for (Comedien comedien : evenement.getDistribution().values()) {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
 
 		}
-
+		evenement.setDistribution(null);
+		evenementRepository.save(evenement);
 		evenementRepository.delete(evenement);
 
 	}
