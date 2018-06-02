@@ -147,7 +147,6 @@ public class GestionAgendaController {
 			model.addAttribute("evenement", evenement);
 			model.addAttribute("listeRoles", merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle()));
 			model.addAttribute("listeComediensParEv", evenement.getListeComediens());
-			model.addAttribute("listeComediensParSpectacle", merciquimetier.getListeComediensParSpectacles(evenement.getSpectacle().getIdSpectacle()));
 			model.addAttribute("listeComediensParRole",listeComediensParRole);
 			
 
