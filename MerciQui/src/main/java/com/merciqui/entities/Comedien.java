@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity
 public class Comedien extends Personne implements Serializable{
@@ -30,6 +31,7 @@ public class Comedien extends Personne implements Serializable{
 	private Set<Role> listeRolesRempl ;
 	
 	@ManyToMany
+	@OrderBy(value="date_debut")
 	private Set<Periode> listeIndispos = new HashSet<Periode>(0); ;
 
 	public Comedien() {

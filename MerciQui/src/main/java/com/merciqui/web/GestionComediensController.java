@@ -149,6 +149,7 @@ public class GestionComediensController {
 			}
 			model.addAttribute("listeIndispos", listeVacances);
 			
+			
 			}	
 		} catch (Exception e) {
 			
@@ -259,6 +260,9 @@ public class GestionComediensController {
 				return null;
 			}
 	}
+	
 }
+
+
 
 

@@ -119,6 +119,9 @@ $("#periodFilter").change(function(){
 });
 /*]]>*/
 </script>
+<script>
+	
+</script>
 <title>Merci Qui ?</title>
 </head>
 <body>
@@ -208,9 +211,9 @@ $("#periodFilter").change(function(){
 				<table class="table table-striped">
 				<caption style="text-align :center">Liste Indispos</caption>
 				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
-				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="datetime" name="dateDebutIndispo" th:text="${o.dateDebut}"></label>
+				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="datetime" name="dateDebutIndispo" th:text="${o.dateDebut.getDate()+'/'+(o.dateDebut.getMonth()+1)+'/'+(o.dateDebut.getYear()+1900)}"></label>
 				</td>
-					<td><label id="dateFinIndispo" type="datetime" name="dateFinIndispo" th:text="${o.dateFin}"></label></td>
+					<td><label id="dateFinIndispo" type="datetime" name="dateFinIndispo" th:text="${o.dateFin.getDate()+'/'+(o.dateFin.getMonth()+1)+'/'+(o.dateFin.getYear()+1900)}"></label></td>
 					<td>
 					<form th:action="@{/supprimerIndispo}" method="post" >
 					<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
