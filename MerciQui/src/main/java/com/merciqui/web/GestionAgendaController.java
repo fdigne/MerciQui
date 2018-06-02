@@ -134,13 +134,22 @@ public class GestionAgendaController {
 		model.addAttribute("monthFilterEvent", monthFilterEvent);
 
 
-
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
+			HashMap<String, Collection<Comedien>> listeComediensParRole = new HashMap<String,Collection<Comedien>>();
+			Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle());
+			for (Role role : listeRoles) {
+				Collection<Comedien> listeCom = new ArrayList<Comedien>() ;
+				listeCom.add(role.getComedienTitulaire());
+				listeCom.addAll(role.getListeRemplas());
+				listeComediensParRole.put(role.getNomRole(), listeCom);
+			}
 			model.addAttribute("evenement", evenement);
 			model.addAttribute("listeRoles", merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle()));
 			model.addAttribute("listeComediensParEv", evenement.getListeComediens());
 			model.addAttribute("listeComediensParSpectacle", merciquimetier.getListeComediensParSpectacles(evenement.getSpectacle().getIdSpectacle()));
+			model.addAttribute("listeComediensParRole",listeComediensParRole);
+			
 
 		}
 

@@ -16,5 +16,6 @@ public interface SpectacleRepository extends JpaRepository<Spectacle, Long>{
 	
 	@Query("select o from Spectacle o where o.nomSpectacle=:x")
 	Collection<Spectacle> getListSpectaclesByComedien(@Param("x") String id3T);
+	
 
 }

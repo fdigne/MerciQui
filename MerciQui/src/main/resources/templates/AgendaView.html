@@ -333,7 +333,7 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 				</tr>
 				<tr th:each="o:${listeRoles}" >
 				<td th:text="${o.nomRole}"></td>
-				<td><select name="id3T"><option th:value="${o.idRole+'.'+e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediensParSpectacle}" th:selected="${e == evenement.distribution.get(o.idRole)}" ></option></select></td>
+				<td><select name="id3T"><option th:value="${o.idRole+'.'+e.id3T}" th:text="${e.nomPersonne +' ' + e.prenomPersonne}" th:each="e:${listeComediensParRole.get(o.nomRole)}" th:selected="${e == evenement.distribution.get(o.idRole)}"></option></select></td>
 				</tr>
 				</table>
 					</div>
