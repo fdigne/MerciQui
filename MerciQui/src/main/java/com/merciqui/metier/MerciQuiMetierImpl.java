@@ -62,7 +62,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public Comedien consulterComedien(String id3T) {
 		Comedien com = comedienRepository.findOne(id3T);
-
+		
 		if (com == null)
 			throw new RuntimeException("Comédien introuvable");
 		return com;
