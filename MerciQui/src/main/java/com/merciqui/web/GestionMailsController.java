@@ -44,10 +44,10 @@ public class GestionMailsController {
 		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
 		seasons.put("AutomneFin" , Calendar.DECEMBER);
 		seasons.put("HiverDebut" , Calendar.JANUARY);
-		seasons.put("HiverFin" , Calendar.MARCH);
-		seasons.put("PrintempsDebut" , Calendar.APRIL);
-		seasons.put("PrintempsFin" , Calendar.JUNE);
-		seasons.put("EteDebut" , Calendar.JULY);
+		seasons.put("HiverFin" , Calendar.APRIL);
+		seasons.put("PrintempsDebut" , Calendar.MAY);
+		seasons.put("PrintempsFin" , Calendar.JULY);
+		seasons.put("EteDebut" , Calendar.AUGUST);
 		seasons.put("EteFin" , Calendar.AUGUST);
 
 
@@ -78,6 +78,10 @@ public class GestionMailsController {
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
+		/*if(periodFilter.equals("Automne")) {
+			int nextYear = Integer.valueOf(yearFilter) +1 ;
+			cal.set(Calendar.YEAR, nextYear);
+		}*/
 		Date dateFinFiltre = cal.getTime();
 		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();

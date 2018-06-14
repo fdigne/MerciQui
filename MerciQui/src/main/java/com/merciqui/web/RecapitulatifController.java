@@ -27,10 +27,10 @@ public class RecapitulatifController {
 		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
 		seasons.put("AutomneFin" , Calendar.DECEMBER);
 		seasons.put("HiverDebut" , Calendar.JANUARY);
-		seasons.put("HiverFin" , Calendar.MARCH);
-		seasons.put("PrintempsDebut" , Calendar.APRIL);
-		seasons.put("PrintempsFin" , Calendar.JUNE);
-		seasons.put("EteDebut" , Calendar.JULY);
+		seasons.put("HiverFin" , Calendar.APRIL);
+		seasons.put("PrintempsDebut" , Calendar.MAY);
+		seasons.put("PrintempsFin" , Calendar.JULY);
+		seasons.put("EteDebut" , Calendar.AUGUST);
 		seasons.put("EteFin" , Calendar.AUGUST);
 
 
@@ -55,16 +55,16 @@ public class RecapitulatifController {
 		mapMoisCalendarInt.put("Février", String.valueOf(Calendar.FEBRUARY));
 		hiver.add("Mars");
 		mapMoisCalendarInt.put("Mars", String.valueOf(Calendar.MARCH));
-		Collection<String> printemps = new ArrayList<String>();
-		printemps.add("Avril");
+		hiver.add("Avril");
 		mapMoisCalendarInt.put("Avril", String.valueOf(Calendar.APRIL));
+		Collection<String> printemps = new ArrayList<String>();
 		printemps.add("Mai");
 		mapMoisCalendarInt.put("Mai", String.valueOf(Calendar.MAY));
 		printemps.add("Juin");
 		mapMoisCalendarInt.put("Juin", String.valueOf(Calendar.JUNE));
-		Collection<String> ete = new ArrayList<String>();
-		ete.add("Juillet");
+		printemps.add("Juillet");
 		mapMoisCalendarInt.put("Juillet", String.valueOf(Calendar.JULY));
+		Collection<String> ete = new ArrayList<String>();
 		ete.add("Aout");
 		mapMoisCalendarInt.put("Aout", String.valueOf(Calendar.AUGUST));
 
@@ -83,9 +83,6 @@ public class RecapitulatifController {
 
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
-
-
-
 
 	@RequestMapping("/recapitulatifIndex")
 	public String index(Model model, String periodFilter, String yearFilter) {
@@ -129,8 +126,13 @@ public class RecapitulatifController {
 		cal.set(Calendar.SECOND, 59);
 		if (periodFilter != "AllYear") {
 			cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
+			/*if(periodFilter.equals("Automne")) {
+				int nextYear = Integer.valueOf(yearFilter) +1 ;
+				cal.set(Calendar.YEAR, nextYear);
+			}*/
 		}
 		Date dateFinFiltre = cal.getTime();
+
 
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
 		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
@@ -140,7 +142,7 @@ public class RecapitulatifController {
 				listeEvenementsFiltres.add(evenementFiltre);
 			}
 		}
-		
+
 		//Calcul des spectacles pour chaque comédien
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 		for (Spectacle spectacle : merciquimetier.listeSpectacles()) {
@@ -165,21 +167,24 @@ public class RecapitulatifController {
 							mapSpectaclesParComedien.put(rempla, listeSpec);
 						}
 					}
-						else {
-							Collection<Spectacle> listeSpec = new ArrayList<Spectacle>();
-							listeSpec.add(role.getSpectacle());
-							mapSpectaclesParComedien.put(rempla, listeSpec);	
-						
+					else {
+						Collection<Spectacle> listeSpec = new ArrayList<Spectacle>();
+						listeSpec.add(role.getSpectacle());
+						mapSpectaclesParComedien.put(rempla, listeSpec);	
+
 					}
 				}
 			}
 		}
 		for (Evenement ev : merciquimetier.listeEvenements()) {
+
 			for (Entry<Long, Comedien> entry :ev.getDistribution().entrySet()) {
-				if (! mapSpectaclesParComedien.get(entry.getValue()).contains(merciquimetier.consulterRole(entry.getKey()).getSpectacle())) {
-					Collection<Spectacle> listeSpec = mapSpectaclesParComedien.get(entry.getValue());
-					listeSpec.add(merciquimetier.consulterRole(entry.getKey()).getSpectacle());
-					mapSpectaclesParComedien.put(entry.getValue(), listeSpec);
+				if (merciquimetier.consulterRole(entry.getKey()) != null) {
+					if (! mapSpectaclesParComedien.get(entry.getValue()).contains(merciquimetier.consulterRole(entry.getKey()).getSpectacle())) {
+						Collection<Spectacle> listeSpec = mapSpectaclesParComedien.get(entry.getValue());
+						listeSpec.add(merciquimetier.consulterRole(entry.getKey()).getSpectacle());
+						mapSpectaclesParComedien.put(entry.getValue(), listeSpec);
+					}
 				}
 			}
 		}
@@ -227,7 +232,7 @@ public class RecapitulatifController {
 					mapTotalDateParComedienParMois.put(keyMap, 1);
 				}
 
-					
+
 			}
 
 			//Calcul du total de dates par mois par spectacle et par comédien

@@ -53,14 +53,14 @@ import com.merciqui.metier.IMerciQuiMetier;
 public class GestionSpectaclesController {
 	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
 			static {
-		    seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-		    seasons.put("AutomneFin" , Calendar.DECEMBER);
-		    seasons.put("HiverDebut" , Calendar.JANUARY);
-		    seasons.put("HiverFin" , Calendar.MARCH);
-		    seasons.put("PrintempsDebut" , Calendar.APRIL);
-		    seasons.put("PrintempsFin" , Calendar.JUNE);
-		    seasons.put("EteDebut" , Calendar.JULY);
-		    seasons.put("EteFin" , Calendar.AUGUST);
+				seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
+				seasons.put("AutomneFin" , Calendar.DECEMBER);
+				seasons.put("HiverDebut" , Calendar.JANUARY);
+				seasons.put("HiverFin" , Calendar.APRIL);
+				seasons.put("PrintempsDebut" , Calendar.MAY);
+				seasons.put("PrintempsFin" , Calendar.JULY);
+				seasons.put("EteDebut" , Calendar.AUGUST);
+				seasons.put("EteFin" , Calendar.AUGUST);
 
 		    
 		};
@@ -142,6 +142,10 @@ public class GestionSpectaclesController {
 				cal.set(Calendar.MONTH, Integer.valueOf(monthFilter));
 			}
 			if(periodFilter != null) {
+				/*if(periodFilter.equals("Automne")) {
+					int nextYear = Integer.valueOf(yearFilter) +1 ;
+					cal.set(Calendar.YEAR, nextYear);
+				}*/
 				cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
 			}
 			

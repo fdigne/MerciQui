@@ -70,10 +70,10 @@ public class GestionAgendaController {
 		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
 		seasons.put("AutomneFin" , Calendar.DECEMBER);
 		seasons.put("HiverDebut" , Calendar.JANUARY);
-		seasons.put("HiverFin" , Calendar.MARCH);
-		seasons.put("PrintempsDebut" , Calendar.APRIL);
-		seasons.put("PrintempsFin" , Calendar.JUNE);
-		seasons.put("EteDebut" , Calendar.JULY);
+		seasons.put("HiverFin" , Calendar.APRIL);
+		seasons.put("PrintempsDebut" , Calendar.MAY);
+		seasons.put("PrintempsFin" , Calendar.JULY);
+		seasons.put("EteDebut" , Calendar.AUGUST);
 		seasons.put("EteFin" , Calendar.AUGUST);
 
 
@@ -148,7 +148,7 @@ public class GestionAgendaController {
 			model.addAttribute("listeRoles", merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle()));
 			model.addAttribute("listeComediensParEv", evenement.getListeComediens());
 			model.addAttribute("listeComediensParRole",listeComediensParRole);
-			
+
 
 		}
 
@@ -184,6 +184,10 @@ public class GestionAgendaController {
 		}
 		if(periodFilterEvent != null) {
 			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Fin"));
+			/*if(periodFilterEvent.equals("Automne")) {
+				int nextYear = Integer.valueOf(yearFilterEvent) +1 ;
+				cal.set(Calendar.YEAR, nextYear);
+			}*/
 		}
 
 
@@ -339,7 +343,6 @@ public class GestionAgendaController {
 					}
 				}
 				if (! isIndispoRempl) {
-
 					listeRemplacantDistrib.add(rempl);
 				}
 			}
@@ -350,6 +353,7 @@ public class GestionAgendaController {
 			}
 			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
 					Comparator.comparingInt(Entry::getValue));
+			
 			distribComedien =  merciquimetier.consulterComedien(min.getKey());
 		}
 		if(! isIndispoTit) {
