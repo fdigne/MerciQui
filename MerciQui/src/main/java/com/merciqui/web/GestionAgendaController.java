@@ -232,8 +232,10 @@ public class GestionAgendaController {
 
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
-		for(Role role : listeRoles) {
-			try {
+		Role roleCurrent = new Role(); 
+		try {
+			for(Role role : listeRoles) {
+				roleCurrent = role; 
 				Comedien com = setDistribution(role, periodeIndispo);
 				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
@@ -247,14 +249,15 @@ public class GestionAgendaController {
 				com.setListeIndispos(listeIndispos);
 				listeComediensDistrib.add(com);
 			}
-			catch (Exception e) {
-				return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+role.getNomRole();
-			}
-
-
-
+		}
+		catch (Exception e) {
+			return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+roleCurrent.getNomRole();
 		}
 
+		//Update la base SQL
+		for (Comedien com : listeComediensDistrib) {
+			merciquimetier.creerComedien(com);
+		}
 
 		//Update le Google Calendar
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
@@ -292,7 +295,6 @@ public class GestionAgendaController {
 			ev.setDistribution(mapDistribution);
 			ev.setCompagnie(compagnie);
 			merciquimetier.creerEvenement(ev);
-
 			return "redirect:/consulterCalendrier?idEvenement="+ev.getIdEvenement() ;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -353,7 +355,7 @@ public class GestionAgendaController {
 			}
 			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
 					Comparator.comparingInt(Entry::getValue));
-			
+
 			distribComedien =  merciquimetier.consulterComedien(min.getKey());
 		}
 		if(! isIndispoTit) {
@@ -377,7 +379,7 @@ public class GestionAgendaController {
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 		String descriptionEvent ="Distribution :\n\n" ;
 		Map<Long, Comedien> distribution = new HashMap<Long, Comedien>();
-
+		Periode periodeIndispoEvent = evenement.getPeriode();
 
 
 		try {
@@ -388,7 +390,6 @@ public class GestionAgendaController {
 				String[] keyValue = s.split("\\.");
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
 				if (! evenement.getDistribution().containsValue(comedien)) {
-
 					boolean comedienIndispo = false ;
 
 					for (Periode p : comedien.getListeIndispos()) {
@@ -401,9 +402,11 @@ public class GestionAgendaController {
 					}
 				}
 
-				distribution.put(Long.valueOf(keyValue[0]),comedien);
-				comedien.getListeIndispos().add(evenement.getPeriode());
+				Set<Periode> listeIndispoMAJ = comedien.getListeIndispos();
+				listeIndispoMAJ.add(evenement.getPeriode());
+				comedien.setListeIndispos(listeIndispoMAJ);
 				merciquimetier.creerComedien(comedien);
+				distribution.put(Long.valueOf(keyValue[0]),comedien);
 				EventAttendee attendee = new EventAttendee();
 				attendee.setId(comedien.getId3T());
 				attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
@@ -416,14 +419,22 @@ public class GestionAgendaController {
 			myEvent.setAttendees(listeAttendees) ;
 			myEvent.setDescription(descriptionEvent);
 			merciquimetier.supprimerEvenement(evenement);
+			evenement.setPeriode(periodeIndispoEvent);
 			evenement.setDistribution(distribution);
+			for (Comedien com : distribution.values()) {
+				if ( ! com.getListeIndispos().contains(evenement.getPeriode())) {
+					com.getListeIndispos().add(periodeIndispoEvent);
+					merciquimetier.creerComedien(com);
+				}
+			}
+			System.out.println("//////////////////////////////////");
+			System.out.println(evenement.getPeriode().getIdPeriode());
 			merciquimetier.creerEvenement(evenement);
+
 			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
 
 		return "redirect:/consulterCalendrier?idEvenement="+idEvenement ;	
 	}
