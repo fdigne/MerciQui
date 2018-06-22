@@ -68,8 +68,8 @@ public class GestionAgendaController {
 	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
 	static {
 		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-		seasons.put("AutomneFin" , Calendar.DECEMBER);
-		seasons.put("HiverDebut" , Calendar.JANUARY);
+		seasons.put("AutomneFin" , Calendar.JANUARY);
+		seasons.put("HiverDebut" , Calendar.FEBRUARY);
 		seasons.put("HiverFin" , Calendar.APRIL);
 		seasons.put("PrintempsDebut" , Calendar.MAY);
 		seasons.put("PrintempsFin" , Calendar.JULY);
@@ -184,10 +184,10 @@ public class GestionAgendaController {
 		}
 		if(periodFilterEvent != null) {
 			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Fin"));
-			/*if(periodFilterEvent.equals("Automne")) {
+			if(periodFilterEvent.equals("Automne")) {
 				int nextYear = Integer.valueOf(yearFilterEvent) +1 ;
 				cal.set(Calendar.YEAR, nextYear);
-			}*/
+			}
 		}
 
 
