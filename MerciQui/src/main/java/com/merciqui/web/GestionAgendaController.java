@@ -427,8 +427,6 @@ public class GestionAgendaController {
 					merciquimetier.creerComedien(com);
 				}
 			}
-			System.out.println("//////////////////////////////////");
-			System.out.println(evenement.getPeriode().getIdPeriode());
 			merciquimetier.creerEvenement(evenement);
 
 			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();			

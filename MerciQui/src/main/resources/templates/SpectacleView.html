@@ -236,9 +236,9 @@ $(document).ready(function(){
 							<table id="roleNames" class="table table-striped table-bordered" >
 							<tr><th>Représentations</th><th th:each="o:${listeComediensParSpectacle}"><a th:href="${'/consulterComedien?id3T=' + o.id3T}" th:text="${o.nomPersonne +' '+o.prenomPersonne}" th:if="${o}"></a></th></tr>
 							<tr><th>Compagnie 37</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
-							<tr th:each="e:${listeEvenements37}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}" ></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
+							<tr th:each="e:${listeEvenements37}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}" ></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.distribution.containsValue(o)}" style="text-align :center">X</label></td></tr>
 							<tr><th>Compagnie 333+1</th><td th:each="o:${listeComediensParSpectacle}"></td></tr>
-							<tr th:each="e:${listeEvenements333}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}"></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.listeComediens.contains(o)}" style="text-align :center">X</label></td></tr>
+							<tr th:each="e:${listeEvenements333}"><td><a th:href="${'/consulterCalendrier?idEvenement='+ e.idEvenement}"><label class="dateEvenementModif" th:text="${e.dateEvenement}"></label></a></td><td th:each="o:${listeComediensParSpectacle}" align="center"><label th:if="${e.distribution.containsValue(o)}" style="text-align :center">X</label></td></tr>
 							<tr><th>Total</th><th th:text="${mapTotalDate.get(o.id3T)}" th:each="o:${listeComediensParSpectacle}" th:if="${o}" style="text-align :center"></th></tr>
 							</table>
 							</div>

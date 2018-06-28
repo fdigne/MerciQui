@@ -194,7 +194,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		for (Evenement ev : listeEvenements) {
 			if(ev.getDateEvenement().compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(ev.getDateEvenement())> 0) {
 				if (ev.getNomSalle().equals(nomSalle)) {
-					for (Comedien com : ev.getListeComediens()) {
+					for (Comedien com : ev.getDistribution().values()) {
 						if (com.getId3T().equals(id3T)) {
 							nbreDates++;
 						}
@@ -210,7 +210,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		Collection<Evenement> listeEvenements = listeEvenements();
 		Collection<Evenement> listeEvenementsParComedien = new ArrayList<Evenement>();
 		for (Evenement ev : listeEvenements) {
-			for (Comedien com : ev.getListeComediens()) {
+			for (Comedien com : ev.getDistribution().values()) {
 				if (com.getId3T().equals(id3T)) {
 					listeEvenementsParComedien.add(ev);
 				}
@@ -257,6 +257,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 				}
 			}
 		}
+		
 		return listeComediensparSpectacle;
 	}
 

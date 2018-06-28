@@ -29,7 +29,7 @@ public class Spectacle implements Serializable{
 	@OneToMany(mappedBy="spectacle", fetch=FetchType.LAZY)
 	private Collection<Role> listeRoles ;
 	
-	@OneToMany(mappedBy="spectacle", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="spectacle", fetch=FetchType.LAZY)
 	private Collection<Evenement> listeEvenements ;
 
 	public Spectacle() {

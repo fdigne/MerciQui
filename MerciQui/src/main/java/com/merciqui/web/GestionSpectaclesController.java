@@ -52,36 +52,36 @@ import com.merciqui.metier.IMerciQuiMetier;
 @Controller
 public class GestionSpectaclesController {
 	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
-			static {
-				seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-				seasons.put("AutomneFin" , Calendar.JANUARY);
-				seasons.put("HiverDebut" , Calendar.FEBRUARY);
-				seasons.put("HiverFin" , Calendar.APRIL);
-				seasons.put("PrintempsDebut" , Calendar.MAY);
-				seasons.put("PrintempsFin" , Calendar.JULY);
-				seasons.put("EteDebut" , Calendar.AUGUST);
-				seasons.put("EteFin" , Calendar.AUGUST);
+	static {
+		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
+		seasons.put("AutomneFin" , Calendar.JANUARY);
+		seasons.put("HiverDebut" , Calendar.FEBRUARY);
+		seasons.put("HiverFin" , Calendar.APRIL);
+		seasons.put("PrintempsDebut" , Calendar.MAY);
+		seasons.put("PrintempsFin" , Calendar.JULY);
+		seasons.put("EteDebut" , Calendar.AUGUST);
+		seasons.put("EteFin" , Calendar.AUGUST);
 
-		    
-		};
-	
+
+	};
+
 	private static com.google.api.services.calendar.Calendar client;
-			
-	
+
+
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
-	
-	
-	
+
+
+
 	@RequestMapping("/spectacleIndex")
 	public String index(Model model) {
 		return "redirect:/consulterSpectacle";
 	}
-	
+
 	@RequestMapping("/consulterSpectacle")
 	public String consulterSpectacle(Model model, String nomSpectacle, String yearFilter, String monthFilter, String periodFilter) {
-		
-		
+
+
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
 		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
@@ -90,31 +90,31 @@ public class GestionSpectaclesController {
 		model.addAttribute("yearFilter", yearFilter);
 		model.addAttribute("monthFilter", monthFilter);
 		model.addAttribute("periodFilter", periodFilter);
-		
+
 		//TRAITEMENT PERIODE FILTER
-		
+
 		if(nomSpectacle != null) {
 			Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
 			model.addAttribute("spectacle", spec);
 			Collection<Comedien> listeComediensParSpectacle = merciquimetier.getListeComediensParSpectacles(spec.getIdSpectacle());
 			model.addAttribute("listeComediensParSpectacle", listeComediensParSpectacle);
-			
+
 			Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(spec.getIdSpectacle());
 			model.addAttribute("listeRoles", listeRoles);
 			for(Role role : listeRoles) {
 				if(merciquimetier.getListeRemplacants(role.getIdRole()) != null) {
-				Collection<Comedien> listeRemplacants = merciquimetier.getListeRemplacants(role.getIdRole());
-				
+					Collection<Comedien> listeRemplacants = merciquimetier.getListeRemplacants(role.getIdRole());
+
 					mapListeRemplasByRole.put(role.getIdRole(), listeRemplacants);
 					model.addAttribute("mapListeRemplasByRole",mapListeRemplasByRole );
 				}
-				
+
 			}
-			
-			
+
+
 			if(yearFilter == null) {
 				yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-				
+
 			}
 			Calendar cal = Calendar.getInstance();
 			//cal.set(Integer.valueOf(yearFilter),1,1);
@@ -130,7 +130,7 @@ public class GestionSpectaclesController {
 			if(periodFilter != null) {
 				cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
 			}
-			
+
 			Date dateDebutFiltre = cal.getTime();
 			System.out.println(dateDebutFiltre);
 			cal.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -148,92 +148,100 @@ public class GestionSpectaclesController {
 				}
 				cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
 			}
-			
-			
+
+
 			Date dateFinFiltre = cal.getTime();
 			Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
 			Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spec.getIdSpectacle());
 
 			for (Evenement evenementFiltre : listeEvenements) {
 				Date dateEvenement = evenementFiltre.getDateEvenement();
-					if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-						listeEvenementsFiltres.add(evenementFiltre);
-					}
+				if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
+					listeEvenementsFiltres.add(evenementFiltre);
+				}
 			}
-for (Comedien c : listeComediensParSpectacle) {
-	mapTotalDateParSpectacle.put(c.getId3T(), 0);
-}
-			
+			for (Comedien c : listeComediensParSpectacle) {
+				mapTotalDateParSpectacle.put(c.getId3T(), 0);
+			}
+
 			for(Evenement ev : listeEvenementsFiltres) {
 				for (Entry<Long, Comedien> entry : ev.getDistribution().entrySet()) {
-						if (mapTotalDateParSpectacle.containsKey(entry.getValue().getId3T())) {
-							int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
-							nbreDates = nbreDates +1 ;
-							mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
-						}
-						else {
-							mapTotalDateParSpectacle.put(entry.getValue().getId3T(),1);
-						}
-						
+					if (mapTotalDateParSpectacle.containsKey(entry.getValue().getId3T())) {
+						int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
+						nbreDates = nbreDates +1 ;
+						mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
 					}
-	
-				
+					else {
+						mapTotalDateParSpectacle.put(entry.getValue().getId3T(),1);
+					}
+
+				}
+
+
 				if(ev.getCompagnie().equals("Compagnie 37")) {
 					listeEvenements37.add(ev);
-					
+					/////////////////////////////////:
+					System.out.println("////////////////////////////////////////");
+					System.out.println(ev.getDateEvenement());
+					System.out.println(ev.getIdEvenement());
+					for(Comedien c : ev.getDistribution().values()) {
+						
+						System.out.println(c.getNomPersonne()+" "+c.getPrenomPersonne());
+					}
+					//////////////////////////
 				}
 				else {
 					listeEvenements333.add(ev);
 				}
-				}
+			}
 			model.addAttribute("mapTotalDate", mapTotalDateParSpectacle);
 			model.addAttribute("listeEvenements37", listeEvenements37);
 			model.addAttribute("listeEvenements333", listeEvenements333);
 
-			
+
 		}
-		
+
 		model.addAttribute("nomSpectacle", nomSpectacle);
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		for(Comedien c : listeComediens) {
 			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
-			
+
 		}
 		model.addAttribute("listeComediens", listeComediens);		
 		model.addAttribute("itemsComediens", itemsComediens) ;
-		
-		
+
+
 		Collection<Spectacle> listeSpectacles = merciquimetier.listeSpectacles();
 		model.addAttribute("listeSpectacles", listeSpectacles);
-		
-		
-			
-	return "SpectacleView";
+
+
+
+		return "SpectacleView";
 	}
-			
+
 	@PostMapping("/saisieSpectacle")
 	public String saisieSpectacle(Model model, String nomSpectacle, String[] nomRole, String[] id3T, String[] id3TRempl) {
 		Spectacle spectacle = new Spectacle();
 		spectacle.setNomSpectacle(nomSpectacle);
-		
+
 		int indexRole = 0 ;
-		
+
 		Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		merciquimetier.creerSpectacle(spectacle);
 		for(String s : nomRole) {
-			
+
 			Role role = new Role() ;
 			if (id3T[indexRole].equals("Pas de comédien titulaire")) {
 				role.setComedienTitulaire(null);
 			}
 			else {
-					Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
-					role.setComedienTitulaire(comedien);	
-				}
+				Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
+				role.setComedienTitulaire(comedien);	
+			}
 			role.setNomRole(s);
 			role.setSpectacle(merciquimetier.consulterSpectacle(nomSpectacle));
-				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
-				if(id3TRempl != null) {
+			Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
+			if(id3TRempl != null) {
 				for(String r : id3TRempl) {
 					String[] id3TR = r.split("\\.");
 					if (id3TR[0].equals(String.valueOf(indexRole))) {
@@ -242,17 +250,17 @@ for (Comedien c : listeComediensParSpectacle) {
 						listeRemplasSQL.add(remp);
 					}
 				}
-				
-			role.setListeRemplas(listeRemplasSQL);	
-				}
+
+				role.setListeRemplas(listeRemplasSQL);	
+			}
 			indexRole++ ;
 			merciquimetier.creerRole(role);
-			
+
 		}
-	
-	return "redirect:/consulterSpectacle?nomSpectacle="+nomSpectacle ;
+
+		return "redirect:/consulterSpectacle?nomSpectacle="+nomSpectacle ;
 	}
-	
+
 	@PostMapping("/modifierSpectacle")
 	public String modifierSpectacle(Model model, String nomSpectacle,String nouveauNomSpectacle, String[] nomRoleModif, String[] id3TModif, String[] id3TRemplModif) {
 		Spectacle spec = merciquimetier.consulterSpectacle(nomSpectacle);
@@ -262,42 +270,42 @@ for (Comedien c : listeComediensParSpectacle) {
 		//Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();
 		for(Role s : spec.getListeRoles()) {
 			Map<String, Comedien> listeRemplas = new HashMap<String, Comedien>();		
-				if (id3TModif[indexRole].equals("Pas de comédien titulaire")) {
-					s.setComedienTitulaire(null);
-				}
-				else {
-					Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
-					s.setComedienTitulaire(comedien);	
-				}
-						
-				Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
-				if(id3TRemplModif != null) {
+			if (id3TModif[indexRole].equals("Pas de comédien titulaire")) {
+				s.setComedienTitulaire(null);
+			}
+			else {
+				Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
+				s.setComedienTitulaire(comedien);	
+			}
+
+			Set<Comedien> listeRemplasSQL = new HashSet<Comedien>();
+			if(id3TRemplModif != null) {
 				for(String r : id3TRemplModif) {
 					String[] key = r.split("\\.");
 					if (s.getNomRole().equals(key[0])) {
-					if (! listeRemplas.containsKey(key[1])) {
-						Comedien remp = merciquimetier.consulterComedien(key[1]) ;
-						listeRemplas.put(key[1], remp);
-						listeRemplasSQL.add(remp);
+						if (! listeRemplas.containsKey(key[1])) {
+							Comedien remp = merciquimetier.consulterComedien(key[1]) ;
+							listeRemplas.put(key[1], remp);
+							listeRemplasSQL.add(remp);
+						}
 					}
-					}
 				}
-			
-			s.setListeRemplas(listeRemplasSQL);	
-				}
-				else {
-					s.setListeRemplas(null);
-				}
+
+				s.setListeRemplas(listeRemplasSQL);	
+			}
+			else {
+				s.setListeRemplas(null);
+			}
 			indexRole++ ;
-			
+
 			merciquimetier.creerRole(s);
-			
+
 		}
-		
+
 		//MODIFICATIONS GOOGLE CALENDAR
 		client = new com.google.api.services.calendar.Calendar.Builder(GestionAgendaController.httpTransport, GestionAgendaController.JSON_FACTORY, GestionAgendaController.credential)
 				.setApplicationName(GestionAgendaController.APPLICATION_NAME).build();
-		
+
 		Spectacle spect = merciquimetier.consulterSpectacle(nouveauNomSpectacle);
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spect.getIdSpectacle());
 		for (Evenement ev : listeEvenements) {
@@ -309,10 +317,10 @@ for (Comedien c : listeComediensParSpectacle) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return "redirect:/consulterSpectacle?nomSpectacle="+nouveauNomSpectacle ;
 	}
-	
+
 	@PostMapping("/supprimerSpectacle")
 	public String supprimerSpectacle(Model model, String nomSpectacle) {
 		client = new com.google.api.services.calendar.Calendar.Builder(GestionAgendaController.httpTransport, GestionAgendaController.JSON_FACTORY, GestionAgendaController.credential)
@@ -325,13 +333,13 @@ for (Comedien c : listeComediensParSpectacle) {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-				merciquimetier.supprimerEvenement(ev);
+			merciquimetier.supprimerEvenement(ev);
 		}
 		merciquimetier.supprimerSpectacle(nomSpectacle);	
-				
+
 		return "redirect:/consulterSpectacle" ;	
 	}
-	
-	
+
+
 
 }

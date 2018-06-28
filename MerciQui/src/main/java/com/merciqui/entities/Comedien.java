@@ -21,13 +21,13 @@ import javax.persistence.OrderBy;
 public class Comedien extends Personne implements Serializable{
 	
 	
-	@ManyToMany(mappedBy="listeComediens", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToMany(mappedBy="listeComediens", fetch = FetchType.LAZY)
 	private Collection<Evenement> listeEvenements ;
 	
 	@OneToMany(mappedBy="comedienTitulaire")
 	private Collection<Role> listeRoles ;
 	
-	@ManyToMany(mappedBy="listeRemplas", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy="listeRemplas", fetch = FetchType.LAZY)
 	private Set<Role> listeRolesRempl ;
 	
 	@ManyToMany

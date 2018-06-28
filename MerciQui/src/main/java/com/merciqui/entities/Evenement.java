@@ -34,7 +34,7 @@ private Spectacle spectacle;
 @JoinColumn(name="ID_PERIODE")
 private Periode periode ;
 
-@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+@ManyToMany(fetch = FetchType.LAZY)
 private Map<Long, Comedien> distribution ;
 
 @ManyToMany

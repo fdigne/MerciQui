@@ -21,7 +21,7 @@ public class Periode {
 	private Date dateFin;
 	private boolean isVacances ;
 	
-	@ManyToMany(mappedBy="listeIndispos", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy="listeIndispos", fetch = FetchType.LAZY)
 	private Collection<Comedien> listeComediens ;
 	
 	@OneToMany(mappedBy="periode")
