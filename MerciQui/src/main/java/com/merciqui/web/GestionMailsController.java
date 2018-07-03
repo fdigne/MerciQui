@@ -106,7 +106,6 @@ public class GestionMailsController {
 
 
 			String toEmail = com.getAdresseEmail(); // can be any email id 
-
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");
@@ -138,7 +137,7 @@ public class GestionMailsController {
 
 
 		Collection<Evenement> listeEvenementParComedien = merciquimetier.listeEvenementsParComedien(com.getId3T());
-
+		
 		if(yearFilter == null) {
 			yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
@@ -152,15 +151,18 @@ public class GestionMailsController {
 		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
 
 		Date dateDebutFiltre = cal.getTime();
-		System.out.println("Début filtre "+dateDebutFiltre);
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
-
+		if(periodFilter.equals("Automne")) {
+			int nextYear = Integer.valueOf(yearFilter) +1 ;
+			cal.set(Calendar.YEAR, nextYear);
+		}
 		Date dateFinFiltre = cal.getTime();
+
 		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
 
 		for (Evenement evenementFiltre : listeEvenementParComedien) {
@@ -291,7 +293,7 @@ public class GestionMailsController {
 	}
 
 	private Long getKeyValueFromMapDistribution(Comedien value, Map<Long, Comedien> distribution) {
-		Long keys = null ;
+		long keys = 301 ;
 		for(Entry<Long, Comedien> entry: distribution.entrySet()) {
 			if(value.equals(entry.getValue())) {
 				keys = entry.getKey();
