@@ -175,7 +175,7 @@ public class GestionMailsController {
 		Collection<Spectacle> listeSpec37 = new ArrayList<Spectacle>();
 		Collection<Spectacle> listeSpec333 = new ArrayList<Spectacle>();
 		for (Evenement ev : listeEvenementsFiltres) {
-			if(ev.getNomSalle().equals("3T") || ev.getNomSalle().equals("PRIVÉ")) {
+			if(ev.getCompagnie().equals("Compagnie 37")) {
 
 				listeEvenements37.add(ev);
 				if(! listeSpec37.contains(ev.getSpectacle())) {

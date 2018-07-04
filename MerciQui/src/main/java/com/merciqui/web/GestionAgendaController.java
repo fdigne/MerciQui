@@ -421,6 +421,7 @@ public class GestionAgendaController {
 			merciquimetier.supprimerEvenement(evenement);
 			evenement.setPeriode(periodeIndispoEvent);
 			evenement.setDistribution(distribution);
+			evenement.setCompagnie(compagnieModif);
 			for (Comedien com : distribution.values()) {
 				if ( ! com.getListeIndispos().contains(evenement.getPeriode())) {
 					com.getListeIndispos().add(periodeIndispoEvent);

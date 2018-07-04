@@ -180,15 +180,6 @@ public class GestionSpectaclesController {
 
 				if(ev.getCompagnie().equals("Compagnie 37")) {
 					listeEvenements37.add(ev);
-					/////////////////////////////////:
-					System.out.println("////////////////////////////////////////");
-					System.out.println(ev.getDateEvenement());
-					System.out.println(ev.getIdEvenement());
-					for(Comedien c : ev.getDistribution().values()) {
-						
-						System.out.println(c.getNomPersonne()+" "+c.getPrenomPersonne());
-					}
-					//////////////////////////
 				}
 				else {
 					listeEvenements333.add(ev);
