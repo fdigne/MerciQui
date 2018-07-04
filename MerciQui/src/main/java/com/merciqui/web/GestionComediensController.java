@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,12 +25,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
+import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
 
 
 @Controller
 public class GestionComediensController {
-	
+
 	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
 	static {
 		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
@@ -41,18 +43,18 @@ public class GestionComediensController {
 		seasons.put("EteDebut" , Calendar.AUGUST);
 		seasons.put("EteFin" , Calendar.AUGUST);
 
-    
-};
+
+	};
 
 
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
-	
+
 	@RequestMapping("/comedienIndex")
 	public String index(Model model, String id3T) {
 		return "redirect:/consulterComedien";
 	}
-	
+
 	@RequestMapping("/consulterComedien")
 	public String consulter(Model model, String id3T, String yearFilter, String monthFilter, String periodFilter) {
 		model.addAttribute("id3T", id3T);
@@ -70,7 +72,7 @@ public class GestionComediensController {
 				model.addAttribute("comedien", com);
 				if(yearFilter == null) {
 					yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-					
+
 				}
 				Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.YEAR, Integer.valueOf(yearFilter));
@@ -85,7 +87,7 @@ public class GestionComediensController {
 				if(periodFilter != null) {
 					cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
 				}
-				
+
 				Date dateDebutFiltre = cal.getTime();
 				cal.set(Calendar.MONTH, Calendar.DECEMBER);
 				cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -102,104 +104,107 @@ public class GestionComediensController {
 						cal.set(Calendar.YEAR, nextYear);
 					}
 				}
-				
-				
+
+
 				Date dateFinFiltre = cal.getTime();
 				Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");	
 				Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");	
 
 				model.addAttribute("listeEvenements37", listeEvenements37);
 				model.addAttribute("listeEvenements333", listeEvenements333);
-			//}
-			
-			for(Evenement ev : listeEvenements37) {
-				//int totalDates37 = merciquimetier.getNombreDatesParComedienParEvenement(ev.getSpectacle().getIdSpectacle(), id3T, ev.getNomSalle(), dateDebutFiltre, dateFinFiltre);
-				int totalDates37 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
-				mapTotalDateParSpectacle37.put(ev.getSpectacle().getNomSpectacle(), totalDates37);	
-			}
-			for(Evenement ev : listeEvenements333) {
-				int totalDates333 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
-				mapTotalDateParSpectacle333.put(ev.getSpectacle().getNomSpectacle(), totalDates333);
-				
-			}
-			
-			
-			model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
-			model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
-			model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
 
-			Collection<Periode> listePeriodeIndispos = com.getListeIndispos();
-			Collection<Periode> listeVacances = new ArrayList<Periode>();
-			for (Periode periode : listePeriodeIndispos) {
-				if (periode.isVacances()) {
-					listeVacances.add(periode);
+				//Collection<Long> listeSpectacles37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
+				//Collection<Long> listeSpectacles333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
+				
+				for(Evenement ev : listeEvenements37) {
+					int totalDates37 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
+					mapTotalDateParSpectacle37.put(ev.getSpectacle().getNomSpectacle(), totalDates37);	
 				}
-			}
-			model.addAttribute("listeIndispos", listeVacances);
-			
-			
+				for(Evenement ev : listeEvenements333) {
+					int totalDates333 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
+					mapTotalDateParSpectacle333.put(ev.getSpectacle().getNomSpectacle(), totalDates333);
+					
+				}
+				
+				
+				
+
+				model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
+				model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
+				model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
+
+				Collection<Periode> listePeriodeIndispos = com.getListeIndispos();
+				Collection<Periode> listeVacances = new ArrayList<Periode>();
+				for (Periode periode : listePeriodeIndispos) {
+					if (periode.isVacances()) {
+						listeVacances.add(periode);
+					}
+				}
+				model.addAttribute("listeIndispos", listeVacances);
+
+
 			}	
 		} catch (Exception e) {
-			
+
 			model.addAttribute("exception",e);
 		}
-		
+
 		return "ComedienView";
-		
+
 	}
-	
+
 	@PostMapping("/saisieComedien")
 	public String saisieComedien(Model model, String nomComedien, String prenomComedien,
 			String dateNaissanceComedien, String numSecuComedien, String sexeComedien, String adressePostaleComedien,
 			String adresseEmailComedien, String numTelComedien) {
 		String id3T = numSecuComedien;
 		try {
-		Comedien com = new Comedien();
-		com.setAdresseEmail(adresseEmailComedien);
-		com.setAdressePostale(adressePostaleComedien);
-		com.setId3T(numSecuComedien);
-		com.setNomPersonne(nomComedien);
-		com.setPrenomPersonne(prenomComedien);
-		com.setNumTel(numTelComedien);
-		com.setSexe(sexeComedien);
-		com.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
-		
-		merciquimetier.creerComedien(com);
+			Comedien com = new Comedien();
+			com.setAdresseEmail(adresseEmailComedien);
+			com.setAdressePostale(adressePostaleComedien);
+			com.setId3T(numSecuComedien);
+			com.setNomPersonne(nomComedien);
+			com.setPrenomPersonne(prenomComedien);
+			com.setNumTel(numTelComedien);
+			com.setSexe(sexeComedien);
+			com.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
+
+			merciquimetier.creerComedien(com);
 		}
 		catch (Exception e) {
 			model.addAttribute("error", e);
 			return "redirect:/consulterComedien?id3T="+id3T+"&error="+e.getMessage() ;
 		}
-		
+
 		return "redirect:/consulterComedien?id3T="+id3T ;
-}
-	
+	}
+
 	@PostMapping("/modifierComedien")
 	public String modifierComedien(Model model, String nomComedien, String prenomComedien,
 			String dateNaissanceComedien, String numSecuComedien, String sexeComedien, String adressePostaleComedien,
 			String adresseEmailComedien, String numTelComedien) {
 		String id3T = numSecuComedien;
-	Comedien comedien = merciquimetier.consulterComedien(numSecuComedien);
-	comedien.setAdresseEmail(adresseEmailComedien);
-	comedien.setAdressePostale(adressePostaleComedien);
-	comedien.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
-	comedien.setId3T(numSecuComedien);
-	comedien.setNomPersonne(nomComedien);
-	comedien.setPrenomPersonne(prenomComedien);
-	comedien.setNumTel(numTelComedien);
-	comedien.setSexe(sexeComedien);
-	
-	merciquimetier.creerComedien(comedien);
-	
-	return "redirect:/consulterComedien?id3T="+id3T ;
+		Comedien comedien = merciquimetier.consulterComedien(numSecuComedien);
+		comedien.setAdresseEmail(adresseEmailComedien);
+		comedien.setAdressePostale(adressePostaleComedien);
+		comedien.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
+		comedien.setId3T(numSecuComedien);
+		comedien.setNomPersonne(nomComedien);
+		comedien.setPrenomPersonne(prenomComedien);
+		comedien.setNumTel(numTelComedien);
+		comedien.setSexe(sexeComedien);
+
+		merciquimetier.creerComedien(comedien);
+
+		return "redirect:/consulterComedien?id3T="+id3T ;
 	}
-	
+
 	@PostMapping("/supprimerComedien")
 	public String supprimerComedien(Model model, String id3T) {
 		merciquimetier.supprimerComedien(id3T) ;	
 		return "redirect:/consulterComedien" ;	
 	}
-	
+
 	@PostMapping("/ajouterIndispo")
 	public String ajouterIndispo(Model model, String id3T, String dateDebutIndispo, String dateFinIndispo) {
 		Comedien comedien = merciquimetier.consulterComedien(id3T);
@@ -218,10 +223,10 @@ public class GestionComediensController {
 		Collection<Periode> listeIndispos = comedien.getListeIndispos();
 		listeIndispos.add(indispo);
 		merciquimetier.creerComedien(comedien);
-		
-	return "redirect:/consulterComedien?id3T="+id3T ;	
+
+		return "redirect:/consulterComedien?id3T="+id3T ;	
 	}
-	
+
 	@PostMapping("/supprimerIndispo")
 	public String supprimerIndispo(Model model, String id3T, String idPeriode) {
 		Comedien comedien = merciquimetier.consulterComedien(id3T);
@@ -230,25 +235,25 @@ public class GestionComediensController {
 		comedien.setListeIndispos(periodes);
 		merciquimetier.creerComedien(comedien);
 		merciquimetier.supprimerPeriode(Long.valueOf(idPeriode));
-		
+
 		return "redirect:/consulterComedien?id3T="+id3T ;		
 	}
-	
-	
-	
+
+
+
 	private Date mefDateNaissance(String dateNaissance) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	        java.util.Date utilDate;
-			try {
-				utilDate = sdf.parse(dateNaissance);
-				java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());	
-				return sqlDate;	
-			} catch (ParseException e) {
-				e.printStackTrace();
-				return null;
-			}
+		java.util.Date utilDate;
+		try {
+			utilDate = sdf.parse(dateNaissance);
+			java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());	
+			return sqlDate;	
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
+
 }
 
 

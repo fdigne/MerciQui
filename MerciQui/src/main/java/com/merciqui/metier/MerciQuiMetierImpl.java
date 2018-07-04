@@ -300,5 +300,17 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		return evenementRepository.getNbreDatesParComedienParSpectacleParPeriodeParCompagnie(id3t, idSpectacle, dateDebut, dateFin, compagnie);
 	}
 
+	@Override
+	public Collection<Long> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin,
+			String compagnie) {
+		return evenementRepository.getListSpectacleParComedienParPeriodeParCompagnie(id3t, dateDebut, dateFin, compagnie);
+
+	}
+
+	@Override
+	public Spectacle consulterSpectacle(Long idSpectacle) {
+		return spectacleRepository.findOne(idSpectacle);
+	}
+
 
 }
