@@ -56,8 +56,6 @@ public class GestionComediensController {
 	@RequestMapping("/consulterComedien")
 	public String consulter(Model model, String id3T, String yearFilter, String monthFilter, String periodFilter) {
 		model.addAttribute("id3T", id3T);
-		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
-		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
 		Map<String, Integer> mapTotalDateParSpectacle37 = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacle333 = new HashMap<String, Integer>();
 
@@ -70,7 +68,6 @@ public class GestionComediensController {
 			if(id3T != null) {
 				Comedien com = merciquimetier.consulterComedien(id3T);
 				model.addAttribute("comedien", com);
-				Collection<Evenement> listeEvenementParComedien = merciquimetier.listeEvenementsParComedien(id3T);
 				if(yearFilter == null) {
 					yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 					
@@ -108,33 +105,20 @@ public class GestionComediensController {
 				
 				
 				Date dateFinFiltre = cal.getTime();
-				Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-				
-				for (Evenement evenementFiltre : listeEvenementParComedien) {
-					Date dateEvenement = evenementFiltre.getDateEvenement();
-						if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-							listeEvenementsFiltres.add(evenementFiltre);
-						}
-						
-				for (Evenement ev : listeEvenementsFiltres) {
-					if(ev.getCompagnie().equals("Compagnie 37")) {
-						
-						listeEvenements37.add(ev);
-					}
-					else {
-						listeEvenements333.add(ev);
-					}
-				}
+				Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");	
+				Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");	
+
 				model.addAttribute("listeEvenements37", listeEvenements37);
 				model.addAttribute("listeEvenements333", listeEvenements333);
-			}
+			//}
 			
 			for(Evenement ev : listeEvenements37) {
-				int totalDates37 = merciquimetier.getNombreDatesParComedienParEvenement(ev.getSpectacle().getIdSpectacle(), id3T, ev.getNomSalle(), dateDebutFiltre, dateFinFiltre);
+				//int totalDates37 = merciquimetier.getNombreDatesParComedienParEvenement(ev.getSpectacle().getIdSpectacle(), id3T, ev.getNomSalle(), dateDebutFiltre, dateFinFiltre);
+				int totalDates37 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
 				mapTotalDateParSpectacle37.put(ev.getSpectacle().getNomSpectacle(), totalDates37);	
 			}
 			for(Evenement ev : listeEvenements333) {
-				int totalDates333 = merciquimetier.getNombreDatesParComedienParEvenement(ev.getSpectacle().getIdSpectacle(), id3T, ev.getNomSalle(), dateDebutFiltre, dateFinFiltre);
+				int totalDates333 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
 				mapTotalDateParSpectacle333.put(ev.getSpectacle().getNomSpectacle(), totalDates333);
 				
 			}
@@ -142,8 +126,8 @@ public class GestionComediensController {
 			
 			model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
 			model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
-			model.addAttribute("nbreDates", String.valueOf(listeEvenementsFiltres.size()));
-			
+			model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
+
 			Collection<Periode> listePeriodeIndispos = com.getListeIndispos();
 			Collection<Periode> listeVacances = new ArrayList<Periode>();
 			for (Periode periode : listePeriodeIndispos) {
