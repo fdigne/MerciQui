@@ -20,6 +20,7 @@ import com.merciqui.dao.SpectacleRepository;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
+import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 
@@ -310,6 +311,30 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public Spectacle consulterSpectacle(Long idSpectacle) {
 		return spectacleRepository.findOne(idSpectacle);
+	}
+
+	@Override
+	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
