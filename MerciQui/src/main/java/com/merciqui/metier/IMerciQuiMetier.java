@@ -60,6 +60,7 @@ public interface IMerciQuiMetier {
 	
 	//Gestion des Periodes Filtres
 	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre);
+	public Collection<PeriodeFiltre> listePeriodeFiltre();
 	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre);
 	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre);
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) ;

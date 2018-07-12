@@ -4,22 +4,108 @@
 	layout:decorator="template1">
 <head>
 <meta charset="UTF-8" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="/javascript/chosen.jquery.js" type="text/javascript"></script>
-  <script src="/javascript/prism.js" type="text/javascript" charset="utf-8"></script>
-  <script src="/javascript/init.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+ jQuery(function(){
+	  jQuery("#dateDebutPeriodeFiltre").datepicker(
+			  {
+					inline: true,
+					nextText: '&rarr;',
+					prevText: '&larr;',
+					yearRange: "-100:+50",
+					showOtherMonths: true,
+					dateFormat: 'dd/mm/yy',
+					dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+					changeYear: true,
+					changeMonth: true,
+					
+				}
+			  );
+		  jQuery("#dateFinPeriodeFiltre").datepicker(
+				  {
+						inline: true,
+						nextText: '&rarr;',
+						prevText: '&larr;',
+						yearRange: "-100:+50",
+						showOtherMonths: true,
+						dateFormat: 'dd/mm/yy',
+						dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+						changeYear: true,
+						changeMonth: true,
+						
+					}
+				  );
+ });
+</script>
+<script>
+$(document).ready(function(){
+	$(".datePeriode").each(function(){
+	var dateLabel = $(this).text() ;
+	console.log(dateLabel) ;
+	var reg2 = new RegExp("[- :]+", "g") ;
+	var tab = dateLabel.split(reg2);
+	$(this).text(tab[1]+"-"+tab[2]+"-"+tab[0]);
+	});	
+});
+</script>
 <title>Merci Qui ?</title>
 </head>
 <body>
-<div layout:fragment="content">
+	<div layout:fragment="content">
 		<div class="col-md-6">
-		<div class="panel panel-primary">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Saisie d'une période</div>
+				<div class="panel-body">
+					<form th:action="@{/saisiePeriodeFiltre}" method="post">
+						<div>
+							<label>Nom : </label> <input type="text" name="nomPeriodeFiltre"
+								required="true" />
+						</div>
+						<div>
+							<label>Début période : </label> <input
+								id="dateDebutPeriodeFiltre" type="date"
+								name="dateDebutPeriodeFiltre" required="true" />
+						</div>
+						<div>
+							<label>Fin période : </label> <input id="dateFinPeriodeFiltre"
+								type="date" name="dateFinPeriodeFiltre" required="true" />
+						</div>
+						<button type="submit" class="btn btn-primary">Ajouter</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-primary">
 				<div class="panel-heading">Liste des Périodes</div>
-						<div class="panel-body">BONJOUR</div>
-						</div>
-						</div>
-						</div>
+				<div class="panel-body">
+					<table class="table table-striped">
+						<tr>
+							<th>Nom</th>
+							<th>Date de Début</th>
+							<th>Date de Fin (incluse)</th>
+							<th></th>
+						</tr>
+						<tr th:each="periode:${listePeriodesFiltres}">
+							<td><label th:text="${periode.nomPeriode}"></label></td>
+							<td><label class="datePeriode" type="datetime"
+								th:text="${periode.dateDebut}"></label></td>
+							<td><label class="datePeriode" type="datetime"
+								th:text="${periode.dateFin}"></label></td>
+							<td><form th:action="@{/supprimerPeriodeFiltre}" method="post">
+									<input type="hidden" name="idPeriodeFiltre" th:value="${periode.idPeriode}" />
+									<button type="submit" class="btn btn-primary">Supprimer</button>
+								</form></td>
+							
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

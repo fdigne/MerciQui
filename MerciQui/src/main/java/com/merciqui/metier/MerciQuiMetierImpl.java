@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.merciqui.dao.ComedienRepository;
 import com.merciqui.dao.EvenementRepository;
+import com.merciqui.dao.PeriodeFiltreRepository;
 import com.merciqui.dao.PeriodeRepository;
 import com.merciqui.dao.RoleRepository;
 import com.merciqui.dao.SpectacleRepository;
@@ -43,6 +44,9 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Autowired
 	private PeriodeRepository periodeRepository;
 
+	@Autowired
+	private PeriodeFiltreRepository periodeFiltreRepository ;
+
 	@Override
 	public void creerComedien(Comedien comedien) {
 
@@ -63,7 +67,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public Comedien consulterComedien(String id3T) {
 		Comedien com = comedienRepository.findOne(id3T);
-		
+
 		if (com == null)
 			throw new RuntimeException("Comédien introuvable");
 		return com;
@@ -136,7 +140,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	}
 
-	
+
 	@Override
 	public void supprimerEvenement(Evenement evenement) {
 		for (Comedien comedien : evenement.getDistribution().values()) {
@@ -205,7 +209,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		}
 		return nbreDates;
 	}
-	
+
 
 	@Override
 	public Collection<Evenement> listeEvenementsParComedien(String id3T) {
@@ -221,7 +225,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 		return listeEvenementsParComedien;
 	}
-	
+
 	@Override
 	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(String id3T, Date dateDebut, Date dateFin, String compagnie) {
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParComedienParPeriode(id3T, dateDebut, dateFin, compagnie);
@@ -265,7 +269,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 				}
 			}
 		}
-		
+
 		return listeComediensparSpectacle;
 	}
 
@@ -297,7 +301,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(String id3t, Long idSpectacle,
 			Date dateDebut, Date dateFin, String compagnie) {
-		
+
 		return evenementRepository.getNbreDatesParComedienParSpectacleParPeriodeParCompagnie(id3t, idSpectacle, dateDebut, dateFin, compagnie);
 	}
 
@@ -308,6 +312,8 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	}
 
+//Traitement des périodes filtres
+
 	@Override
 	public Spectacle consulterSpectacle(Long idSpectacle) {
 		return spectacleRepository.findOne(idSpectacle);
@@ -315,27 +321,30 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	@Override
 	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre) {
-		// TODO Auto-generated method stub
-		return null;
+		return periodeFiltreRepository.save(periodeFiltre);
+	}
+	
+	@Override
+	public Collection<PeriodeFiltre> listePeriodeFiltre() {
+		return periodeFiltreRepository.findAll(new Sort(Sort.Direction.ASC, "dateDebut"));
 	}
 
 	@Override
 	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre) {
-		// TODO Auto-generated method stub
-		return null;
+		return periodeFiltreRepository.findOne(idPeriodeFiltre);
 	}
 
 	@Override
 	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre) {
-		// TODO Auto-generated method stub
-		return null;
+		return periodeFiltreRepository.save(periodeFiltre);
 	}
 
 	@Override
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) {
-		// TODO Auto-generated method stub
-		
+		periodeFiltreRepository.delete(idPeriodeFiltre);
 	}
+
+	
 
 
 }
