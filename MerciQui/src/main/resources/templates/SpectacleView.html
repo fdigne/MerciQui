@@ -183,7 +183,6 @@ $(document).ready(function(){
 						<input type="hidden" name="nomSpectacle"
 							th:value="${nomSpectacle}" />
 						<div>
-							<form th:action="@{/consulterSpectacle}" method="get">
 								<select id="idPeriodeFiltre" name="idPeriodeFiltre"
 									onchange="this.form.submit()">
 									<option disabled="true" selected="true">Filtrer</option>
@@ -192,7 +191,6 @@ $(document).ready(function(){
 										th:text="${periode.nomPeriode}"
 										th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
 								</select>
-							</form>
 						</div>
 					</form>
 					<br />
