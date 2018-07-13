@@ -50,6 +50,7 @@ import org.springframework.ui.Model;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
+import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Role;
 import com.merciqui.metier.IMerciQuiMetier;
 
@@ -65,19 +66,6 @@ public class GestionAgendaController {
 	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static com.google.api.services.calendar.Calendar client;
 
-	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
-	static {
-		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-		seasons.put("AutomneFin" , Calendar.JANUARY);
-		seasons.put("HiverDebut" , Calendar.FEBRUARY);
-		seasons.put("HiverFin" , Calendar.APRIL);
-		seasons.put("PrintempsDebut" , Calendar.MAY);
-		seasons.put("PrintempsFin" , Calendar.JULY);
-		seasons.put("EteDebut" , Calendar.AUGUST);
-		seasons.put("EteFin" , Calendar.AUGUST);
-
-
-	};
 
 	private static final Map<String, String> mapSalleCouleur = new HashMap<String, String>();
 	static {
@@ -119,21 +107,35 @@ public class GestionAgendaController {
 
 	@RequestMapping("/agendaView")
 	public String agendaView(Model model) {
-		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
-		model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
-
-
-		return "AgendaView" ;	
+		//model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
+		//model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
+		///////////////////////////////////////////////////////////////////////
+		///////// A LANCER SI TEST COHERENCE AGENDA À EFFECTUER ///////////////
+		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
+		for (Evenement ev : listeEvenements) {
+			for (Comedien com : ev.getDistribution().values()) {
+				for (Periode p : com.getListeIndispos()) {
+					if (isOverlapping(ev.getPeriode().getDateDebut(), ev.getPeriode().getDateFin(), p.getDateDebut(), p.getDateFin()) && ! ev.getPeriode().equals(p)) {
+						System.out.println("///////////////////////////////////////");
+						System.out.println(com.getNomPersonne());
+						System.out.println(ev.getSpectacle().getNomSpectacle() + " "+ev.getPeriode().getDateDebut());
+					}
+				}
+			}
+		}
+		////////////////////////////////////////////////////////////////////
+		return "redirect:/consulterCalendrier" ;	
 	}
 
 	@RequestMapping("/consulterCalendrier")
-	public String consulterCalendrier(Model model, String idEvenement, String error, String yearFilterEvent, String periodFilterEvent, String monthFilterEvent, String errorModif) {
+	public String consulterCalendrier(Model model, String idEvenement, Long idPeriodeFiltre, String error, String errorModif) {
 		model.addAttribute("idEvenement", idEvenement);
-		model.addAttribute("yearFilterEvent", yearFilterEvent);
-		model.addAttribute("periodFilterEvent", periodFilterEvent);
-		model.addAttribute("monthFilterEvent", monthFilterEvent);
-
-
+		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
+		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
+		model.addAttribute("idPeriodeFiltre",idPeriodeFiltre);
+		//model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
+		//model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
+		
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 			HashMap<String, Collection<Comedien>> listeComediensParRole = new HashMap<String,Collection<Comedien>>();
@@ -155,23 +157,15 @@ public class GestionAgendaController {
 
 		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
 
-		if(yearFilterEvent == null) {
-			yearFilterEvent = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-
-		}
+		
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, Integer.valueOf(yearFilterEvent));
+		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		cal.set(Calendar.DAY_OF_MONTH,1);
 		cal.set(Calendar.HOUR_OF_DAY,  0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
-		if(monthFilterEvent != null) {
-			cal.set(Calendar.MONTH, Integer.valueOf(monthFilterEvent));
-		}
-		if(periodFilterEvent != null) {
-			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Debut"));
-		}
+		
 
 		Date dateDebutFiltre = cal.getTime();
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -179,21 +173,17 @@ public class GestionAgendaController {
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
-		if(monthFilterEvent != null) {
-			cal.set(Calendar.MONTH, Integer.valueOf(monthFilterEvent));
-		}
-		if(periodFilterEvent != null) {
-			cal.set(Calendar.MONTH, seasons.get(periodFilterEvent+"Fin"));
-			if(periodFilterEvent.equals("Automne")) {
-				int nextYear = Integer.valueOf(yearFilterEvent) +1 ;
-				cal.set(Calendar.YEAR, nextYear);
-			}
-		}
 
 
 		Date dateFinFiltre = cal.getTime();
-		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
+		if (idPeriodeFiltre != null) {
 
+			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
+			dateDebutFiltre = periodeFiltre.getDateDebut();
+			dateFinFiltre = periodeFiltre.getDateFin();
+		}
+		
+		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
 		for (Evenement evenementFiltre : merciquimetier.listeEvenements()) {
 			Date dateEvenement = evenementFiltre.getDateEvenement();
 			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
