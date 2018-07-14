@@ -1,5 +1,6 @@
 package com.merciqui.web;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -95,31 +96,31 @@ public class GestionComediensController {
 					dateDebutFiltre = periodeFiltre.getDateDebut();
 					dateFinFiltre = periodeFiltre.getDateFin();
 				}
-				Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");	
-				Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");	
+				//Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");	
+				//Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");	
 
-				model.addAttribute("listeEvenements37", listeEvenements37);
-				model.addAttribute("listeEvenements333", listeEvenements333);
+				//model.addAttribute("listeEvenements37", listeEvenements37);
+				//model.addAttribute("listeEvenements333", listeEvenements333);
 
-				//Collection<Long> listeSpectacles37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
-				//Collection<Long> listeSpectacles333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
-
-				for(Evenement ev : listeEvenements37) {
-					int totalDates37 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
-					mapTotalDateParSpectacle37.put(ev.getSpectacle().getNomSpectacle(), totalDates37);	
+				Collection<BigInteger> listeSpectacles37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
+				Collection<BigInteger> listeSpectacles333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
+				int nbreDatesTotal = 0 ;
+				for (BigInteger idSpectacle : listeSpectacles37) {
+					int totalDates37 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, idSpectacle.longValue(), dateDebutFiltre, dateFinFiltre, "Compagnie 37");
+					mapTotalDateParSpectacle37.put(merciquimetier.consulterSpectacle(idSpectacle.longValue()).getNomSpectacle(), totalDates37);
+					nbreDatesTotal += totalDates37;
 				}
-				for(Evenement ev : listeEvenements333) {
-					int totalDates333 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, ev.getSpectacle().getIdSpectacle(), dateDebutFiltre, dateFinFiltre, ev.getCompagnie());
-					mapTotalDateParSpectacle333.put(ev.getSpectacle().getNomSpectacle(), totalDates333);
-
+				
+				for (BigInteger idSpectacle : listeSpectacles333) {
+					int totalDates333 = merciquimetier.getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(id3T, idSpectacle.longValue(), dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
+					mapTotalDateParSpectacle333.put(merciquimetier.consulterSpectacle(idSpectacle.longValue()).getNomSpectacle(), totalDates333);
+					nbreDatesTotal += totalDates333;
 				}
-
-
-
-
+				
 				model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
 				model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
-				model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
+				//model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
+				model.addAttribute("nbreDates", nbreDatesTotal);
 
 				Collection<Periode> listePeriodeIndispos = com.getListeIndispos();
 				Collection<Periode> listeVacances = new ArrayList<Periode>();

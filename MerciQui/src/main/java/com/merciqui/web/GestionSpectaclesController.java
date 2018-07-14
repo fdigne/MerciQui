@@ -124,6 +124,7 @@ dateDebutFiltre = periodeFiltre.getDateDebut();
 dateFinFiltre = periodeFiltre.getDateFin();
 }
 			Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
+			
 			Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spec.getIdSpectacle());
 
 			for (Evenement evenementFiltre : listeEvenements) {
