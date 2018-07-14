@@ -208,8 +208,7 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 				<div class="panel-body">
 					<form th:action="@{/sendEmail}" method="get"
 						onsubmit="return confirm('Etes-vous sur de vouloir valider le calendrier ?');">
-						<select id="idPeriodeFiltre" name="idPeriodeFiltre"
-									onchange="this.form.submit()">
+						<select id="idPeriodeFiltre" name="idPeriodeFiltre">
 									<option disabled="true" selected="true">Période</option>
 									<option th:each="periode:${listePeriodesFiltres}"
 										th:value="${periode.idPeriode}"

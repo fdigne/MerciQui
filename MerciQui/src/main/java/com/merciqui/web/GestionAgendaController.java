@@ -111,7 +111,7 @@ public class GestionAgendaController {
 		//model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
 		///////////////////////////////////////////////////////////////////////
 		///////// A LANCER SI TEST COHERENCE AGENDA À EFFECTUER ///////////////
-		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
+		/*Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
 		for (Evenement ev : listeEvenements) {
 			for (Comedien com : ev.getDistribution().values()) {
 				for (Periode p : com.getListeIndispos()) {
@@ -122,7 +122,7 @@ public class GestionAgendaController {
 					}
 				}
 			}
-		}
+		}*/
 		////////////////////////////////////////////////////////////////////
 		return "redirect:/consulterCalendrier" ;	
 	}
@@ -148,7 +148,7 @@ public class GestionAgendaController {
 			}
 			model.addAttribute("evenement", evenement);
 			model.addAttribute("listeRoles", merciquimetier.listeRolesParSpectacle(evenement.getSpectacle().getIdSpectacle()));
-			model.addAttribute("listeComediensParEv", evenement.getListeComediens());
+			//model.addAttribute("listeComediensParEv", evenement.getListeComediens());
 			model.addAttribute("listeComediensParRole",listeComediensParRole);
 
 
@@ -176,20 +176,17 @@ public class GestionAgendaController {
 
 
 		Date dateFinFiltre = cal.getTime();
+		
 		if (idPeriodeFiltre != null) {
 
 			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
 			dateDebutFiltre = periodeFiltre.getDateDebut();
 			dateFinFiltre = periodeFiltre.getDateFin();
+			
 		}
 		
-		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-		for (Evenement evenementFiltre : merciquimetier.listeEvenements()) {
-			Date dateEvenement = evenementFiltre.getDateEvenement();
-			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-				listeEvenementsFiltres.add(evenementFiltre);
-			}
-		}
+		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+
 
 		model.addAttribute("listeEvenements", listeEvenementsFiltres);
 

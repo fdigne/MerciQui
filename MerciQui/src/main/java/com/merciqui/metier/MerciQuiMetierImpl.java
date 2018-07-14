@@ -1,5 +1,6 @@
 package com.merciqui.metier;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.api.client.util.DateTime;
 import com.merciqui.dao.ComedienRepository;
 import com.merciqui.dao.EvenementRepository;
 import com.merciqui.dao.PeriodeFiltreRepository;
@@ -306,7 +308,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public Collection<Long> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin,
+	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin,
 			String compagnie) {
 		return evenementRepository.getListSpectacleParComedienParPeriodeParCompagnie(id3t, dateDebut, dateFin, compagnie);
 
@@ -321,6 +323,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 	@Override
 	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre) {
+		
 		return periodeFiltreRepository.save(periodeFiltre);
 	}
 	
@@ -342,6 +345,11 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) {
 		periodeFiltreRepository.delete(idPeriodeFiltre);
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenementsParPeriode(Date dateDebut, Date dateFin) {
+		return evenementRepository.getListEvenementsParPeriode(dateDebut, dateFin);
 	}
 
 	

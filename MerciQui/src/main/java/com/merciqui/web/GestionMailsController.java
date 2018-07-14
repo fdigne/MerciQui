@@ -1,5 +1,6 @@
 package com.merciqui.web;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
+import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
 
@@ -39,58 +41,39 @@ public class GestionMailsController {
 	private final String fromEmail = "les3tcafetheatreagenda@gmail.com"; //requires valid gmail id
 	private final String password = "les3tcafetheatre"; // correct password for gmail id
 
-	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
-	static {
-		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-		seasons.put("AutomneFin" , Calendar.JANUARY);
-		seasons.put("HiverDebut" , Calendar.FEBRUARY);
-		seasons.put("HiverFin" , Calendar.APRIL);
-		seasons.put("PrintempsDebut" , Calendar.MAY);
-		seasons.put("PrintempsFin" , Calendar.JULY);
-		seasons.put("EteDebut" , Calendar.AUGUST);
-		seasons.put("EteFin" , Calendar.AUGUST);
-
-
-	};
-
-
-
 
 	@GetMapping("/sendEmail")
-	public String sendEmail(Model model,String yearFilter, String periodFilter) {
+	public String sendEmail(Model model, Long idPeriodeFiltre) {
 
-		if(yearFilter == null) {
-			yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-
-		}
+		
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, Integer.valueOf(yearFilter));
+		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		cal.set(Calendar.DAY_OF_MONTH,1);
 		cal.set(Calendar.HOUR_OF_DAY,  0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
+		
 
 		Date dateDebutFiltre = cal.getTime();
+		cal.set(Calendar.MONTH, Calendar.DECEMBER);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
-		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
-		if(periodFilter.equals("Automne")) {
-			int nextYear = Integer.valueOf(yearFilter) +1 ;
-			cal.set(Calendar.YEAR, nextYear);
-		}
+
+
 		Date dateFinFiltre = cal.getTime();
-		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
-		for (Evenement ev : listeEvenements) {
-			Date dateEvenement = ev.getDateEvenement();
-			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-				listeEvenementsFiltres.add(ev);
-			}
-		}
+		
+
+			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
+			dateDebutFiltre = periodeFiltre.getDateDebut();
+			dateFinFiltre = periodeFiltre.getDateFin();
+			
+		
+		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+		
+		
 
 		Collection<Comedien> listeComediens = new ArrayList<Comedien>();
 		for (Evenement evenement : listeEvenementsFiltres) {
@@ -105,7 +88,8 @@ public class GestionMailsController {
 			//Envoi des emails pour chaque comédien
 
 
-			String toEmail = com.getAdresseEmail(); // can be any email id 
+			//String toEmail = com.getAdresseEmail(); // can be any email id 
+			String toEmail = "fdigne@me.com";
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");
@@ -120,8 +104,10 @@ public class GestionMailsController {
 				}
 			};
 			Session session = Session.getInstance(props, auth);
-			String body = this.getBodyEmail(com, periodFilter, yearFilter);
-			this.sendEmail(session, toEmail,"Planning "+periodFilter+" "+yearFilter, body);
+			String body = this.getBodyEmail(com, periodeFiltre);
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+
+			this.sendEmail(session, toEmail,"Planning du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin()), body);
 
 
 		}
@@ -130,66 +116,14 @@ public class GestionMailsController {
 		return "redirect:/" ;	
 	}
 
-	private String getBodyEmail(Comedien com, String periodFilter, String yearFilter) {
+	private String getBodyEmail(Comedien com, PeriodeFiltre periodeFiltre) {
 
-		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
-		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
-
-
-		Collection<Evenement> listeEvenementParComedien = merciquimetier.listeEvenementsParComedien(com.getId3T());
 		
-		if(yearFilter == null) {
-			yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-
-		}
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, Integer.valueOf(yearFilter));
-		cal.set(Calendar.DAY_OF_MONTH,1);
-		cal.set(Calendar.HOUR_OF_DAY,  0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
-
-		Date dateDebutFiltre = cal.getTime();
-		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.set(Calendar.MINUTE, 59);
-		cal.set(Calendar.SECOND, 59);
-		cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
-		if(periodFilter.equals("Automne")) {
-			int nextYear = Integer.valueOf(yearFilter) +1 ;
-			cal.set(Calendar.YEAR, nextYear);
-		}
-		Date dateFinFiltre = cal.getTime();
-
-		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-
-		for (Evenement evenementFiltre : listeEvenementParComedien) {
-			Date dateEvenement = evenementFiltre.getDateEvenement();
-			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-				listeEvenementsFiltres.add(evenementFiltre);
-			}
-		}
-
-		Collection<Spectacle> listeSpec37 = new ArrayList<Spectacle>();
-		Collection<Spectacle> listeSpec333 = new ArrayList<Spectacle>();
-		for (Evenement ev : listeEvenementsFiltres) {
-			if(ev.getCompagnie().equals("Compagnie 37")) {
-
-				listeEvenements37.add(ev);
-				if(! listeSpec37.contains(ev.getSpectacle())) {
-					listeSpec37.add(ev.getSpectacle());
-				}
-			}
-			else {
-				listeEvenements333.add(ev);
-				if(! listeSpec333.contains(ev.getSpectacle())) {
-					listeSpec333.add(ev.getSpectacle());
-				}
-			}
-		}
-
+		Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 37");
+		Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 333+1");
+		Collection<BigInteger> listeSpec37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 37");
+		Collection<BigInteger> listeSpec333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 333+1");
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String body = "<html>\n" + 
 				"<head>\n" + 
 				"<style>\n" + 
@@ -208,13 +142,13 @@ public class GestionMailsController {
 				"</head>\n" + 
 				"<body>" ;
 		body += "Bonjour "+com.getPrenomPersonne()+",<br/><br/>";
-
-		body += "Tu trouveras ci-dessous ton planning pour la période "+periodFilter+" "+yearFilter+".<br/><br/>" ;
+		
+		body += "Tu trouveras ci-dessous ton planning pour la période du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin())+".<br/><br/>" ;
 		body += "Bises.<br/>Laurence.<br/><br/><br/>";
 		body += "<div><table><tr><th>Représentations</th><th>Salle</th><th>Role</th><th>Distribution</th></tr>" ;	
 		body +="<tr><th>Compagnie 37</th><td></td><td></td><td></td></tr>";
-		for (Spectacle spec : listeSpec37) {
-
+		for (BigInteger idSpectacle : listeSpec37) {
+			Spectacle spec = merciquimetier.consulterSpectacle(idSpectacle.longValue()) ;
 			body +="<tr><th>"+spec.getNomSpectacle()+"</th><td></td><td></td><td></td><td></td></tr>" ;
 			for (Evenement evParSpec : merciquimetier.listeEvenementsParSpectacle(spec.getIdSpectacle())) {
 				//MEF Date évènement
@@ -234,7 +168,8 @@ public class GestionMailsController {
 
 		body +="<tr><th>Compagnie 333+1</th><td></td><td></td><td></td></tr>";
 
-		for (Spectacle spec : listeSpec333) {
+		for (BigInteger idSpectacle : listeSpec333) {
+			Spectacle spec = merciquimetier.consulterSpectacle(idSpectacle.longValue());
 			body +="<tr><th>"+spec.getNomSpectacle()+"</th><td></td><td></td><td></td></tr>" ;	
 			for (Evenement evParSpec : merciquimetier.listeEvenementsParSpectacle(spec.getIdSpectacle())) {
 				//MEF Date évènement
@@ -251,7 +186,7 @@ public class GestionMailsController {
 			}
 		}
 
-		body += "<tr><th>Total</th><th>"+String.valueOf(listeEvenementsFiltres.size())+"</th><td></td><td></td></tr></table></div></body></html>" ;
+		body += "<tr><th>Total</th><th>"+String.valueOf(listeEvenements37.size()+listeEvenements333.size())+"</th><td></td><td></td></tr></table></div></body></html>" ;
 
 		return body;
 	}

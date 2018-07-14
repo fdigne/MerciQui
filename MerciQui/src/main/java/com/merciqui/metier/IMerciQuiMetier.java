@@ -1,5 +1,6 @@
 package com.merciqui.metier;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 
@@ -51,7 +52,7 @@ public interface IMerciQuiMetier {
 	public Collection<Evenement> listeEvenementParSalle(String nomSalle);
 	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
 	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(String id3T, Long idSpectacle,Date dateDebut, Date dateFin, String compagnie );
-	public Collection<Long> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
+	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
 	
 	//Gestion des Periodes
 	public Periode creerPeriode(Periode periode);
