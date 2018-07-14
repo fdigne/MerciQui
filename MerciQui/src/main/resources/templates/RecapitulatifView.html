@@ -6,56 +6,6 @@
 <meta charset="UTF-8" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-<script th:inline="javascript">
-/*<![CDATA[*/
-$(document).ready(function(){
-var yearFilter = document.getElementById("yearFilter");
-var periodFilter = document.getElementById("periodFilter");
-
-var year = /*[[${yearFilter}]]*/ ;
-var currentYear = new Date().getFullYear();
-if(year != null){
-currentYear = year ;
-	
-}
-
-for (var i = 2050; i >= 2017; i--) {
-    var option = document.createElement("option");
-    option.value = i;
-    option.innerHTML = i;
-    
-		if(i == currentYear) {
-			option.selected = true ;
-			}
-    yearFilter.appendChild(option);
-}
-
-
-var periode = ["Automne" , "Hiver", "Printemps", "Ete"] ;
-var periodSelected = /*[[${periodFilter}]]*/
-for (var z = 0 ; z <= 3 ; z++ ){
-	var option = document.createElement("option");
-	option.value = periode[z] ;
-	if (periode[z] == periodSelected){
-		option.selected = true ;
-		}
-	option.innerHTML = periode[z];
-	periodFilter.appendChild(option);
-}
-
-$("#yearFilter").change(function(){
-	periodFilter.value = null ;  
-	document.getElementById("filterForm").submit();
-});
-
-
-$("#periodFilter").change(function(){
-	document.getElementById("filterForm").submit();
-});
-
-});
-/*]]>*/
-</script>
 
 <title>Merci Qui ?</title>
 </head>
@@ -67,8 +17,13 @@ $("#periodFilter").change(function(){
 					<form id="filterForm" th:action="@{/recapitulatifIndex}" method="get">
 							
 							<div>
-							<select id="yearFilter" name="yearFilter" ></select>
-							<select id="periodFilter" name="periodFilter"><option disabled="true" selected="true">Période</option></select>
+							<select id="idPeriodeFiltre" name="idPeriodeFiltre"
+								onchange="this.form.submit()">
+								<option disabled="true" selected="true">Filtrer</option>
+								<option th:each="periode:${listePeriodesFiltres}"
+									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
+									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
+							</select>
 							</div>
 							</form>
 							<br/>

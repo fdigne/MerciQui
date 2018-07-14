@@ -45,7 +45,7 @@ public class GestionMailsController {
 	@GetMapping("/sendEmail")
 	public String sendEmail(Model model, Long idPeriodeFiltre) {
 
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
@@ -53,7 +53,7 @@ public class GestionMailsController {
 		cal.set(Calendar.HOUR_OF_DAY,  0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
-		
+
 
 		Date dateDebutFiltre = cal.getTime();
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -64,16 +64,16 @@ public class GestionMailsController {
 
 
 		Date dateFinFiltre = cal.getTime();
-		
 
-			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
-			dateDebutFiltre = periodeFiltre.getDateDebut();
-			dateFinFiltre = periodeFiltre.getDateFin();
-			
-		
+
+		PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
+		dateDebutFiltre = periodeFiltre.getDateDebut();
+		dateFinFiltre = periodeFiltre.getDateFin();
+
+
 		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
-		
-		
+
+
 
 		Collection<Comedien> listeComediens = new ArrayList<Comedien>();
 		for (Evenement evenement : listeEvenementsFiltres) {
@@ -88,8 +88,7 @@ public class GestionMailsController {
 			//Envoi des emails pour chaque comédien
 
 
-			//String toEmail = com.getAdresseEmail(); // can be any email id 
-			String toEmail = "fdigne@me.com";
+			String toEmail = com.getAdresseEmail(); // can be any email id 
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");
@@ -118,7 +117,7 @@ public class GestionMailsController {
 
 	private String getBodyEmail(Comedien com, PeriodeFiltre periodeFiltre) {
 
-		
+
 		Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 37");
 		Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 333+1");
 		Collection<BigInteger> listeSpec37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(com.getId3T(), periodeFiltre.getDateDebut(), periodeFiltre.getDateFin(), "Compagnie 37");
@@ -142,7 +141,7 @@ public class GestionMailsController {
 				"</head>\n" + 
 				"<body>" ;
 		body += "Bonjour "+com.getPrenomPersonne()+",<br/><br/>";
-		
+
 		body += "Tu trouveras ci-dessous ton planning pour la période du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin())+".<br/><br/>" ;
 		body += "Bises.<br/>Laurence.<br/><br/><br/>";
 		body += "<div><table><tr><th>Représentations</th><th>Salle</th><th>Role</th><th>Distribution</th></tr>" ;	
@@ -154,7 +153,7 @@ public class GestionMailsController {
 				//MEF Date évènement
 				DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 				String dateEv = dateFormat.format(evParSpec.getDateEvenement());
-				
+
 				if(listeEvenements37.contains(evParSpec)) {
 					body += "<tr><td>"+dateEv+"</td><td>"+evParSpec.getNomSalle()+"</td><td>"+merciquimetier.consulterRole(getKeyValueFromMapDistribution(com, evParSpec.getDistribution())).getNomRole()+"</td><td>";
 					for (Comedien comDistrib : evParSpec.getDistribution().values()) {
@@ -175,7 +174,7 @@ public class GestionMailsController {
 				//MEF Date évènement
 				DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 				String dateEv = dateFormat.format(evParSpec.getDateEvenement());
-				
+
 				if(listeEvenements333.contains(evParSpec)) {
 					body += "<tr><td>"+dateEv+"</td><td>"+evParSpec.getNomSalle()+"</td><td>"+merciquimetier.consulterRole(getKeyValueFromMapDistribution(com, evParSpec.getDistribution())).getNomRole()+"</td><td>" ;
 					for (Comedien comDistrib : evParSpec.getDistribution().values()) {

@@ -1,5 +1,8 @@
 package com.merciqui.web;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
+import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
@@ -22,20 +26,8 @@ import com.merciqui.metier.IMerciQuiMetier;
 @Controller
 public class RecapitulatifController {
 
-	private static final Map<String, Integer>seasons = new HashMap<String, Integer>() ;
-	static {
-		seasons.put("AutomneDebut" , Calendar.SEPTEMBER);
-		seasons.put("AutomneFin" , Calendar.JANUARY);
-		seasons.put("HiverDebut" , Calendar.FEBRUARY);
-		seasons.put("HiverFin" , Calendar.APRIL);
-		seasons.put("PrintempsDebut" , Calendar.MAY);
-		seasons.put("PrintempsFin" , Calendar.JULY);
-		seasons.put("EteDebut" , Calendar.AUGUST);
-		seasons.put("EteFin" , Calendar.AUGUST);
-
-
-	};
-
+	
+	
 	private static final Map <String, Collection<String>> mapListeMoisParPeriode = new HashMap<String, Collection<String>>() ;
 	private static final Map<String, String> mapMoisCalendarInt = new HashMap<String, String>();
 	static {
@@ -85,64 +77,66 @@ public class RecapitulatifController {
 	IMerciQuiMetier merciquimetier ;
 
 	@RequestMapping("/recapitulatifIndex")
-	public String index(Model model, String periodFilter, String yearFilter) {
+	public String index(Model model, Long idPeriodeFiltre) {
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		model.addAttribute("listeComediens", listeComediens);
 		model.addAttribute("mapMoisCalendarInt", mapMoisCalendarInt);
-		model.addAttribute("yearFilter", yearFilter);
-		model.addAttribute("periodFilter", periodFilter);
-		if (yearFilter == null) {
-			yearFilter = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-		}
-		if (periodFilter == null) {
-			periodFilter = "AllYear" ;
-		}
-		Collection<String> listeMois = mapListeMoisParPeriode.get(periodFilter);
-		model.addAttribute("listeMois", listeMois);
-
+		
+		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
+		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
+		model.addAttribute("idPeriodeFiltre",idPeriodeFiltre);
 
 		Map<String, Integer> mapTotalDateParSpectacleParMois = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacleParComedien = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParComedienParMois = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParComedien = new HashMap<String, Integer>();
 
-
+		ArrayList<String> listeMois = new ArrayList<String>();
 
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, Integer.valueOf(yearFilter));
+		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
 		cal.set(Calendar.DAY_OF_MONTH,1);
 		cal.set(Calendar.HOUR_OF_DAY,  0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
-		if (periodFilter != "AllYear") {
-			cal.set(Calendar.MONTH, seasons.get(periodFilter+"Debut"));
-		}
+		
 		Date dateDebutFiltre = cal.getTime();
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
-		if (periodFilter != "AllYear") {
-			cal.set(Calendar.MONTH, seasons.get(periodFilter+"Fin"));
-			if(periodFilter.equals("Automne")) {
-				int nextYear = Integer.valueOf(yearFilter) +1 ;
-				cal.set(Calendar.YEAR, nextYear);
-			}
-		}
+		
 		Date dateFinFiltre = cal.getTime();
+		
+		if (idPeriodeFiltre != null) {
 
+			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
+			dateDebutFiltre = periodeFiltre.getDateDebut();
+			dateFinFiltre = periodeFiltre.getDateFin();
+			
+			//Creation liste des mois dans l'intervalle 
+			DateFormat formater = new SimpleDateFormat("MMM-yyyy");
 
-		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
-		Collection<Evenement> listeEvenementsFiltres = new ArrayList<Evenement>();
-		for (Evenement evenementFiltre : listeEvenements) {
-			Date dateEvenement = evenementFiltre.getDateEvenement();
-			if(dateEvenement.compareTo(dateDebutFiltre)>0 && dateFinFiltre.compareTo(dateEvenement)> 0){	
-				listeEvenementsFiltres.add(evenementFiltre);
-			}
+	        Calendar beginCalendar = Calendar.getInstance();
+	        Calendar finishCalendar = Calendar.getInstance();
+
+	        beginCalendar.setTime(dateDebutFiltre);
+			finishCalendar.setTime(dateFinFiltre);
+			 while (beginCalendar.before(finishCalendar)) {
+		            // add one month to date per loop
+		            String date =     formater.format(beginCalendar.getTime()).toUpperCase();
+		            System.out.println(date);
+		            listeMois.add(date);
+		            beginCalendar.add(Calendar.MONTH, 1);
+		        }
+
 		}
+		model.addAttribute("listeMois", listeMois);
 
+		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+		
 		//Calcul des spectacles pour chaque comédien
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 		for (Spectacle spectacle : merciquimetier.listeSpectacles()) {

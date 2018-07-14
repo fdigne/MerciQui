@@ -31,6 +31,8 @@ public interface IMerciQuiMetier {
 	public Collection<Spectacle> listeSpectacles();
 	public void supprimerSpectacle(String nomSpectacle);
 	public void creerSpectacle(Spectacle spectacle);
+	public Collection<BigInteger> listeSpectacleParComedienParPeriode(String id3t, Date dateDebutFiltre,
+			Date dateFinFiltre);
 	
 	
 	//Gestion des Roles
@@ -53,7 +55,9 @@ public interface IMerciQuiMetier {
 	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
 	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(String id3T, Long idSpectacle,Date dateDebut, Date dateFin, String compagnie );
 	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
-	
+	public int getNombreDatesparComedienParPeriode(String id3t, Date dateDebutFiltre, Date dateFinFiltre);
+	public int getNombreDatesparComedienParSpectacleParPeriode(String id3t, Long idSpectacle, Date dateDebutFiltre,
+			Date dateFinFiltre);
 	//Gestion des Periodes
 	public Periode creerPeriode(Periode periode);
 	public Periode consulterPeriode(Periode periode);
@@ -66,6 +70,8 @@ public interface IMerciQuiMetier {
 	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre);
 	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre);
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) ;
+	
+	
 
 	
 	

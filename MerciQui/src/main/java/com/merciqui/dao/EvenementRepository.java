@@ -35,4 +35,14 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 
 	@Query("select o from Evenement o where o.dateEvenement>=:x and o.dateEvenement<=:y ORDER BY o.dateEvenement")
 	Collection<Evenement> getListEvenementsParPeriode(@Param("x")Date dateDebut, @Param("y")Date dateFin);
+
+	@Query(value = "select count(*) from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement WHERE d.distribution_id3t=:x AND e.date_evenement>=:y AND e.date_evenement<=:z", nativeQuery = true)
+	int getNbreDatesParComedienParPeriode(@Param("x")String id3t, @Param("y")Date dateDebutFiltre, @Param("z")Date dateFinFiltre);
+
+	@Query(value = "select count(*) from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement WHERE d.distribution_id3t=:x AND e.code_spectacle=:w AND e.date_evenement>=:y AND e.date_evenement<=:z", nativeQuery = true)
+	int getNbreDatesParComedienParSpectacleParPeriode(@Param("x")String id3t, @Param("w")Long idSpectacle, @Param("y")Date dateDebutFiltre,
+			@Param("z")Date dateFinFiltre);
+	
+	@Query(value = "select code_spectacle from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement WHERE d.distribution_id3t=:x AND e.date_evenement>=:y AND e.date_evenement<=:z GROUP BY code_spectacle", nativeQuery = true)
+	Collection<BigInteger> getListSpectacleParComedienParPeriode(@Param("x")String id3t, @Param("y")Date dateDebutFiltre, @Param("z")Date dateFinFiltre);
 }

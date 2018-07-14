@@ -4,8 +4,10 @@
 	layout:decorator="template1">
 <head>
 <meta charset="UTF-8" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 <script type="text/javascript" charset="utf-8">
  jQuery(function(){
   jQuery("#dateNaissanceComedien").datepicker(
@@ -63,178 +65,243 @@
 		<div class="col-md-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">Liste des Comédiens</div>
-						<div class="panel-body">
-						<form th:action="@{/consulterComedien}" method="get">
-							<select name="id3T" onchange="this.form.submit()">
-							<option disabled="true" selected="true">Choisir un comédien</option>
-								<option th:value="${o.id3T}" th:text="${o.nomPersonne+' '+o.prenomPersonne}" th:each="o:${listeComediens}"
+				<div class="panel-body">
+					<form th:action="@{/consulterComedien}" method="get">
+						<select name="id3T" onchange="this.form.submit()">
+							<option disabled="true" selected="true">Choisir un
+								comédien</option>
+							<option th:value="${o.id3T}"
+								th:text="${o.nomPersonne+' '+o.prenomPersonne}"
+								th:each="o:${listeComediens}"
 								th:selected="(${o.id3T} == ${id3T})" />
-							</select>
-							</form>
-						</div>
+						</select>
+					</form>
 				</div>
-			
+			</div>
+
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Informations</div>
 				<div class="panel-body">
-				<form th:action="@{/modifierComedien}" method="post" >
-				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+					<form th:action="@{/modifierComedien}" method="post">
+						<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
 						<div>
-							<label>Nom : </label> <input type="text"
-								name="nomComedien" th:value="${comedien.nomPersonne}"/></div>
-							<div>
-							<label>Prénom : </label> <input type="text"
-								name="prenomComedien" th:value="${comedien.prenomPersonne}" /></div>
-							<div>
-							<label>Date de naissance : </label> <input id="dateNaissanceComedien" type="date"
-								name="dateNaissanceComedien" th:value="${comedien.dateNaissance}" /></div>
-							<div>
+							<label>Nom : </label> <input type="text" name="nomComedien"
+								th:value="${comedien.nomPersonne}" />
+						</div>
+						<div>
+							<label>Prénom : </label> <input type="text" name="prenomComedien"
+								th:value="${comedien.prenomPersonne}" />
+						</div>
+						<div>
+							<label>Date de naissance : </label> <input
+								id="dateNaissanceComedien" type="date"
+								name="dateNaissanceComedien"
+								th:value="${comedien.dateNaissance}" />
+						</div>
+						<div>
 							<label>Numéro de sécurité sociale : </label> <input type="text"
-								name="numSecuComedien" required="true" th:value="${comedien.id3T}" /></div>
-							<div>
-							<label>Sexe : </label>
-							<select name="sexeComedien">
-									<option value="Masculin" th:selected = "(${comedien.sexe == 'Masculin'})">Masculin</option>
-									<option value="Feminin" th:selected = "(${comedien.sexe == 'Feminin'})">Féminin</option>
+								name="numSecuComedien" required="true"
+								th:value="${comedien.id3T}" />
+						</div>
+						<div>
+							<label>Sexe : </label> <select name="sexeComedien">
+								<option value="Masculin"
+									th:selected="(${comedien.sexe == 'Masculin'})">Masculin</option>
+								<option value="Feminin"
+									th:selected="(${comedien.sexe == 'Feminin'})">Féminin</option>
 							</select>
-							</div>
-							<div>
+						</div>
+						<div>
 							<label>Adresse postale : </label> <input type="text"
-								name="adressePostaleComedien" th:value="${comedien.adressePostale}"/></div>
-							<div>
+								name="adressePostaleComedien"
+								th:value="${comedien.adressePostale}" />
+						</div>
+						<div>
 							<label>Adresse email : </label> <input type="text"
-								name="adresseEmailComedien" required="true" th:value="${comedien.adresseEmail}"/></div>	
-							<div>
+								name="adresseEmailComedien" required="true"
+								th:value="${comedien.adresseEmail}" />
+						</div>
+						<div>
 							<label>Numéro de téléphone : </label> <input type="text"
-								name="numTelComedien" th:value="${comedien.numTel}"/></div>
-					
-					<br/><br/>
-					<div>
-						<label>Nombre de dates programmées : </label> <label th:text="${nbreDates}"></label>
-					</div>
-					<br/>
-					<div>
-					<button type="submit" class="btn btn-primary">Modifier Comédien</button>
-					</div>
-					<br/>
+								name="numTelComedien" th:value="${comedien.numTel}" />
+						</div>
+
+						<br />
+						<br />
+						<div>
+							<label>Nombre de dates programmées : </label> <label
+								th:text="${nbreDates}"></label>
+						</div>
+						<br />
+						<div>
+							<button type="submit" class="btn btn-primary">Modifier
+								Comédien</button>
+						</div>
+						<br />
 					</form>
-					<form th:action="@{/supprimerComedien}" method="post" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce comédien ?');">
-				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
-					<div>
-					<button type="submit" class="btn btn-primary">Supprimer Comédien</button>
-					</div>
+					<form th:action="@{/supprimerComedien}" method="post"
+						onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce comédien ?');">
+						<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+						<div>
+							<button type="submit" class="btn btn-primary">Supprimer
+								Comédien</button>
+						</div>
 					</form>
 				</div>
 			</div>
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Indisponibilités</div>
 				<div class="panel-body">
-				<form th:action="@{/ajouterIndispo}" method="post" >
-				<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
-				<table class="table table-striped">
-				<caption style="text-align :center">Nouvelle Indispo</caption>
-				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
-				<tr><td><input id="dateDebutIndispo" type="datetime" name="dateDebutIndispo"></input></td>
-					<td><input id="dateFinIndispo" type="datetime" name="dateFinIndispo"></input></td>
-					<td><button type="submit" class="btn btn-primary">Ajouter</button></td></tr>
-				</table>
-				</form>
-				<br/>
-				
-				<div>
-				<table class="table table-striped">
-				<caption style="text-align :center">Liste Indispos</caption>
-				<tr><th>Date de Début</th><th>Date de Fin (incluse)</th><th></th></tr>
-				<tr th:each="o:${listeIndispos}"><td><label id="dateDebutIndispo" type="datetime" name="dateDebutIndispo" th:text="${o.dateDebut.getDate()+'/'+(o.dateDebut.getMonth()+1)+'/'+(o.dateDebut.getYear()+1900)}"></label>
-				</td>
-					<td><label id="dateFinIndispo" type="datetime" name="dateFinIndispo" th:text="${o.dateFin.getDate()+'/'+(o.dateFin.getMonth()+1)+'/'+(o.dateFin.getYear()+1900)}"></label></td>
-					<td>
-					<form th:action="@{/supprimerIndispo}" method="post" >
-					<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
-					<input type="hidden" th:name="idPeriode" th:value="${o.idPeriode}" />
-					<button type="submit" class="btn btn-primary">Supprimer</button>
+					<form th:action="@{/ajouterIndispo}" method="post">
+						<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+						<table class="table table-striped">
+							<caption style="text-align: center">Nouvelle Indispo</caption>
+							<tr>
+								<th>Date de Début</th>
+								<th>Date de Fin (incluse)</th>
+								<th></th>
+							</tr>
+							<tr>
+								<td><input id="dateDebutIndispo" type="datetime"
+									name="dateDebutIndispo"></input></td>
+								<td><input id="dateFinIndispo" type="datetime"
+									name="dateFinIndispo"></input></td>
+								<td><button type="submit" class="btn btn-primary">Ajouter</button></td>
+							</tr>
+						</table>
 					</form>
-					</td></tr>
-				</table>
+					<br />
+
+					<div>
+						<table class="table table-striped">
+							<caption style="text-align: center">Liste Indispos</caption>
+							<tr>
+								<th>Date de Début</th>
+								<th>Date de Fin (incluse)</th>
+								<th></th>
+							</tr>
+							<tr th:each="o:${listeIndispos}">
+								<td><label id="dateDebutIndispo" type="datetime"
+									name="dateDebutIndispo"
+									th:text="${o.dateDebut.getDate()+'/'+(o.dateDebut.getMonth()+1)+'/'+(o.dateDebut.getYear()+1900)}"></label>
+								</td>
+								<td><label id="dateFinIndispo" type="datetime"
+									name="dateFinIndispo"
+									th:text="${o.dateFin.getDate()+'/'+(o.dateFin.getMonth()+1)+'/'+(o.dateFin.getYear()+1900)}"></label></td>
+								<td>
+									<form th:action="@{/supprimerIndispo}" method="post">
+										<input type="hidden" name="id3T" th:value="${comedien.id3T}" />
+										<input type="hidden" th:name="idPeriode"
+											th:value="${o.idPeriode}" />
+										<button type="submit" class="btn btn-primary">Supprimer</button>
+									</form>
+								</td>
+							</tr>
+						</table>
+					</div>
+
 				</div>
-				
+
 			</div>
-			
 		</div>
-		</div>
-		
-				<div class="col-md-6">
-			<div class="panel panel-primary" >
+
+		<div class="col-md-6">
+			<div class="panel panel-primary">
 				<div class="panel-heading">Saisie d'un Comedien</div>
 				<div class="panel-body">
 					<form th:action="@{/saisieComedien}" method="post">
-							<div>
-							<label>Nom : </label> <input type="text"
-								name="nomComedien" /></div>
-							<div>
-							<label>Prénom : </label> <input type="text"
-								name="prenomComedien"/></div>
-							<div>
-							<label>Date de naissance : </label> <input id="dateNaissanceComedien" type="date"
-								name="dateNaissanceComedien" /></div>
-							<div>
+						<div>
+							<label>Nom : </label> <input type="text" name="nomComedien" />
+						</div>
+						<div>
+							<label>Prénom : </label> <input type="text" name="prenomComedien" />
+						</div>
+						<div>
+							<label>Date de naissance : </label> <input
+								id="dateNaissanceComedien" type="date"
+								name="dateNaissanceComedien" />
+						</div>
+						<div>
 							<label>Numéro de sécurité sociale : </label> <input type="text"
-								name="numSecuComedien" required="true" /></div>
-							<div>
-							<label>Sexe : </label>
-							<select name="sexeComedien">
-									<option value="Masculin">Masculin</option>
-									<option value="Feminin">Féminin</option>
+								name="numSecuComedien" required="true" />
+						</div>
+						<div>
+							<label>Sexe : </label> <select name="sexeComedien">
+								<option value="Masculin">Masculin</option>
+								<option value="Feminin">Féminin</option>
 							</select>
-							</div>
-							<div>
+						</div>
+						<div>
 							<label>Adresse postale : </label> <input type="text"
-								name="adressePostaleComedien"/></div>
-							<div>
+								name="adressePostaleComedien" />
+						</div>
+						<div>
 							<label>Adresse email : </label> <input type="email"
-								name="adresseEmailComedien" required="true"/></div>	
-							<div>
-							<label>Numéro de téléphone : </label> <input type="tel" 
-								name="numTelComedien"/></div>
-								
-							<button type="submit" class="btn btn-primary">Ajouter</button>
+								name="adresseEmailComedien" required="true" />
+						</div>
+						<div>
+							<label>Numéro de téléphone : </label> <input type="tel"
+								name="numTelComedien" />
+						</div>
+
+						<button type="submit" class="btn btn-primary">Ajouter</button>
 					</form>
 				</div>
 			</div>
 			<div class="panel panel-primary" th:if="${comedien}">
 				<div class="panel-heading">Détail Comédien</div>
 				<div class="panel-body">
-					<form id="filterForm" th:action="@{/consulterComedien}" method="get">
-							<input type="hidden"
-								name="id3T" th:value="${id3T}" />
-							
-							<div>
-							
-							
-								<select id="idPeriodeFiltre" name="idPeriodeFiltre"
-									onchange="this.form.submit()">
-									<option disabled="true" selected="true">Filtrer</option>
-									<option th:each="periode:${listePeriodesFiltres}"
-										th:value="${periode.idPeriode}"
-										th:text="${periode.nomPeriode}"
-										th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
-								</select>
-							</div>
-							</form>
-							<br/>
-							<div>
-							<table id="roleNames" class="table table-striped" >
-							<tr><th>Représentations</th><th th:text="${comedien.nomPersonne +' '+comedien.prenomPersonne}"></th></tr>
-							<tr><th>Compagnie 37</th><td></td></tr>
-							<tr th:each="e:${mapTotalDatesSpectacle37}"><td><a th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}" th:text="${e.key}"></a></td><td th:text="${e.value}"></td></tr>
-							<tr><th>Compagnie 333+1</th><td></td></tr>
-							<tr th:each="e:${mapTotalDatesSpectacle333}"><td ><a th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}" th:text="${e.key}"></a></td><td th:text="${e.value}"></td></tr>
-							<tr><th>Total</th><th th:text="${nbreDates}"></th></tr>
-							</table>
-							</div>
+					<form id="filterForm" th:action="@{/consulterComedien}"
+						method="get">
+						<input type="hidden" name="id3T" th:value="${id3T}" />
+
+						<div>
+							<select id="idPeriodeFiltre" name="idPeriodeFiltre"
+								onchange="this.form.submit()">
+								<option disabled="true" selected="true">Filtrer</option>
+								<option th:each="periode:${listePeriodesFiltres}"
+									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
+									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
+							</select>
+						</div>
+					</form>
+					<br />
+					<div>
+						<table id="roleNames" class="table table-striped">
+							<tr>
+								<th>Représentations</th>
+								<th
+									th:text="${comedien.nomPersonne +' '+comedien.prenomPersonne}"></th>
+							</tr>
+							<tr>
+								<th>Compagnie 37</th>
+								<td></td>
+							</tr>
+							<tr th:each="e:${mapTotalDatesSpectacle37}">
+								<td><a
+									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
+									th:text="${e.key}"></a></td>
+								<td th:text="${e.value}"></td>
+							</tr>
+							<tr>
+								<th>Compagnie 333+1</th>
+								<td></td>
+							</tr>
+							<tr th:each="e:${mapTotalDatesSpectacle333}">
+								<td><a
+									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
+									th:text="${e.key}"></a></td>
+								<td th:text="${e.value}"></td>
+							</tr>
+							<tr>
+								<th>Total</th>
+								<th th:text="${nbreDates}"></th>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
-		</div>
+	</div>
 </body>
 </html>
