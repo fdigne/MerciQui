@@ -96,12 +96,7 @@ public class GestionComediensController {
 					dateDebutFiltre = periodeFiltre.getDateDebut();
 					dateFinFiltre = periodeFiltre.getDateFin();
 				}
-				//Collection<Evenement> listeEvenements37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");	
-				//Collection<Evenement> listeEvenements333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");	
-
-				//model.addAttribute("listeEvenements37", listeEvenements37);
-				//model.addAttribute("listeEvenements333", listeEvenements333);
-
+				
 				Collection<BigInteger> listeSpectacles37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
 				Collection<BigInteger> listeSpectacles333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
 				int nbreDatesTotal = 0 ;
@@ -119,7 +114,6 @@ public class GestionComediensController {
 				
 				model.addAttribute("mapTotalDatesSpectacle37", mapTotalDateParSpectacle37);
 				model.addAttribute("mapTotalDatesSpectacle333", mapTotalDateParSpectacle333);
-				//model.addAttribute("nbreDates", String.valueOf(listeEvenements37.size()+listeEvenements333.size()));
 				model.addAttribute("nbreDates", nbreDatesTotal);
 
 				Collection<Periode> listePeriodeIndispos = com.getListeIndispos();
