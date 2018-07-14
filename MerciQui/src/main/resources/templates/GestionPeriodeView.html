@@ -47,7 +47,7 @@ $(document).ready(function(){
 	console.log(dateLabel) ;
 	var reg2 = new RegExp("[- :]+", "g") ;
 	var tab = dateLabel.split(reg2);
-	$(this).text(tab[1]+"-"+tab[2]+"-"+tab[0]);
+	$(this).text(tab[2]+"-"+tab[1]+"-"+tab[0]);
 	});	
 });
 </script>
@@ -66,12 +66,12 @@ $(document).ready(function(){
 						</div>
 						<div>
 							<label>Début période : </label> <input
-								id="dateDebutPeriodeFiltre" type="date"
+								id="dateDebutPeriodeFiltre" type="datetime"
 								name="dateDebutPeriodeFiltre" required="true" />
 						</div>
 						<div>
 							<label>Fin période : </label> <input id="dateFinPeriodeFiltre"
-								type="date" name="dateFinPeriodeFiltre" required="true" />
+								type="datetime" name="dateFinPeriodeFiltre" required="true" />
 						</div>
 						<button type="submit" class="btn btn-primary">Ajouter</button>
 					</form>
