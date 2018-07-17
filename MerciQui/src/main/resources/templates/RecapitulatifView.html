@@ -4,43 +4,71 @@
 	layout:decorator="template1">
 <head>
 <meta charset="UTF-8" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
 
 <title>Merci Qui ?</title>
 </head>
 <body>
-<div layout:fragment="content">
-<div class="panel panel-primary">
-				<div class="panel-heading">Récapitulatif</div>
-				<div class="panel-body">
-					<form id="filterForm" th:action="@{/recapitulatifIndex}" method="get">
-							
-							<div>
-							<select id="idPeriodeFiltre" name="idPeriodeFiltre"
-								onchange="this.form.submit()">
-								<option disabled="true" selected="true">Filtrer</option>
-								<option th:each="periode:${listePeriodesFiltres}"
-									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
-									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
-							</select>
-							</div>
-							</form>
-							<br/>
-							<div>
-							<table id="recapTable" class="table  table-bordered" >
-							<tr style="background-color : #F9F9F9"><th>Comédiens</th><th th:text="${m}" th:each="m:${listeMois}" style="text-align :center"></th><th style="text-align :center">TOTAL</th></tr>
-							<tr th:each="o:${listeComediens}"><td>
-							<tr style="background-color : #F9F9F9"><th><a th:href="${'/consulterComedien?id3T=' + o.id3T}" th:text="${o.nomPersonne +' '+o.prenomPersonne}"></a></th><th th:each="m:${listeMois}" th:text="${mapTotalDateParComedienParMois?.get(o.id3T+mapMoisCalendarInt.get(m))}" style="text-align :center"></th><th th:text="${mapTotalDateParComedien?.get(o.id3T)}" style="color:red; text-align :center"></th></tr>
-							<tr th:each="s:${mapSpectaclesParComedien?.get(o)}"><td>
-							<tr th:each="spec : ${s}"><td th:text="${spec.nomSpectacle}"></td><td th:text="${mapTotalDateParSpectacleParMois.get(o.id3T+spec.nomSpectacle+mapMoisCalendarInt.get(m))}" style="text-align :center" th:each="m:${listeMois}"></td><th th:text="${mapTotalDateParSpectacleParComedien.get(spec.nomSpectacle+o.id3T)}" style="text-align :center"></th></tr>
-							</td>
-							</tr>
-							</td></tr>
-							</table>
-							</div>
+	<div layout:fragment="content">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Récapitulatif</div>
+			<div class="panel-body">
+				<form id="filterForm" th:action="@{/recapitulatifIndex}"
+					method="get">
+
+					<div>
+						<select id="idPeriodeFiltre" name="idPeriodeFiltre"
+							onchange="this.form.submit()">
+							<option disabled="true" selected="true">Filtrer</option>
+							<option th:each="periode:${listePeriodesFiltres}"
+								th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
+								th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
+						</select>
+					</div>
+				</form>
+				<br />
+				<div>
+					<table id="recapTable" class="table  table-bordered">
+						<tr style="background-color: #F9F9F9">
+							<th>Comédiens</th>
+							<th th:text="${m}" th:each="m:${listeMois}"
+								style="text-align: center"></th>
+							<th style="text-align: center">TOTAL</th>
+						</tr>
+						<tr th:each="o:${listeComediens}">
+							<td>
+						<tr style="background-color: #F9F9F9">
+							<th><a th:href="${'/consulterComedien?id3T=' + o.id3T}"
+								th:text="${o.nomPersonne +' '+o.prenomPersonne}"></a></th>
+							<th th:each="m:${listeMois}"
+								th:text="${mapTotalDateParComedienParMois?.get(o.id3T+m)}"
+								style="text-align: center"></th>
+							<th th:text="${mapTotalDateParComedien?.get(o.id3T)}"
+								style="color: red; text-align: center"></th>
+						</tr>
+						<tr th:each="s:${mapSpectaclesParComedien?.get(o)}">
+							<td>
+						<tr th:each="spec : ${s}"
+							th:if="${mapTotalDateParSpectacleParComedien.get(spec.nomSpectacle+o.id3T) != null}">
+							<td th:text="${spec.nomSpectacle}"></td>
+							<td
+								th:text="${mapTotalDateParSpectacleParMois.get(o.id3T+spec.nomSpectacle+m)}"
+								style="text-align: center" th:each="m:${listeMois}"></td>
+							<th
+								th:text="${mapTotalDateParSpectacleParComedien.get(spec.nomSpectacle+o.id3T)}"
+								style="text-align: center"></th>
+						</tr>
+						</td>
+						</tr>
+						</td>
+						</tr>
+					</table>
 				</div>
 			</div>
-			</div>
+		</div>
+	</div>
 </body>
 </html>
