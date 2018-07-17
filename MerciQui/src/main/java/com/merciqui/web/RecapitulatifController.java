@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -23,6 +25,9 @@ import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
+
+import groovy.lang.Tuple;
+
 
 @Controller
 public class RecapitulatifController {
@@ -65,12 +70,15 @@ public class RecapitulatifController {
 		cal.set(Calendar.SECOND, 59);
 
 		Date dateFinFiltre = cal.getTime();
+		
 
 		if (idPeriodeFiltre != null) {
 
 			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
 			dateDebutFiltre = periodeFiltre.getDateDebut();
 			dateFinFiltre = periodeFiltre.getDateFin();
+			
+			
 
 			//Creation liste des mois dans l'intervalle 
 			DateFormat formater = new SimpleDateFormat("MMM-yyyy");
@@ -159,6 +167,8 @@ public class RecapitulatifController {
 
 
 			}
+			
+			
 
 			//AJOUT DES ATTRIBUTES 
 			model.addAttribute("mapTotalDateParSpectacleParMois", mapTotalDateParSpectacleParMois);
