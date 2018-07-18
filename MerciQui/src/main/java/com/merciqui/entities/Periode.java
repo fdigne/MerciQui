@@ -24,7 +24,7 @@ public class Periode {
 	@ManyToMany(mappedBy="listeIndispos", fetch = FetchType.LAZY)
 	private Collection<Comedien> listeComediens ;
 	
-	@OneToMany(mappedBy="periode")
+	@OneToMany(mappedBy="periode", fetch = FetchType.LAZY)
 	private Collection<Evenement> listeEvenements ;
 	
 	public Periode() {

@@ -55,7 +55,7 @@ public interface IMerciQuiMetier {
 	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
 	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(String id3T, Long idSpectacle,Date dateDebut, Date dateFin, String compagnie );
 	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin, String compagnie);
-	public int getNombreDatesparComedienParPeriode(String id3t, Date dateDebutFiltre, Date dateFinFiltre);
+	public Collection<Object[]> getNombreDatesparComedienParPeriode(Date dateDebutFiltre, Date dateFinFiltre);
 	public int getNombreDatesparComedienParSpectacleParPeriode(String id3t, Long idSpectacle, Date dateDebutFiltre,
 			Date dateFinFiltre);
 	//Gestion des Periodes

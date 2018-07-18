@@ -47,7 +47,7 @@ public class RecapitulatifController {
 		Map<String, Integer> mapTotalDateParSpectacleParMois = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacleParComedien = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParComedienParMois = new HashMap<String, Integer>();
-		Map<String, Integer> mapTotalDateParComedien = new HashMap<String, Integer>();
+		Map<String, String> mapTotalDateParComedien = new HashMap<String, String>();
 
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 
@@ -70,15 +70,15 @@ public class RecapitulatifController {
 		cal.set(Calendar.SECOND, 59);
 
 		Date dateFinFiltre = cal.getTime();
-		
+
 
 		if (idPeriodeFiltre != null) {
 
 			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
 			dateDebutFiltre = periodeFiltre.getDateDebut();
 			dateFinFiltre = periodeFiltre.getDateFin();
-			
-			
+
+		}
 
 			//Creation liste des mois dans l'intervalle 
 			DateFormat formater = new SimpleDateFormat("MMM-yyyy");
@@ -95,52 +95,35 @@ public class RecapitulatifController {
 				beginCalendar.add(Calendar.MONTH, 1);
 			}
 
-		}
+
 
 		model.addAttribute("listeMois", listeMois);
 
-		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
 
+
+		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+		for (Comedien com : listeComediens) {
+			Collection<Spectacle> listeSpec = new ArrayList<Spectacle>();
+			Collection<BigInteger> listeSpecId = merciquimetier.listeSpectacleParComedienParPeriode(com.getId3T(), dateDebutFiltre, dateFinFiltre);
+			for (BigInteger specid : listeSpecId) {
+				listeSpec.add(merciquimetier.consulterSpectacle(specid.longValue()));
+			}
+			mapSpectaclesParComedien.put(com, listeSpec);
+		}
 
 		//////TRAITEMENT DES MAPS POUR CHAQUE EVENEMENT FILTRE ET POUR CHAQUE COMEDIEN
-
-
+		Collection<Object[]> resultGetTotalDateParComedien = merciquimetier.getNombreDatesparComedienParPeriode(dateDebutFiltre, dateFinFiltre);
+		for (Object[] o : resultGetTotalDateParComedien) {
+			mapTotalDateParComedien.put(o[0].toString(),o[1].toString());	
+		}
+		for (Entry<Comedien, Collection<Spectacle>> entry : mapSpectaclesParComedien.entrySet()) {
+			for (Spectacle spec : entry.getValue()) {
+				mapTotalDateParSpectacleParComedien.put(spec.getNomSpectacle()+entry.getKey().getId3T(), merciquimetier.getNombreDatesparComedienParSpectacleParPeriode(entry.getKey().getId3T(), spec.getIdSpectacle(), dateDebutFiltre, dateFinFiltre));
+			}
+		}
+		
 		for (Evenement ev : listeEvenementsFiltres) {
 
-			// Calcul du total de dates par comédien pour la période filtrée
-			for (Entry<Long, Comedien> distrib : ev.getDistribution().entrySet()) {
-				//Récupération liste spectacles pour chaque comédien
-				Collection<Spectacle> listeSpec = new ArrayList<Spectacle>();
-				Collection<BigInteger> listeSpecId = merciquimetier.listeSpectacleParComedienParPeriode(distrib.getValue().getId3T(), dateDebutFiltre, dateFinFiltre);
-				for (BigInteger specid : listeSpecId) {
-					listeSpec.add(merciquimetier.consulterSpectacle(specid.longValue()));
-				}
-				mapSpectaclesParComedien.put(distrib.getValue(), listeSpec);
-				if(mapTotalDateParComedien.containsKey(distrib.getValue().getId3T())) {
-					int nbreDatesParComedien = mapTotalDateParComedien.get(distrib.getValue().getId3T());
-					nbreDatesParComedien = nbreDatesParComedien +1 ;
-					mapTotalDateParComedien.put(distrib.getValue().getId3T(), nbreDatesParComedien);
-				}
-				else {
-					mapTotalDateParComedien.put(distrib.getValue().getId3T(), 1);
-				}
-			}
-
-			//Calcul du total de dates par Comédien et par spectacle pour période filtrée
-			for (Entry<Long, Comedien> distrib : ev.getDistribution().entrySet()) {
-				String keyMap = ev.getSpectacle().getNomSpectacle()+distrib.getValue().getId3T();
-				if(mapTotalDateParSpectacleParComedien.containsKey(keyMap)) {
-					int nbreDatesParSpectacleparComedien = mapTotalDateParSpectacleParComedien.get(keyMap);
-					nbreDatesParSpectacleparComedien = nbreDatesParSpectacleparComedien +1 ;
-					mapTotalDateParSpectacleParComedien.put(keyMap, nbreDatesParSpectacleparComedien);
-				}
-				else {
-					mapTotalDateParSpectacleParComedien.put(keyMap, 1);
-				}
-			}
-			//Calcul du total de date par comédien par mois pour la période filtrée
-
-			DateFormat formater = new SimpleDateFormat("MMM-yyyy");
 			String month = formater.format(ev.getDateEvenement().getTime()).toUpperCase();
 			for (Entry<Long, Comedien> distrib : ev.getDistribution().entrySet()) {
 				String keyMap = distrib.getValue().getId3T()+month ;
@@ -167,18 +150,16 @@ public class RecapitulatifController {
 
 
 			}
-			
-			
 
-			//AJOUT DES ATTRIBUTES 
-			model.addAttribute("mapTotalDateParSpectacleParMois", mapTotalDateParSpectacleParMois);
-			model.addAttribute("mapTotalDateParComedienParMois", mapTotalDateParComedienParMois);
-			model.addAttribute("mapTotalDateParSpectacleParComedien", mapTotalDateParSpectacleParComedien);
-			model.addAttribute("mapTotalDateParComedien", mapTotalDateParComedien);
-			model.addAttribute("mapSpectaclesParComedien",mapSpectaclesParComedien);
 		}
 
-
+		//AJOUT DES ATTRIBUTES 
+		model.addAttribute("mapTotalDateParSpectacleParMois", mapTotalDateParSpectacleParMois);
+		model.addAttribute("mapTotalDateParComedienParMois", mapTotalDateParComedienParMois);
+		model.addAttribute("mapTotalDateParSpectacleParComedien", mapTotalDateParSpectacleParComedien);
+		model.addAttribute("mapTotalDateParComedien", mapTotalDateParComedien);
+		model.addAttribute("mapSpectaclesParComedien",mapSpectaclesParComedien);
+		
 		return "RecapitulatifView";
 	}
 

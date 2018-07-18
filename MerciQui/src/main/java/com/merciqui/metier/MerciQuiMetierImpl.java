@@ -353,8 +353,8 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public int getNombreDatesparComedienParPeriode(String id3t, Date dateDebutFiltre, Date dateFinFiltre) {
-		return evenementRepository.getNbreDatesParComedienParPeriode(id3t, dateDebutFiltre, dateFinFiltre);
+	public Collection<Object[]> getNombreDatesparComedienParPeriode(Date dateDebutFiltre, Date dateFinFiltre) {
+		return evenementRepository.getNbreDatesParComedienParPeriode(dateDebutFiltre, dateFinFiltre);
 	}
 
 	@Override
