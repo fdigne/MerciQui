@@ -133,8 +133,6 @@ public class GestionAgendaController {
 		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
 		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
 		model.addAttribute("idPeriodeFiltre",idPeriodeFiltre);
-		//model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
-		//model.addAttribute("listeEvenements", merciquimetier.listeEvenements());
 		
 		if(idEvenement != null) {
 			Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
@@ -238,6 +236,7 @@ public class GestionAgendaController {
 			}
 		}
 		catch (Exception e) {
+			
 			return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+roleCurrent.getNomRole();
 		}
 
@@ -378,14 +377,22 @@ public class GestionAgendaController {
 				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
 				if (! evenement.getDistribution().containsValue(comedien)) {
 					boolean comedienIndispo = false ;
-
+					boolean isVacances = false ;
 					for (Periode p : comedien.getListeIndispos()) {
 						if (isOverlapping(p.getDateDebut(), p.getDateFin(), evenement.getPeriode().getDateDebut(), evenement.getPeriode().getDateFin())) {
 							comedienIndispo = true ;
+							isVacances = p.isVacances();
 						}
 					}
 					if (comedienIndispo) {
-						return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible !";
+						if(isVacances) {
+							return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible (en vacances)!";
+
+						}
+						else {
+							return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible (pris sur autre spectacle)!";
+
+						}
 					}
 				}
 
