@@ -93,6 +93,8 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 			<div class="panel panel-primary">
 				<div class="panel-heading">Saisie d'un Evènement</div>
 				<div class="panel-body">
+				<div class="text-danger" th:if="${error}"><h3 th:text="${error}"></h3></div>
+				<div class="text-danger" th:if="${errorModif}"><h3 th:text="${errorModif}"></h3></div>
 					<form th:action="@{/saisieEvenement}" method="post">
 						<div>
 							<label>Date : </label> <input id="dateEvenement" type="datetime"
@@ -294,8 +296,7 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							<button type="submit" class="btn btn-primary">Modifier
 								Evènement</button>
 						</div>
-						<div class="text-danger" th:if="${errorModif}"
-							th:text="${errorModif}"></div>
+						
 						<br />
 					</form>
 					<div class="text-danger" th:if="${error}" th:text="${error}"></div>

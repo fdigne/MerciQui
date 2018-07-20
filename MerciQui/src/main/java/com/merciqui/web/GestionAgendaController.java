@@ -386,7 +386,7 @@ public class GestionAgendaController {
 					}
 					if (comedienIndispo) {
 						if(isVacances) {
-							return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible (en vacances)!";
+							return "redirect:/consulterCalendrier?idEvenement="+idEvenement+"&errorModif="+comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+" n'est pas disponible (en vacances) !";
 
 						}
 						else {
