@@ -54,6 +54,15 @@
 				  );
  });
 </script>
+<script>
+    function printDiv() {
+        var divToPrint = document.getElementById('areaToPrint');
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+   }
+</script>
 
 <title>Merci Qui ?</title>
 </head>
@@ -246,8 +255,8 @@
 					</form>
 				</div>
 			</div>
-			<div class="panel panel-primary" th:if="${comedien}">
-				<div class="panel-heading">Détail Comédien</div>
+			<div id="areaToPrint" class="panel panel-primary" th:if="${comedien}">
+				<div  class="panel-heading">Détail Comédien</div>
 				<div class="panel-body">
 					<form id="filterForm" th:action="@{/consulterComedien}"
 						method="get">
@@ -261,9 +270,12 @@
 									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
 									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
 							</select>
+							
 						</div>
 					</form>
-					<br />
+					<br/>
+					<button type="button" onclick="printDiv()">Imprimer</button>
+					<br/><br/>
 					<div>
 						<table id="roleNames" class="table table-striped">
 							<tr>
@@ -283,7 +295,7 @@
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
 									th:text="${e.key}"></a></th>
 								</tr>
-								<tr th:each="ev:${listeEvenements37}" ><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								<tr th:each="ev:${listeEvenements37}" th:if="${ev.spectacle.nomSpectacle == e.key}"><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}" ></td></tr>
 								</table>
 								</td>
 								<th th:text="${e.value}"></th>
@@ -300,7 +312,7 @@
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
 									th:text="${e.key}"></a></th>
 								</tr>
-								<tr th:each="ev:${listeEvenements333}" ><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								<tr th:each="ev:${listeEvenements333}" th:if="${ev.spectacle.nomSpectacle == e.key}"><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}"></td></tr>
 								</table>
 								</td>
 								<th th:text="${e.value}"></th>
