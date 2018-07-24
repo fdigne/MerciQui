@@ -55,9 +55,6 @@
  });
 </script>
 
-<script>
-	
-</script>
 <title>Merci Qui ?</title>
 </head>
 <body>
@@ -286,7 +283,7 @@
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
 									th:text="${e.key}"></a></th>
 								</tr>
-								<tr th:each="ev:${listeEvenements37}" ><td th:text="${ev.dateEvenement}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								<tr th:each="ev:${listeEvenements37}" ><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
 								</table>
 								</td>
 								<th th:text="${e.value}"></th>
@@ -303,7 +300,7 @@
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
 									th:text="${e.key}"></a></th>
 								</tr>
-								<tr th:each="ev:${listeEvenements333}" ><td th:text="${ev.dateEvenement}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								<tr th:each="ev:${listeEvenements333}" ><td th:text="${ev.dateEvenement.getDate()+'/'+(ev.dateEvenement.getMonth()+1)+'/'+(ev.dateEvenement.getYear()+1900)+' - '+(ev.dateEvenement.getHours())+':'+(ev.dateEvenement.getMinutes())}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
 								</table>
 								</td>
 								<th th:text="${e.value}"></th>
