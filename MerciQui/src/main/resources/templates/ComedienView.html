@@ -279,20 +279,34 @@
 								<td></td>
 							</tr>
 							<tr th:each="e:${mapTotalDatesSpectacle37}">
-								<td><a
+								<td>
+								<table class="table table-striped">
+								<tr>
+								<th><a
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
-									th:text="${e.key}"></a></td>
-								<td th:text="${e.value}"></td>
+									th:text="${e.key}"></a></th>
+								</tr>
+								<tr th:each="ev:${listeEvenements37}" ><td th:text="${ev.dateEvenement}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								</table>
+								</td>
+								<th th:text="${e.value}"></th>
 							</tr>
 							<tr>
 								<th>Compagnie 333+1</th>
 								<td></td>
 							</tr>
 							<tr th:each="e:${mapTotalDatesSpectacle333}">
-								<td><a
+								<td>
+								<table class="table table-striped">
+								<tr>
+								<th><a
 									th:href="${'/consulterSpectacle?nomSpectacle='+ e.key}"
-									th:text="${e.key}"></a></td>
-								<td th:text="${e.value}"></td>
+									th:text="${e.key}"></a></th>
+								</tr>
+								<tr th:each="ev:${listeEvenements333}" ><td th:text="${ev.dateEvenement}" th:if="${ev.spectacle.nomSpectacle == e.key}"></td></tr>
+								</table>
+								</td>
+								<th th:text="${e.value}"></th>
 							</tr>
 							<tr>
 								<th>Total</th>

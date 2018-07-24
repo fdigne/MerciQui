@@ -97,7 +97,10 @@ public class GestionComediensController {
 					dateDebutFiltre = periodeFiltre.getDateDebut();
 					dateFinFiltre = periodeFiltre.getDateFin();
 				}
-				
+				Collection<Evenement> evenementsFiltres37 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
+				Collection<Evenement> evenementsFiltres333 = merciquimetier.listeEvenementsParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
+				model.addAttribute("listeEvenements37", evenementsFiltres37);
+				model.addAttribute("listeEvenements333", evenementsFiltres333);
 				Collection<BigInteger> listeSpectacles37 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 37");
 				Collection<BigInteger> listeSpectacles333 = merciquimetier.listeSpectacleParComedienParPeriodeParCompagnie(id3T, dateDebutFiltre, dateFinFiltre, "Compagnie 333+1");
 				int nbreDatesTotal = 0 ;
