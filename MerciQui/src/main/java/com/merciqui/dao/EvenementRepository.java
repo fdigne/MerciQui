@@ -45,4 +45,7 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	
 	@Query(value = "select code_spectacle from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement WHERE d.distribution_id3t=:x AND e.date_evenement>=:y AND e.date_evenement<=:z GROUP BY code_spectacle", nativeQuery = true)
 	Collection<BigInteger> getListSpectacleParComedienParPeriode(@Param("x")String id3t, @Param("y")Date dateDebutFiltre, @Param("z")Date dateFinFiltre);
+
+	@Query(value = "SELECT count(*) FROM evenement_distribution d inner join evenement e ON d.evenement_id_evenement=e.id_evenement where d.distribution_id3t=:x and e.date_evenement >= now()", nativeQuery = true)
+	int existEvenementFuturParComedien(@Param("x")String id3t);
 }

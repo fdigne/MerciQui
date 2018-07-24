@@ -126,8 +126,7 @@
 								name="numTelComedien" th:value="${comedien.numTel}" />
 						</div>
 
-						<br />
-						<br />
+						<br /> <br />
 						<div>
 							<label>Nombre de dates programmées : </label> <label
 								th:text="${nbreDates}"></label>
@@ -145,6 +144,8 @@
 						<div>
 							<button type="submit" class="btn btn-primary">Supprimer
 								Comédien</button>
+						</div>
+						<div class="text-danger" th:if="${error}" th:text="${error}">
 						</div>
 					</form>
 				</div>

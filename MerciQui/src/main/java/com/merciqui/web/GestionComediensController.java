@@ -58,11 +58,12 @@ public class GestionComediensController {
 	}
 
 	@RequestMapping("/consulterComedien")
-	public String consulter(Model model, String id3T, Long idPeriodeFiltre) {
+	public String consulter(Model model, String id3T, Long idPeriodeFiltre, String error) {
 		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
 		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
 		model.addAttribute("idPeriodeFiltre",idPeriodeFiltre);
 		model.addAttribute("id3T", id3T);
+		model.addAttribute("error", error);
 		Map<String, Integer> mapTotalDateParSpectacle37 = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacle333 = new HashMap<String, Integer>();
 
@@ -184,8 +185,21 @@ public class GestionComediensController {
 
 	@PostMapping("/supprimerComedien")
 	public String supprimerComedien(Model model, String id3T) {
-		merciquimetier.supprimerComedien(id3T) ;	
-		return "redirect:/consulterComedien" ;	
+		int evenementFuturs = merciquimetier.existeEvenementFuturParComedien(id3T);
+		if (evenementFuturs > 0) {
+			return "redirect:/consulterComedien?id3T="+id3T+"&error=Comedien programme sur des evenements futurs" ;	
+		}
+		else {
+			Collection<Evenement> listeEvenement = merciquimetier.listeEvenementsParComedien(id3T);
+			
+			for (Evenement ev : listeEvenement) {
+				merciquimetier.supprimerEvenement(ev);
+				
+			}
+			merciquimetier.supprimerComedien(id3T) ;	
+			return "redirect:/consulterComedien" ;	
+		}
+		
 	}
 
 	@PostMapping("/ajouterIndispo")

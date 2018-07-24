@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.datetime.joda.LocalDateParser;
@@ -367,6 +368,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	public Collection<BigInteger> listeSpectacleParComedienParPeriode(String id3t, Date dateDebutFiltre,
 			Date dateFinFiltre) {
 		return evenementRepository.getListSpectacleParComedienParPeriode(id3t, dateDebutFiltre, dateFinFiltre);
+	}
+
+	@Override
+	public int existeEvenementFuturParComedien(String id3t) {
+		
+		return evenementRepository.existEvenementFuturParComedien(id3t);
 	}
 
 	
