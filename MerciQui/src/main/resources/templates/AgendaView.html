@@ -18,7 +18,7 @@
 $(document).ready(function(){
 
   	var comediens = [[${itemsComediens}]] ;
-  	$html = '<select name="listeComediensAjoutes" id="listeComediensAjoutes" multiple="multiple" size="1" class="chosen-select">';
+  	$html = '<select name="listeComediensAjoutes" id="listeComediensAjoutes" multiple="multiple" size="1" class="chosen-select" required="true">';
 	$html+= '<option value="all">TOUS LES COMEDIENS</option>' ;
   	comediens.forEach(function(comedien) {
   		$html += "<option value=\""+comedien[0]+"\">"+comedien[1]+" "+comedien[2]+"</option>" ;
@@ -243,7 +243,7 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 								<th>Validation</th>
 							</tr>
 							<tr>
-								<td><select id="idPeriodeFiltre" name="idPeriodeFiltre">
+								<td><select id="idPeriodeFiltre" name="idPeriodeFiltre" required="true">
 										<option disabled="true" selected="true">Période</option>
 										<option th:each="periode:${listePeriodesFiltres}"
 											th:value="${periode.idPeriode}"

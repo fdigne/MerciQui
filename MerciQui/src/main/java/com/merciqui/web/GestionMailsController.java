@@ -106,7 +106,6 @@ public class GestionMailsController {
 
 			
 			String toEmail = com.getAdresseEmail(); // can be any email id 
-
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");
