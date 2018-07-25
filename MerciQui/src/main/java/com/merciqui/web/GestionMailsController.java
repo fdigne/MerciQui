@@ -43,9 +43,10 @@ public class GestionMailsController {
 
 
 	@GetMapping("/sendEmail")
-	public String sendEmail(Model model, Long idPeriodeFiltre) {
+	public String sendEmail(Model model, Long idPeriodeFiltre, String[] listeComediensAjoutes) {
 
-
+		
+		System.out.println(listeComediensAjoutes);
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
@@ -73,22 +74,39 @@ public class GestionMailsController {
 
 		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
 
-
-
+		
+		Collection<Comedien> listeComediensCheck = new ArrayList<Comedien>();
 		Collection<Comedien> listeComediens = new ArrayList<Comedien>();
-		for (Evenement evenement : listeEvenementsFiltres) {
-			for(Entry<Long, Comedien> entry : evenement.getDistribution().entrySet()) {
-				if(! listeComediens.contains(entry.getValue())) {
-					listeComediens.add(entry.getValue());
-				}	
+
+		boolean allComediens = false ;
+		for (String idCom : listeComediensAjoutes) {
+			if (idCom.equals("all")) {
+				allComediens= true ;
+			}
+			else {
+				listeComediensCheck.add(merciquimetier.consulterComedien(idCom));
 			}
 		}
+		if (allComediens) {
+			for (Evenement evenement : listeEvenementsFiltres) {
+				for(Entry<Long, Comedien> entry : evenement.getDistribution().entrySet()) {
+					if(! listeComediens.contains(entry.getValue())) {
+						listeComediens.add(entry.getValue());
+					}	
+				}
+			}
+		}
+		else {
+			listeComediens.addAll(listeComediensCheck);
+		}
+		
 
 		for (Comedien com : listeComediens) {
 			//Envoi des emails pour chaque comédien
 
-
+			
 			String toEmail = com.getAdresseEmail(); // can be any email id 
+
 			Properties props = new Properties();
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");

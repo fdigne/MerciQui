@@ -184,8 +184,15 @@ public class GestionAgendaController {
 		}
 		
 		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
+		
+		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
+		for(Comedien c : listeComediens) {
+			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
 
-
+		}
+		model.addAttribute("itemsComediens", itemsComediens) ;
+		model.addAttribute("listeComediensAjoutes", listeComediens);
 		model.addAttribute("listeEvenements", listeEvenementsFiltres);
 
 		model.addAttribute("error", error);
