@@ -86,17 +86,16 @@ $("#nomSalle").change(function(){
 <script>
 $(document).ready(function(){
 
-$("#listeEvenementSelect.option").each(function () {
+/* $("#listeEvenementSelect.option").each(function () {
 var optionText	= $(this).text() ;
 var reg = new RegExp("[-: ]+", "g");
 if (optionText != "Choisir un evènement"){
 	var textSpec = optionText.split(" - ");
 	var textTab = textSpec[0].split(reg);
-	
 	var textMEF = textTab[2]+"-"+textTab[1]+"-"+textTab[0]+" "+textTab[3]+":"+textTab[4]+" "+textSpec[1];
 $(this).text(textMEF);
 }	
-});
+}); */
 
 var dateLabel = $("#dateEvenementModif").text() ;
 var reg2 = new RegExp("[- :]+", "g") ;
@@ -225,7 +224,7 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							<option disabled="true" selected="true">Choisir un
 								evènement</option>
 							<option th:value="${o.idEvenement}"
-								th:text="${o.dateEvenement +' - '+ o.spectacle.nomSpectacle}"
+								th:text="${o.dateEvenement.getDate()+'/'+(o.dateEvenement.getMonth()+1)+'/'+(o.dateEvenement.getYear()+1900)+' '+o.dateEvenement.getHours()+':'+o.dateEvenement.getMinutes()+' - '+ o.spectacle.nomSpectacle}"
 								th:each="o:${listeEvenements}"
 								th:selected="(${o.idEvenement} == ${idEvenement})" />
 						</select>
@@ -273,8 +272,8 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 						<input type="hidden" name="idEvenement"
 							th:value="${evenement.idEvenement}" />
 						<div>
-							<label>Date : </label> <input id="dateEvenementModif" type="datetime"
-								name="dateEvenementModif" th:value="${evenement.dateEvenement}"/>
+							<label>Date : </label> <label id="dateEvenementModif"
+								name="dateEvenementModif" th:text="${evenement.dateEvenement}"></label>
 						</div>
 
 						<div>
