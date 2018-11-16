@@ -47,6 +47,7 @@ public interface IMerciQuiMetier {
 	public Evenement consulterEvenement(String idEvenement);
 	public Evenement creerEvenement(Evenement evenement);
 	public void supprimerEvenement(Evenement evenement);
+	public void modifierEvenement(Evenement evenement);
 	public Collection<Evenement> listeEvenements();
 	public Collection<Evenement> listeEvenementsParPeriode(Date dateDebut, Date dateFin);
 	public Collection<Evenement> listeEvenementsParSpectacle(Long idSpectacle);

@@ -419,7 +419,7 @@ public class GestionAgendaController {
 			}
 			myEvent.setAttendees(listeAttendees) ;
 			myEvent.setDescription(descriptionEvent);
-			merciquimetier.supprimerEvenement(evenement);
+			merciquimetier.modifierEvenement(evenement);
 			evenement.setPeriode(periodeIndispoEvent);
 			evenement.setDistribution(distribution);
 			evenement.setCompagnie(compagnieModif);
