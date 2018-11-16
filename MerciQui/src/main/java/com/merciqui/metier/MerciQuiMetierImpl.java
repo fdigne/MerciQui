@@ -154,6 +154,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		evenement.setDistribution(null);
 		evenementRepository.save(evenement);
 		evenementRepository.delete(evenement);
+		periodeRepository.delete(evenement.getPeriode());
 
 	}
 
