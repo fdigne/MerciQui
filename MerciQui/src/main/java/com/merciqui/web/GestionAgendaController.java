@@ -236,9 +236,6 @@ public class GestionAgendaController {
 				.setEmail(com.getAdresseEmail());
 				comediens.add(attendee);
 				descriptionEvent += attendee.getDisplayName() +"\n" ;
-				Set<Periode> listeIndispos = com.getListeIndispos();
-				listeIndispos.add(periodeIndispo);
-				com.setListeIndispos(listeIndispos);
 				listeComediensDistrib.add(com);
 			}
 		}
@@ -246,9 +243,12 @@ public class GestionAgendaController {
 			
 			return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+roleCurrent.getNomRole();
 		}
-
+		
 		//Update la base SQL
 		for (Comedien com : listeComediensDistrib) {
+			Set<Periode> listeIndispos = com.getListeIndispos();
+			listeIndispos.add(periodeIndispo);
+			com.setListeIndispos(listeIndispos);
 			merciquimetier.creerComedien(com);
 		}
 
@@ -354,7 +354,7 @@ public class GestionAgendaController {
 		if(! isIndispoTit) {
 			distribComedien = role.getComedienTitulaire();
 		}
-
+		
 		return distribComedien ;
 	}	
 
