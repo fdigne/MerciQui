@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -48,4 +49,8 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 
 	@Query(value = "SELECT count(*) FROM evenement_distribution d inner join evenement e ON d.evenement_id_evenement=e.id_evenement where d.distribution_id3t=:x and e.date_evenement >= now()", nativeQuery = true)
 	int existEvenementFuturParComedien(@Param("x")String id3t);
+	
+	@Modifying(clearAutomatically = true)
+	@Query(value="delete c from comedien_liste_indispos c left outer join evenement e on c.liste_indispos_id_periode = e.id_periode inner join periode on periode.id_periode = liste_indispos_id_periode where id_evenement is null and is_vacances = false ;", nativeQuery = true)
+	void cleanIndisposComediens() ;
 }

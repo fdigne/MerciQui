@@ -124,6 +124,10 @@ public class GestionAgendaController {
 			}
 		}*/
 		////////////////////////////////////////////////////////////////////
+		
+		//NETTOYAGE DE LA BASE DE DONNEES
+		merciquimetier.cleanIndisposComediens();
+		merciquimetier.cleanPeriode();
 		return "redirect:/consulterCalendrier" ;	
 	}
 

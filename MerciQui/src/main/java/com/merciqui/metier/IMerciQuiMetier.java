@@ -60,11 +60,14 @@ public interface IMerciQuiMetier {
 	public int getNombreDatesparComedienParSpectacleParPeriode(String id3t, Long idSpectacle, Date dateDebutFiltre,
 			Date dateFinFiltre);
 	public int existeEvenementFuturParComedien(String id3t);
+	public void cleanIndisposComediens();
+	
 	//Gestion des Periodes
 	public Periode creerPeriode(Periode periode);
 	public Periode consulterPeriode(Periode periode);
 	public Periode consulterPeriode(Long idPeriode);
 	public void supprimerPeriode(Long idPeriode);
+	public void cleanPeriode();
 	
 	//Gestion des Periodes Filtres
 	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre);

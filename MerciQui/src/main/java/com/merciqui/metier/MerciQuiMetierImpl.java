@@ -390,6 +390,16 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		return evenementRepository.existEvenementFuturParComedien(id3t);
 	}
 
+	@Override
+	public void cleanPeriode() {
+		periodeRepository.cleanPeriode();
+	}
+
+	@Override
+	public void cleanIndisposComediens() {
+		evenementRepository.cleanIndisposComediens();
+	}
+
 	
 
 
