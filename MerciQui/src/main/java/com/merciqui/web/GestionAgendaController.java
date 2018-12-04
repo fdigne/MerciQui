@@ -244,8 +244,11 @@ public class GestionAgendaController {
 			}
 		}
 		catch (Exception e) {
-			
-			return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+roleCurrent.getNomRole();
+			String remplacants = "";
+			for (Comedien com : merciquimetier.getListeRemplacants(roleCurrent.getIdRole())) {
+				remplacants += " "+com.getNomPersonne() + " "+com.getPrenomPersonne();
+			}
+			return "redirect:/consulterCalendrier?error=Pas de comedien disponible pour le role "+roleCurrent.getNomRole()+" Comediens : "+roleCurrent.getComedienTitulaire().getNomPersonne()  +" "+roleCurrent.getComedienTitulaire().getPrenomPersonne()+" "+ remplacants;
 		}
 		
 		//Update la base SQL
