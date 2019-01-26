@@ -32,7 +32,7 @@ public class Comedien extends Personne implements Serializable{
 	
 	@ManyToMany
 	@OrderBy(value="date_debut")
-	private Set<Periode> listeIndispos = new HashSet<Periode>(0); ;
+	private Collection<Periode> listeIndispos = new HashSet<Periode>(0); ;
 
 	public Comedien() {
 		super();
@@ -64,12 +64,12 @@ public class Comedien extends Personne implements Serializable{
 	}
 
 	
-	public Set<Periode> getListeIndispos() {
+	public Collection<Periode> getListeIndispos() {
 		return listeIndispos;
 	}
 
-	public void setListeIndispos(Set<Periode> listeIndispos) {
-		this.listeIndispos = listeIndispos;
+	public void setListeIndispos(Collection<Periode> listeIndispos2) {
+		this.listeIndispos = listeIndispos2;
 	}
 
 	public Set<Role> getListeRolesRempl() {

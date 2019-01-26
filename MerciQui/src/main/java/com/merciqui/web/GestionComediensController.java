@@ -230,7 +230,7 @@ public class GestionComediensController {
 	@PostMapping("/supprimerIndispo")
 	public String supprimerIndispo(Model model, String id3T, String idPeriode) {
 		Comedien comedien = merciquimetier.consulterComedien(id3T);
-		Set<Periode> periodes = comedien.getListeIndispos();
+		Collection<Periode> periodes = comedien.getListeIndispos();
 		periodes.remove(merciquimetier.consulterPeriode(Long.valueOf(idPeriode)));
 		comedien.setListeIndispos(periodes);
 		merciquimetier.creerComedien(comedien);

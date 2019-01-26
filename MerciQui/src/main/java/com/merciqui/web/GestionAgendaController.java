@@ -253,7 +253,7 @@ public class GestionAgendaController {
 		
 		//Update la base SQL
 		for (Comedien com : listeComediensDistrib) {
-			Set<Periode> listeIndispos = com.getListeIndispos();
+			Collection<Periode> listeIndispos = com.getListeIndispos();
 			listeIndispos.add(periodeIndispo);
 			com.setListeIndispos(listeIndispos);
 			merciquimetier.creerComedien(com);
@@ -410,7 +410,7 @@ public class GestionAgendaController {
 					}
 				}
 
-				Set<Periode> listeIndispoMAJ = comedien.getListeIndispos();
+				Collection<Periode> listeIndispoMAJ = comedien.getListeIndispos();
 				listeIndispoMAJ.add(evenement.getPeriode());
 				comedien.setListeIndispos(listeIndispoMAJ);
 				merciquimetier.creerComedien(comedien);
