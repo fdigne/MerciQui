@@ -1,22 +1,14 @@
 package com.merciqui.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Role implements Serializable{
@@ -35,7 +27,7 @@ public class Role implements Serializable{
 	private Spectacle spectacle ;
 	
 	@ManyToMany
-	private Set<Comedien> listeRemplas  = new HashSet<Comedien>(0);;;
+	private Collection<Comedien> listeRemplas  = new ArrayList<Comedien>();
 	
 	
 	
@@ -83,11 +75,11 @@ public class Role implements Serializable{
 		this.comedienTitulaire = comedienTitulaire;
 	}
 
-	public Set<Comedien> getListeRemplas() {
+	public Collection<Comedien> getListeRemplas() {
 		return listeRemplas;
 	}
 
-	public void setListeRemplas(Set<Comedien> listeRemplas) {
+	public void setListeRemplas(Collection<Comedien> listeRemplas) {
 		this.listeRemplas = listeRemplas;
 	}
 

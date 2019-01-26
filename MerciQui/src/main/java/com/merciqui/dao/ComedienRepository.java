@@ -13,7 +13,6 @@ import com.merciqui.entities.Periode;
 public interface ComedienRepository extends JpaRepository<Comedien, String>{
 	
 	@Query(value="select listeIndispos from Comedien where id3t=:x")
-	//@Query(value ="SELECT liste_indispos FROM liste_indispos WHERE period_id = ?1", nativeQuery = true)
 	Collection<Periode> getListeIndispos(@Param("x")String id3T);
 	
 	
