@@ -203,25 +203,18 @@ public class RoleRepositoryIntegrationTest {
         // given
     	
     	 Comedien comedien1 = new Comedien("123456789", "Digne", "Sarah", null, null, null, "fdigne@me.com", null);
-         entityManager.persist(comedien1);
          
          Comedien comedien2 = new Comedien("987654321", "Digne", "Florian", null, null, null, "fdigne2@me.com", null);
-         entityManager.persist(comedien2);
          
          Comedien comedien3 = new Comedien("0000000", "Vilardell", "Julie", null, null, null, "fdigne3@me.com", null);
-         entityManager.persist(comedien3);
          
          Comedien comedien4 = new Comedien("111111", "Andrieu", "Patrick", null, null, null, "fdigne4@me.com", null);
-         entityManager.persist(comedien4);
          
     	Spectacle spectacle1 = new Spectacle("Les Clotildes");
         Spectacle spectacle2 = new Spectacle("En toutes amitiés");
         Spectacle spectacle3 = new Spectacle("Un diner d'adieu");
-        entityManager.persist(spectacle1);
-        entityManager.persist(spectacle2);
-        entityManager.persist(spectacle3);
-        
-        Set<Comedien> listeRemplacants1 = new HashSet<Comedien>() ;
+      
+        Collection<Comedien> listeRemplacants1 = new ArrayList<Comedien>() ;
         listeRemplacants1.add(comedien3);
         listeRemplacants1.add(comedien4);
         
@@ -235,6 +228,15 @@ public class RoleRepositoryIntegrationTest {
         Role role5 = new Role("majordome", spectacle2);
         Role role6 = new Role("Femme", spectacle3);
         Role role7 = new Role("Homme", spectacle3);
+        
+        entityManager.persist(comedien1);
+        entityManager.persist(comedien2);
+        entityManager.persist(comedien3);
+        entityManager.persist(comedien4);
+        entityManager.persist(spectacle1);
+        entityManager.persist(spectacle2);
+        entityManager.persist(spectacle3);
+        
         entityManager.persist(role1);
         entityManager.persist(role2);
         entityManager.persist(role3);
