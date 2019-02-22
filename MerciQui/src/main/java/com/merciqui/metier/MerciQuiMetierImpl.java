@@ -257,8 +257,8 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public Collection<Comedien> getListeRemplacants(Long idRole) {
 		Collection<Comedien> listeRemplas = new ArrayList<Comedien>();
-		for (String s : roleRepository.getListeRemplacants(idRole)) {
-			listeRemplas.add(consulterComedien(s));
+		for (Comedien com : roleRepository.getListeRemplacants(idRole)) {
+			listeRemplas.add(consulterComedien(com.getId3T()));
 		}
 		return listeRemplas;
 	}
