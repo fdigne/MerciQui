@@ -1,4 +1,4 @@
-package com.merciqui.entities;
+package com.merciqui.metier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.merciqui.dao.ComedienRepository;
+import com.merciqui.entities.Comedien;
 import com.merciqui.metier.MerciQuiMetierImpl;
 
 @RunWith(MockitoJUnitRunner.class)
