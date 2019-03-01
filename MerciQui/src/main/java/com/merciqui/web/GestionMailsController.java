@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,8 +18,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -123,7 +119,7 @@ public class GestionMailsController {
 			String body = this.getBodyEmail(com, periodeFiltre);
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
-			this.sendEmail(session, toEmail,"Planning du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin()), body);
+			GestionMailsController.sendEmail(session, toEmail,"Planning du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin()), body);
 
 
 		}

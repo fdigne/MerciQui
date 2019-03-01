@@ -1,6 +1,5 @@
 package com.merciqui.web;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.google.api.client.util.DateTime;
 import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.metier.IMerciQuiMetier;
 

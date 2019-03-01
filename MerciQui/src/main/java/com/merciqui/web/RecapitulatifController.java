@@ -2,15 +2,12 @@ package com.merciqui.web;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,11 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.PeriodeFiltre;
-import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
-
-import groovy.lang.Tuple;
 
 
 @Controller

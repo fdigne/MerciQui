@@ -1,20 +1,15 @@
 package com.merciqui.metier;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.datetime.joda.LocalDateParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.api.client.util.DateTime;
 import com.merciqui.dao.ComedienRepository;
 import com.merciqui.dao.EvenementRepository;
 import com.merciqui.dao.PeriodeFiltreRepository;
