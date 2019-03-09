@@ -284,7 +284,7 @@ public class MerciQuiMetierImplTest {
 	}
 	
 	@Test
-    public void whengetNbreTotalDate_thenReturnListeEvenement() {
+    public void whengetNbreTotalDate_thenReturnInt() {
 		
 		Spectacle spectacle1 = new Spectacle("aaa");
 		spectacle1.setIdSpectacle(1L);
@@ -292,13 +292,10 @@ public class MerciQuiMetierImplTest {
 		spectacle2.setIdSpectacle(2L);
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
-
-		
 		
 		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
 		Comedien expectedComedien2 = new Comedien("222", "Digne", "Sarah", null, null, null, "fdigne@me.com",null);
 		Comedien expectedComedien3 = new Comedien("333", "Digne", "Aaron", null, null, null, "fdigne@me.com",null);
-
 		
 		Mockito.when(merciQuiMetier.getNombreDatesTotal(expectedComedien1.getId3T())).thenReturn(3);
 		Mockito.when(merciQuiMetier.getNombreDatesTotal(expectedComedien2.getId3T())).thenReturn(1);
@@ -312,5 +309,153 @@ public class MerciQuiMetierImplTest {
 		assertEquals(result2, 1);
 		assertEquals(result3, 0);
 	}
+	
+	@Test
+    public void whengetNombreDatesParSpectacleParComedien_thenReturnInt() {
+		
+		Spectacle spectacle1 = new Spectacle("aaa");
+		spectacle1.setIdSpectacle(1L);
+		Spectacle spectacle2 = new Spectacle("bbb");
+		spectacle2.setIdSpectacle(2L);
+		Spectacle spectacle3 = new Spectacle("ccc");
+		spectacle3.setIdSpectacle(3L);
+		
+		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
+		
+		Mockito.when(merciQuiMetier.getNombreDatesParSpectacleParComedien(spectacle1.getIdSpectacle(), expectedComedien1.getId3T())).thenReturn(1);
+		
+		int result1 = merciQuiMetier.getNombreDatesParSpectacleParComedien(spectacle1.getIdSpectacle(),expectedComedien1.getId3T());
+		
+		assertEquals(result1, 1);		
+	}
+	
+	@Test
+    public void whenGetNombreDatesParComedienParEvenement_thenReturnInt() {
+		
+		Spectacle spectacle1 = new Spectacle("aaa");
+		spectacle1.setIdSpectacle(1L);
+		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
+		Set<Comedien> listeComediens = new HashSet<Comedien>();
+		listeComediens.add(expectedComedien1);
+		
+		Mockito.when(merciQuiMetier.getNombreDatesParComedienParEvenement(spectacle1.getIdSpectacle(), expectedComedien1.getId3T(), "3T", new Date(), new Date())).thenReturn(1);
+		
+		int result1 = merciQuiMetier.getNombreDatesParComedienParEvenement(spectacle1.getIdSpectacle(), expectedComedien1.getId3T(), "3T", new Date(), new Date());
+		
+		assertEquals(result1, 1);		
+	}
+	
+	@Test
+    public void whenlisteEvenementsParComedienParPeriodeParCompagnie_thenReturnCollectionEvenement() {
+		
+		Spectacle spectacle1 = new Spectacle("aaa");
+		spectacle1.setIdSpectacle(1L);
+		Spectacle spectacle2 = new Spectacle("bbb");
+		spectacle2.setIdSpectacle(2L);
+		Spectacle spectacle3 = new Spectacle("ccc");
+		spectacle3.setIdSpectacle(3L);
+		
+		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien2 = new Comedien("222", "Digne", "Sarah", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien3 = new Comedien("333", "Digne", "Aaron", null, null, null, "fdigne@me.com",null);
 
+		Set<Comedien> listeComedien = new HashSet<Comedien>();
+		listeComedien.add(expectedComedien1);
+		listeComedien.add(expectedComedien2);
+		listeComedien.add(expectedComedien3);
+		
+		Evenement ev1 = new Evenement("azerty", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev2 = new Evenement("qqqqq", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev3 = new Evenement("dddd", new Date(), spectacle2, "3T", listeComedien);
+		Evenement ev4 = new Evenement("kkkk", new Date(), spectacle1, "3T", listeComedien);
+		
+		Collection<Evenement> expectedListeEvenements1 = new ArrayList<Evenement>();
+		expectedListeEvenements1.add(ev1);
+		expectedListeEvenements1.add(ev2);
+		expectedListeEvenements1.add(ev3);
+		expectedListeEvenements1.add(ev4);
+		
+		
+		Mockito.when(merciQuiMetier.listeEvenementsParComedienParPeriodeParCompagnie("111", new Date(), new Date(), "333")).thenReturn(expectedListeEvenements1);
+		
+		Collection<Evenement> result1 = merciQuiMetier.listeEvenementsParComedienParPeriodeParCompagnie("111", new Date(), new Date(), "333");
+		
+		assertEquals(result1, expectedListeEvenements1);		
+	}
+	
+	@Test
+    public void whenListeEvenementsParComedien_thenReturnCollectionEvenement() {
+		
+		Spectacle spectacle1 = new Spectacle("aaa");
+		spectacle1.setIdSpectacle(1L);
+		Spectacle spectacle2 = new Spectacle("bbb");
+		spectacle2.setIdSpectacle(2L);
+		Spectacle spectacle3 = new Spectacle("ccc");
+		spectacle3.setIdSpectacle(3L);
+		
+		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien2 = new Comedien("222", "Digne", "Sarah", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien3 = new Comedien("333", "Digne", "Aaron", null, null, null, "fdigne@me.com",null);
+
+		Set<Comedien> listeComedien = new HashSet<Comedien>();
+		listeComedien.add(expectedComedien1);
+		listeComedien.add(expectedComedien2);
+		listeComedien.add(expectedComedien3);
+		
+		Evenement ev1 = new Evenement("azerty", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev2 = new Evenement("qqqqq", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev3 = new Evenement("dddd", new Date(), spectacle2, "3T", listeComedien);
+		Evenement ev4 = new Evenement("kkkk", new Date(), spectacle1, "3T", listeComedien);
+		
+		Collection<Evenement> expectedListeEvenements1 = new ArrayList<Evenement>();
+		expectedListeEvenements1.add(ev1);
+		expectedListeEvenements1.add(ev2);
+		expectedListeEvenements1.add(ev3);
+		expectedListeEvenements1.add(ev4);
+		
+		
+		Mockito.when(merciQuiMetier.listeEvenementsParComedien(expectedComedien1.getId3T())).thenReturn(expectedListeEvenements1);
+		
+		Collection<Evenement> result1 = merciQuiMetier.listeEvenementsParComedien(expectedComedien1.getId3T());
+		
+		assertEquals(result1, expectedListeEvenements1);		
+	}
+	
+	@Test
+    public void whenListeEvenementParSalle_thenReturnCollectionEvenement() {
+		
+		Spectacle spectacle1 = new Spectacle("aaa");
+		spectacle1.setIdSpectacle(1L);
+		Spectacle spectacle2 = new Spectacle("bbb");
+		spectacle2.setIdSpectacle(2L);
+		Spectacle spectacle3 = new Spectacle("ccc");
+		spectacle3.setIdSpectacle(3L);
+		
+		Comedien expectedComedien1 = new Comedien("111", "Digne", "Florian", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien2 = new Comedien("222", "Digne", "Sarah", null, null, null, "fdigne@me.com",null);
+		Comedien expectedComedien3 = new Comedien("333", "Digne", "Aaron", null, null, null, "fdigne@me.com",null);
+
+		Set<Comedien> listeComedien = new HashSet<Comedien>();
+		listeComedien.add(expectedComedien1);
+		listeComedien.add(expectedComedien2);
+		listeComedien.add(expectedComedien3);
+		
+		Evenement ev1 = new Evenement("azerty", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev2 = new Evenement("qqqqq", new Date(), spectacle1, "3T", listeComedien);
+		Evenement ev3 = new Evenement("dddd", new Date(), spectacle2, "3T", listeComedien);
+		Evenement ev4 = new Evenement("kkkk", new Date(), spectacle1, "3T", listeComedien);
+		
+		Collection<Evenement> expectedListeEvenements1 = new ArrayList<Evenement>();
+		expectedListeEvenements1.add(ev1);
+		expectedListeEvenements1.add(ev2);
+		expectedListeEvenements1.add(ev3);
+		expectedListeEvenements1.add(ev4);
+		
+		
+		Mockito.when(merciQuiMetier.listeEvenementParSalle("salle")).thenReturn(expectedListeEvenements1);
+		
+		Collection<Evenement> result1 = merciQuiMetier.listeEvenementParSalle("salle");
+		
+		assertEquals(result1, expectedListeEvenements1);		
+	}
 }
