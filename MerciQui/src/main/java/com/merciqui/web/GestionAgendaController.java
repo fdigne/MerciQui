@@ -192,7 +192,7 @@ public class GestionAgendaController {
 		
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		for(Comedien c : listeComediens) {
-			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
+			itemsComediens.add(new String[] {String.valueOf(c.getId3T()), c.getNomPersonne(), c.getPrenomPersonne()});
 
 		}
 		model.addAttribute("itemsComediens", itemsComediens) ;
@@ -235,7 +235,7 @@ public class GestionAgendaController {
 				Comedien com = setDistribution(role, periodeIndispo);
 				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
-				attendee.setId(com.getId3T());
+				attendee.setId(String.valueOf(com.getId3T()));
 				attendee.setDisplayName(com.getNomPersonne()+" "+com.getPrenomPersonne())
 				.setEmail(com.getAdresseEmail());
 				comediens.add(attendee);
@@ -351,12 +351,12 @@ public class GestionAgendaController {
 
 			for (Comedien comDispo : listeRemplacantDistrib) {
 				int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
-				mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
+				mapComedienNbDates.put(String.valueOf(comDispo.getId3T()), nbDatesCom);	
 			}
 			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
 					Comparator.comparingInt(Entry::getValue));
 
-			distribComedien =  merciquimetier.consulterComedien(min.getKey());
+			distribComedien =  merciquimetier.consulterComedien(Long.valueOf(min.getKey()));
 		}
 		if(! isIndispoTit) {
 			distribComedien = role.getComedienTitulaire();
@@ -388,7 +388,7 @@ public class GestionAgendaController {
 			listeAttendees.clear();
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
-				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(keyValue[1])) ;
 				if (! evenement.getDistribution().containsValue(comedien)) {
 					boolean comedienIndispo = false ;
 					boolean isVacances = false ;
@@ -416,7 +416,7 @@ public class GestionAgendaController {
 				merciquimetier.creerComedien(comedien);
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
 				EventAttendee attendee = new EventAttendee();
-				attendee.setId(comedien.getId3T());
+				attendee.setId(String.valueOf(comedien.getId3T()));
 				attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
 				.setEmail(comedien.getAdresseEmail());
 				listeAttendees.add(attendee);

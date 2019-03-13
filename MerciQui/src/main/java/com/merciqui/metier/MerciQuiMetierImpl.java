@@ -46,13 +46,13 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	private PeriodeFiltreRepository periodeFiltreRepository ;
 
 	@Override
-	public void creerComedien(Comedien comedien) {
+	public Comedien creerComedien(Comedien comedien) {
 
-		comedienRepository.save(comedien);
+		return comedienRepository.save(comedien);
 	}
 
 	@Override
-	public void supprimerComedien(String id3T) {
+	public void supprimerComedien(Long id3T) {
 		Comedien comedien = comedienRepository.findOne(id3T);
 		for (Role r : comedien.getListeRoles()) {
 			r.setComedienTitulaire(null);
@@ -63,7 +63,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public Comedien consulterComedien(String id3T) {
+	public Comedien consulterComedien(Long id3T) {
 		Comedien com = comedienRepository.findOne(id3T);
 
 		if (com == null)
@@ -184,13 +184,13 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public int getNombreDatesTotal(String id3T) {
+	public int getNombreDatesTotal(Long id3T) {
 
 		return evenementRepository.getNbreDatesByComedien(id3T);
 	}
 
 	@Override
-	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, String id3t) {
+	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, Long id3t) {
 		int nbreDates = 0;
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
 		for (Evenement ev : listeEvenements) {
@@ -205,7 +205,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public int getNombreDatesParComedienParEvenement(Long idSpectacle, String id3T, String nomSalle, Date dateDebutFiltre, Date dateFinFiltre) {
+	public int getNombreDatesParComedienParEvenement(Long idSpectacle, Long id3T, String nomSalle, Date dateDebutFiltre, Date dateFinFiltre) {
 		int nbreDates = 0;
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParSpectacle(idSpectacle);
 		for (Evenement ev : listeEvenements) {
@@ -224,7 +224,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 
 
 	@Override
-	public Collection<Evenement> listeEvenementsParComedien(String id3T) {
+	public Collection<Evenement> listeEvenementsParComedien(Long id3T) {
 		Collection<Evenement> listeEvenements = listeEvenements();
 		Collection<Evenement> listeEvenementsParComedien = new ArrayList<Evenement>();
 		for (Evenement ev : listeEvenements) {
@@ -239,7 +239,7 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(String id3T, Date dateDebut, Date dateFin, String compagnie) {
+	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(Long id3T, Date dateDebut, Date dateFin, String compagnie) {
 		Collection<Evenement> listeEvenements = evenementRepository.getListEvenementsParComedienParPeriode(id3T, dateDebut, dateFin, compagnie);
 		return listeEvenements;
 	}
@@ -311,14 +311,14 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(String id3t, Long idSpectacle,
+	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(Long id3t, Long idSpectacle,
 			Date dateDebut, Date dateFin, String compagnie) {
 
 		return evenementRepository.getNbreDatesParComedienParSpectacleParPeriodeParCompagnie(id3t, idSpectacle, dateDebut, dateFin, compagnie);
 	}
 
 	@Override
-	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(String id3t, Date dateDebut, Date dateFin,
+	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(Long id3t, Date dateDebut, Date dateFin,
 			String compagnie) {
 		return evenementRepository.getListSpectacleParComedienParPeriodeParCompagnie(id3t, dateDebut, dateFin, compagnie);
 
@@ -368,19 +368,19 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
-	public int getNombreDatesparComedienParSpectacleParPeriode(String id3t, Long idSpectacle, Date dateDebutFiltre,
+	public int getNombreDatesparComedienParSpectacleParPeriode(Long id3t, Long idSpectacle, Date dateDebutFiltre,
 			Date dateFinFiltre) {
 		return evenementRepository.getNbreDatesParComedienParSpectacleParPeriode(id3t,idSpectacle, dateDebutFiltre, dateFinFiltre);
 	}
 
 	@Override
-	public Collection<BigInteger> listeSpectacleParComedienParPeriode(String id3t, Date dateDebutFiltre,
+	public Collection<BigInteger> listeSpectacleParComedienParPeriode(Long id3t, Date dateDebutFiltre,
 			Date dateFinFiltre) {
 		return evenementRepository.getListSpectacleParComedienParPeriode(id3t, dateDebutFiltre, dateFinFiltre);
 	}
 
 	@Override
-	public int existeEvenementFuturParComedien(String id3t) {
+	public int existeEvenementFuturParComedien(Long id3t) {
 		
 		return evenementRepository.existEvenementFuturParComedien(id3t);
 	}

@@ -9,10 +9,10 @@ import org.springframework.data.repository.query.Param;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Periode;
 
-public interface ComedienRepository extends JpaRepository<Comedien, String>{
+public interface ComedienRepository extends JpaRepository<Comedien, Long>{
 	
 	@Query(value="select listeIndispos from Comedien where id3t=:x")
-	Collection<Periode> getListeIndispos(@Param("x")String id3T);
+	Collection<Periode> getListeIndispos(@Param("x")Long id3T);
 	
 	
 	

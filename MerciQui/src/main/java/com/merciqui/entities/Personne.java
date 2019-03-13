@@ -3,7 +3,7 @@ package com.merciqui.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -11,31 +11,26 @@ import javax.persistence.MappedSuperclass;
 public class Personne implements Serializable {
 	
 	@Id 
-	@Column(unique=true)
-	private String id3T ; //numSecu
+	@GeneratedValue
+	private Long id3T;
 	
+	private String numSecu ; //numSecu
 	private String nomPersonne;
 	private String prenomPersonne;
 	private Date dateNaissance ;
 	private String sexe ;
 	private String adressePostale ; 
 	private String adresseEmail ;
-	private String numTel ;
-	
-	
-	
+	private String numTel ;	
 	
 	public Personne() {
 		super();
 	}
 	
-	
-	
-	
-	public Personne(String id3t, String nomPersonne, String prenomPersonne, Date dateNaissance,
-			String sexe, String adressePostale, String adresseEmail, String numTel) {
+	public Personne(Long id3t, String nomPersonne, String prenomPersonne, Date dateNaissance,
+			String sexe, String adressePostale, String adresseEmail, String numTel, String numSecu) {
 		super();
-		id3T = id3t;
+		this.id3T = id3t;
 		this.nomPersonne = nomPersonne;
 		this.prenomPersonne = prenomPersonne;
 		this.dateNaissance = dateNaissance;
@@ -43,18 +38,24 @@ public class Personne implements Serializable {
 		this.adressePostale = adressePostale;
 		this.adresseEmail = adresseEmail;
 		this.numTel = numTel;
+		this.numSecu = numSecu;
 	}
 
+	public String getNumSecu() {
+		return numSecu;
+	}
 
+	public void setNumSecu(String numSecu) {
+		this.numSecu = numSecu;
+	}
 
-
-	public String getId3T() {
+	public Long getId3T() {
 		return id3T;
 	}
 
 
-	public void setId3T(String id3t) {
-		id3T = id3t;
+	public void setId3T(Long id3t) {
+		this.id3T = id3t;
 	}
 
 
@@ -100,10 +101,6 @@ public class Personne implements Serializable {
 	}
 	public void setNumTel(String numTel) {
 		this.numTel = numTel;
-	}
-	
-	
-	
-	
+	}	
 
 }

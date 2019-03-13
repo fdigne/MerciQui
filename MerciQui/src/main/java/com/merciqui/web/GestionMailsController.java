@@ -80,7 +80,7 @@ public class GestionMailsController {
 				allComediens= true ;
 			}
 			else {
-				listeComediensCheck.add(merciquimetier.consulterComedien(idCom));
+				listeComediensCheck.add(merciquimetier.consulterComedien(Long.valueOf(idCom)));
 			}
 		}
 		if (allComediens) {

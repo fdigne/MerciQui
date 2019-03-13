@@ -108,7 +108,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				}
 			}
 			for (Comedien c : listeComediensParSpectacle) {
-				mapTotalDateParSpectacle.put(c.getId3T(), 0);
+				mapTotalDateParSpectacle.put(String.valueOf(c.getId3T()), 0);
 			}
 
 			for(Evenement ev : listeEvenementsFiltres) {
@@ -116,10 +116,10 @@ dateFinFiltre = periodeFiltre.getDateFin();
 					if (mapTotalDateParSpectacle.containsKey(entry.getValue().getId3T())) {
 						int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
 						nbreDates = nbreDates +1 ;
-						mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
+						mapTotalDateParSpectacle.put(String.valueOf(entry.getValue().getId3T()), nbreDates);	
 					}
 					else {
-						mapTotalDateParSpectacle.put(entry.getValue().getId3T(),1);
+						mapTotalDateParSpectacle.put(String.valueOf(entry.getValue().getId3T()),1);
 					}
 
 				}
@@ -142,7 +142,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 		model.addAttribute("nomSpectacle", nomSpectacle);
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		for(Comedien c : listeComediens) {
-			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
+			itemsComediens.add(new String[] {String.valueOf(c.getId3T()), c.getNomPersonne(), c.getPrenomPersonne()});
 
 		}
 		model.addAttribute("listeComediens", listeComediens);		
@@ -173,7 +173,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				role.setComedienTitulaire(null);
 			}
 			else {
-				Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(id3T[indexRole])) ;
 				role.setComedienTitulaire(comedien);	
 			}
 			role.setNomRole(s);
@@ -183,7 +183,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				for(String r : id3TRempl) {
 					String[] id3TR = r.split("\\.");
 					if (id3TR[0].equals(String.valueOf(indexRole))) {
-						Comedien remp = merciquimetier.consulterComedien(id3TR[1]) ;
+						Comedien remp = merciquimetier.consulterComedien(Long.valueOf(id3TR[1])) ;
 						listeRemplas.put(s, remp);
 						listeRemplasSQL.add(remp);
 					}
@@ -212,7 +212,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				s.setComedienTitulaire(null);
 			}
 			else {
-				Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(id3TModif[indexRole])) ;
 				s.setComedienTitulaire(comedien);	
 			}
 
@@ -222,7 +222,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 					String[] key = r.split("\\.");
 					if (s.getNomRole().equals(key[0])) {
 						if (! listeRemplas.containsKey(key[1])) {
-							Comedien remp = merciquimetier.consulterComedien(key[1]) ;
+							Comedien remp = merciquimetier.consulterComedien(Long.valueOf(key[1])) ;
 							listeRemplas.put(key[1], remp);
 							listeRemplasSQL.add(remp);
 						}

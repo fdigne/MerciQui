@@ -49,7 +49,7 @@ public class GestionComediensController {
 	}
 
 	@RequestMapping("/consulterComedien")
-	public String consulter(Model model, String id3T, Long idPeriodeFiltre, String error) {
+	public String consulter(Model model, Long id3T, Long idPeriodeFiltre, String error) {
 		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
 		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
 		model.addAttribute("idPeriodeFiltre",idPeriodeFiltre);
@@ -135,38 +135,36 @@ public class GestionComediensController {
 	public String saisieComedien(Model model, String nomComedien, String prenomComedien,
 			String dateNaissanceComedien, String numSecuComedien, String sexeComedien, String adressePostaleComedien,
 			String adresseEmailComedien, String numTelComedien) {
-		String id3T = numSecuComedien;
+		//String id3T = numSecuComedien;
 		try {
 			Comedien com = new Comedien();
 			com.setAdresseEmail(adresseEmailComedien);
 			com.setAdressePostale(adressePostaleComedien);
-			com.setId3T(numSecuComedien);
+			//com.setId3T(numSecuComedien.trim());
 			com.setNomPersonne(nomComedien);
 			com.setPrenomPersonne(prenomComedien);
 			com.setNumTel(numTelComedien);
 			com.setSexe(sexeComedien);
 			com.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
 
-			merciquimetier.creerComedien(com);
+			Comedien comSaved = merciquimetier.creerComedien(com);
+			return "redirect:/consulterComedien?id3T="+comSaved.getId3T() ;
 		}
 		catch (Exception e) {
 			model.addAttribute("error", e);
-			return "redirect:/consulterComedien?id3T="+id3T+"&error="+e.getMessage() ;
-		}
-
-		return "redirect:/consulterComedien?id3T="+id3T ;
+			return "redirect:/consulterComedien?error="+e.getMessage() ;
+		}		
 	}
 
 	@PostMapping("/modifierComedien")
 	public String modifierComedien(Model model, String nomComedien, String prenomComedien,
 			String dateNaissanceComedien, String numSecuComedien, String sexeComedien, String adressePostaleComedien,
-			String adresseEmailComedien, String numTelComedien) {
-		String id3T = numSecuComedien;
-		Comedien comedien = merciquimetier.consulterComedien(numSecuComedien);
+			String adresseEmailComedien, String numTelComedien, Long id3T) {
+		Comedien comedien = merciquimetier.consulterComedien(id3T);
 		comedien.setAdresseEmail(adresseEmailComedien);
 		comedien.setAdressePostale(adressePostaleComedien);
 		comedien.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
-		comedien.setId3T(numSecuComedien);
+		//comedien.setId3T(numSecuComedien);
 		comedien.setNomPersonne(nomComedien);
 		comedien.setPrenomPersonne(prenomComedien);
 		comedien.setNumTel(numTelComedien);
@@ -174,11 +172,11 @@ public class GestionComediensController {
 
 		merciquimetier.creerComedien(comedien);
 
-		return "redirect:/consulterComedien?id3T="+id3T ;
+		return "redirect:/consulterComedien?id3T="+comedien.getId3T() ;
 	}
 
 	@PostMapping("/supprimerComedien")
-	public String supprimerComedien(Model model, String id3T) {
+	public String supprimerComedien(Model model, Long id3T) {
 		int evenementFuturs = merciquimetier.existeEvenementFuturParComedien(id3T);
 		if (evenementFuturs > 0) {
 			return "redirect:/consulterComedien?id3T="+id3T+"&error=Comedien programme sur des evenements futurs" ;	
@@ -197,7 +195,7 @@ public class GestionComediensController {
 	}
 
 	@PostMapping("/ajouterIndispo")
-	public String ajouterIndispo(Model model, String id3T, String dateDebutIndispo, String dateFinIndispo) {
+	public String ajouterIndispo(Model model, Long id3T, String dateDebutIndispo, String dateFinIndispo) {
 		Comedien comedien = merciquimetier.consulterComedien(id3T);
 		Date dateDebut = mefDateNaissance(dateDebutIndispo) ;
 		Date dateFin = mefDateNaissance(dateFinIndispo) ;
@@ -215,11 +213,11 @@ public class GestionComediensController {
 		listeIndispos.add(indispo);
 		merciquimetier.creerComedien(comedien);
 
-		return "redirect:/consulterComedien?id3T="+id3T ;	
+		return "redirect:/consulterComedien?id3T="+comedien.getId3T() ;	
 	}
 
 	@PostMapping("/supprimerIndispo")
-	public String supprimerIndispo(Model model, String id3T, String idPeriode) {
+	public String supprimerIndispo(Model model, Long id3T, String idPeriode) {
 		Comedien comedien = merciquimetier.consulterComedien(id3T);
 		Collection<Periode> periodes = comedien.getListeIndispos();
 		periodes.remove(merciquimetier.consulterPeriode(Long.valueOf(idPeriode)));
@@ -227,7 +225,7 @@ public class GestionComediensController {
 		merciquimetier.creerComedien(comedien);
 		merciquimetier.supprimerPeriode(Long.valueOf(idPeriode));
 
-		return "redirect:/consulterComedien?id3T="+id3T ;		
+		return "redirect:/consulterComedien?id3T="+comedien.getId3T();		
 	}
 
 

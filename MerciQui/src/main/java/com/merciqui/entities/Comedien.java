@@ -33,9 +33,9 @@ public class Comedien extends Personne implements Serializable{
 		super();
 	}
 
-	public Comedien(String id3t, String nomClient, String prenomClient, Date dateNaissance,
-			String sexe, String adressePostale, String adresseEmail, String numTel) {
-		super(id3t, nomClient, prenomClient, dateNaissance, sexe, adressePostale, adresseEmail, numTel);
+	public Comedien(Long id3t, String nomClient, String prenomClient, Date dateNaissance,
+			String sexe, String adressePostale, String adresseEmail, String numTel, String numSecu) {
+		super(id3t, nomClient, prenomClient, dateNaissance, sexe, adressePostale, adresseEmail, numTel,numSecu);
 	}
 
 	
