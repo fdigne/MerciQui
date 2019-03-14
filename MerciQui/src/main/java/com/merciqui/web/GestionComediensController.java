@@ -165,7 +165,7 @@ public class GestionComediensController {
 		comedien.setAdresseEmail(adresseEmailComedien);
 		comedien.setAdressePostale(adressePostaleComedien);
 		comedien.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
-		comedien.setNumSecu(numSecuComedien);
+		comedien.setNumSecu(numSecuComedien);//
 		comedien.setNomPersonne(nomComedien);
 		comedien.setPrenomPersonne(prenomComedien);
 		comedien.setNumTel(numTelComedien);
