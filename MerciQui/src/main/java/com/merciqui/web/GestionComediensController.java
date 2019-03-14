@@ -141,6 +141,7 @@ public class GestionComediensController {
 			com.setAdresseEmail(adresseEmailComedien);
 			com.setAdressePostale(adressePostaleComedien);
 			//com.setId3T(numSecuComedien.trim());
+			com.setNumSecu(numSecuComedien);
 			com.setNomPersonne(nomComedien);
 			com.setPrenomPersonne(prenomComedien);
 			com.setNumTel(numTelComedien);
@@ -164,7 +165,7 @@ public class GestionComediensController {
 		comedien.setAdresseEmail(adresseEmailComedien);
 		comedien.setAdressePostale(adressePostaleComedien);
 		comedien.setDateNaissance(mefDateNaissance(dateNaissanceComedien));
-		//comedien.setId3T(numSecuComedien);
+		comedien.setNumSecu(numSecuComedien);
 		comedien.setNomPersonne(nomComedien);
 		comedien.setPrenomPersonne(prenomComedien);
 		comedien.setNumTel(numTelComedien);

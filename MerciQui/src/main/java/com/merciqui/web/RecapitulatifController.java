@@ -41,7 +41,7 @@ public class RecapitulatifController {
 		Map<String, Integer> mapTotalDateParSpectacleParMois = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacleParComedien = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParComedienParMois = new HashMap<String, Integer>();
-		Map<String, String> mapTotalDateParComedien = new HashMap<String, String>();
+		Map<Long, String> mapTotalDateParComedien = new HashMap<Long, String>();
 
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 
@@ -108,7 +108,8 @@ public class RecapitulatifController {
 		//////TRAITEMENT DES MAPS POUR CHAQUE EVENEMENT FILTRE ET POUR CHAQUE COMEDIEN
 		Collection<Object[]> resultGetTotalDateParComedien = merciquimetier.getNombreDatesparComedienParPeriode(dateDebutFiltre, dateFinFiltre);
 		for (Object[] o : resultGetTotalDateParComedien) {
-			mapTotalDateParComedien.put(o[0].toString(),o[1].toString());	
+		    BigInteger key = (BigInteger) o[0];
+			mapTotalDateParComedien.put(key.longValue(),o[1].toString());	
 		}
 		for (Entry<Comedien, Collection<Spectacle>> entry : mapSpectaclesParComedien.entrySet()) {
 			for (Spectacle spec : entry.getValue()) {
