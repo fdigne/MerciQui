@@ -25,6 +25,30 @@
 					</form>
 				</div>
 			</div>
+			<div class="panel panel-primary" th:if="listeEvenements">
+				<div class="panel-heading">Erreurs détéctées</div>
+				<div class="panel-body">
+					<table class="table table-striped">
+						<tr>
+							<th>ID Evenement</th>
+							<th>Compagnie</th>
+							<th>Date Evenement</th>
+							<th>Nom Salle</th>
+							<th>Periode ID</th>
+							<th>Spectacle ID</th>
+						</tr>
+						<tr th:each="e:${listeEvenements}">
+							<td><label th:text="${e.idEvenement}"></label></td>
+							<td><label th:text="${e.Compagnie}"></label></td>
+							<td><label class="datePeriode" type="datetime"
+								th:text="${e.dateEvenement}"></label></td>
+							<td><label th:text="${e.nomSalle}"></label></td>
+							<td><label th:text="${e.periode.idPeriode}"></label></td>
+							<td><label th:text="${e.spectacle.idSpectacle}"></label></td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 
