@@ -33,8 +33,6 @@ public class GestionSpectaclesController {
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
 
-
-
 	@RequestMapping("/spectacleIndex")
 	public String index(Model model) {
 		return "redirect:/consulterSpectacle";
@@ -267,7 +265,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spectacle.getIdSpectacle());
 		for (Evenement ev : listeEvenements) {
 			try {
-				client.events().delete("primary", ev.getIdEvenement()).setSendNotifications(true).execute();
+				client.events().delete("primary", ev.getIdEvenement()).setSendNotifications(false).execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
