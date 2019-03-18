@@ -18,33 +18,18 @@
 	<div layout:fragment="content">
 		<div class="col-md-6">
 			<div class="panel panel-primary">
-				<div class="panel-heading">Analyses</div>
-				<div class="panel-body">
-					<form th:action="@{/lancerAnalyse}" method="post">
-						<button type="submit" class="btn btn-primary">Lancer Analyse</button>
-					</form>
-				</div>
-			</div>
-			<div class="panel panel-primary" th:if="listeEvenements">
 				<div class="panel-heading">Erreurs détéctées</div>
 				<div class="panel-body">
-					<table class="table table-striped">
+				    <label style="color:green" th:text="${no_error}" th:if="no_error"></label>
+				    <label style="color:red" th:text="${alerte}" th:if="alerte"></label>
+					<table class="table table-striped" th:if="${mapErreurs}">
 						<tr>
 							<th>ID Evenement</th>
-							<th>Compagnie</th>
-							<th>Date Evenement</th>
-							<th>Nom Salle</th>
-							<th>Periode ID</th>
-							<th>Spectacle ID</th>
+							<th>Erreur</th>
 						</tr>
-						<tr th:each="e:${listeEvenements}">
-							<td><label th:text="${e.idEvenement}"></label></td>
-							<td><label th:text="${e.Compagnie}"></label></td>
-							<td><label class="datePeriode" type="datetime"
-								th:text="${e.dateEvenement}"></label></td>
-							<td><label th:text="${e.nomSalle}"></label></td>
-							<td><label th:text="${e.periode.idPeriode}"></label></td>
-							<td><label th:text="${e.spectacle.idSpectacle}"></label></td>
+						<tr th:each="e:${mapErreurs}">
+							<td><label th:text="${e.key}"></label></td>
+							<td th:text="${e.value}"></td>
 						</tr>
 					</table>
 				</div>
