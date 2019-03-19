@@ -83,7 +83,7 @@ public class GestionAgendaController {
 	GoogleClientSecrets clientSecrets;
 	GoogleAuthorizationCodeFlow flow;
 
-	static Credential credential;
+	public static Credential credential;
 
 
 	@Value("${google.client.client-id}")

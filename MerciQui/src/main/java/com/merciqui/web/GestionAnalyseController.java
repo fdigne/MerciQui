@@ -1,6 +1,8 @@
 package com.merciqui.web;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -61,27 +64,27 @@ public class GestionAnalyseController {
 	}
 
 	@RequestMapping("/consulterAnalyses")
-	public String consulterPeriodes(Model model) {
+	public String consulterPeriodes(Model model) throws IOException, GeneralSecurityException {
 	    
-	    client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+	    client = new com.google.api.services.calendar.Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, GestionAgendaController.credential)
                 .setApplicationName(APPLICATION_NAME).build();
-	    
+	    Collection<String> listEventId = new ArrayList<String>() ; 
 	    Events googleEvents = null;
-        try {
             googleEvents = client.events().list("primary").execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            
+            for (Event e : googleEvents.getItems()) {
+            	listEventId.add(e.getId());
+            }
 	    
 	    Map<String, String> mapErreurs = new HashMap<String, String>();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
 		//Collection<Comedien> listeComediens = merciquimetier.listeComediens();
-		
+		Collection<String> evenementDB = new ArrayList<String>();
 		for (Evenement ev : listeEvenements) {
 		   for (Comedien com : ev.getDistribution().values()) {
 		       // Check si evenement présent dans google Calendar
-		       if (! googleEvents.containsKey(ev.getIdEvenement())) {
-		           String message = "Evenement " + ev.getIdEvenement() + " n'apparaît pas dans Google Agenda";
+		       if (! listEventId.contains(ev.getIdEvenement())) {
+		           String message = "Evenement n'apparaît pas dans Google Agenda";
 		           mapErreurs.put(ev.getIdEvenement(), message);
 		       }
 		       // Check si le comedien est bien indispo sur la periode de l'évènement
@@ -90,6 +93,13 @@ public class GestionAnalyseController {
 		           mapErreurs.put(ev.getIdEvenement(), message);
 		       }
 		   }
+		   evenementDB.add(ev.getIdEvenement());
+		}
+		for (String id : listEventId) {
+			if (! evenementDB.contains(id)) {
+				String message = "Evenement n'apparaît que dans Google Agenda. A recréer en base.";
+				mapErreurs.put(id, message);
+			}
 		}
 		if (mapErreurs != null && !mapErreurs.isEmpty()) {
 		    String alerte = mapErreurs.size() + " anomalies ont été détectées.";
