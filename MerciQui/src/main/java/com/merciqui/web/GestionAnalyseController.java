@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -26,6 +28,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.merciqui.dao.PeriodeRepository;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
@@ -42,6 +45,8 @@ public class GestionAnalyseController {
     GoogleClientSecrets clientSecrets;
     GoogleAuthorizationCodeFlow flow;
     static Credential credential;
+    
+    PeriodeRepository periodeRepository ;
 
 
     @Value("${google.client.client-id}")
@@ -64,7 +69,7 @@ public class GestionAnalyseController {
 	}
 
 	@RequestMapping("/consulterAnalyses")
-	public String consulterPeriodes(Model model) throws IOException, GeneralSecurityException {
+	public String consulterAnalyses(Model model) throws IOException, GeneralSecurityException {
 	    
 	    client = new com.google.api.services.calendar.Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, GestionAgendaController.credential)
                 .setApplicationName(APPLICATION_NAME).build();
@@ -74,23 +79,21 @@ public class GestionAnalyseController {
             
             for (Event e : googleEvents.getItems()) {
             	listEventId.add(e.getId());
+            	
             }
 	    
 	    Map<String, String> mapErreurs = new HashMap<String, String>();
+	    Map<Long, Long> mapRepairIndispo = new HashMap<Long, Long>();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
 		//Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		Collection<String> evenementDB = new ArrayList<String>();
 		for (Evenement ev : listeEvenements) {
 		   for (Comedien com : ev.getDistribution().values()) {
-		       // Check si evenement présent dans google Calendar
-		       if (! listEventId.contains(ev.getIdEvenement())) {
-		           String message = "Evenement n'apparaît pas dans Google Agenda";
-		           mapErreurs.put(ev.getIdEvenement(), message);
-		       }
 		       // Check si le comedien est bien indispo sur la periode de l'évènement
 		       if (! com.getListeIndispos().contains(ev.getPeriode())) {
 		           String message = "Comedien " + com.getId3T() + " doit avoir periode "+ ev.getPeriode().getIdPeriode() + " dans ses indispos";
 		           mapErreurs.put(ev.getIdEvenement(), message);
+		           mapRepairIndispo.put(ev.getPeriode().getIdPeriode(), com.getId3T());
 		       }
 		   }
 		   evenementDB.add(ev.getIdEvenement());
@@ -105,10 +108,23 @@ public class GestionAnalyseController {
 		    String alerte = mapErreurs.size() + " anomalies ont été détectées.";
 		    model.addAttribute("alerte", alerte);
 		    model.addAttribute("mapErreurs",mapErreurs);
+		    model.addAttribute("mapRepairIndispo", mapRepairIndispo);
 		}
 		else {
 		    model.addAttribute("no_error", NO_ERROR);
 		}
+		
 		return "AnalyseView";
+	}
+	
+	@PostMapping("/reparerAnomalie")
+	public String reparerAnomalies(Model model, Map<Long, Long> mapRepairIndispo) {
+		
+		for (Entry<Long, Long> entry : mapRepairIndispo.entrySet()) {
+			periodeRepository.repairIndispos(entry.getKey(), entry.getValue());
+		}
+		
+		return "redirect:/consulterAnalyses";
+		
 	}
 }
