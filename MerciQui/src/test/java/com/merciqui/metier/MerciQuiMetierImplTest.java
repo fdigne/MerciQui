@@ -40,7 +40,7 @@ public class MerciQuiMetierImplTest {
 	@Test
     public void whenConsulterComedien_thenReturnComedien() {
 		
-		Comedien expectedComedien = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
 		Mockito.when(merciQuiMetier.consulterComedien(1L)).thenReturn(expectedComedien);
 		
 		Comedien result = merciQuiMetier.consulterComedien(1L);
@@ -52,9 +52,9 @@ public class MerciQuiMetierImplTest {
 	@Test
     public void whenListeComedien_thenReturnListeComedien() {
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Collection<Comedien> listeComedien = new ArrayList<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -163,9 +163,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle1 = new Spectacle("aaa");
 		spectacle1.setIdSpectacle(1L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -185,9 +185,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle1 = new Spectacle("aaa");
 		spectacle1.setIdSpectacle(1L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -221,9 +221,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -267,9 +267,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle1 = new Spectacle("aaa");
 		spectacle1.setIdSpectacle(1L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -293,9 +293,12 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		expectedComedien1.setId3T(1L);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		expectedComedien2.setId3T(2L);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		expectedComedien3.setId3T(3L);
 		
 		Mockito.when(merciQuiMetier.getNombreDatesTotal(expectedComedien1.getId3T())).thenReturn(3);
 		Mockito.when(merciQuiMetier.getNombreDatesTotal(expectedComedien2.getId3T())).thenReturn(1);
@@ -320,7 +323,7 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
 		
 		Mockito.when(merciQuiMetier.getNombreDatesParSpectacleParComedien(spectacle1.getIdSpectacle(), expectedComedien1.getId3T())).thenReturn(1);
 		
@@ -334,7 +337,7 @@ public class MerciQuiMetierImplTest {
 		
 		Spectacle spectacle1 = new Spectacle("aaa");
 		spectacle1.setIdSpectacle(1L);
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
 		Set<Comedien> listeComediens = new HashSet<Comedien>();
 		listeComediens.add(expectedComedien1);
 		
@@ -355,9 +358,13 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+        expectedComedien1.setId3T(1L);
+        Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+        expectedComedien2.setId3T(2L);
+        Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+        expectedComedien3.setId3T(3L);
+        
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -393,9 +400,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);
@@ -431,9 +438,9 @@ public class MerciQuiMetierImplTest {
 		Spectacle spectacle3 = new Spectacle("ccc");
 		spectacle3.setIdSpectacle(3L);
 		
-		Comedien expectedComedien1 = new Comedien(1L, "Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien2 = new Comedien(2L, "Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
-		Comedien expectedComedien3 = new Comedien(3L, "Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien1 = new Comedien("Digne", "Florian", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien2 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com",null, null);
+		Comedien expectedComedien3 = new Comedien("Digne", "Aaron", null, null, null, "fdigne@me.com",null, null);
 
 		Set<Comedien> listeComedien = new HashSet<Comedien>();
 		listeComedien.add(expectedComedien1);

@@ -27,10 +27,9 @@ public class Personne implements Serializable {
 		super();
 	}
 	
-	public Personne(Long id3t, String nomPersonne, String prenomPersonne, Date dateNaissance,
+	public Personne(String nomPersonne, String prenomPersonne, Date dateNaissance,
 			String sexe, String adressePostale, String adresseEmail, String numTel, String numSecu) {
 		super();
-		this.id3T = id3t;
 		this.nomPersonne = nomPersonne;
 		this.prenomPersonne = prenomPersonne;
 		this.dateNaissance = dateNaissance;

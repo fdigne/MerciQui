@@ -27,10 +27,10 @@ public class ComedienRepositoryIntegrationTest {
     @Test
     public void whenFindAll_thenReturnListComedien() {
         // given
-        Comedien comedien1 = new Comedien(1L, "Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
+        Comedien comedien1 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
         entityManager.persist(comedien1);
         
-        Comedien comedien2 = new Comedien(2L, "Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
+        Comedien comedien2 = new Comedien("Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
         entityManager.persist(comedien2);
         entityManager.flush();
      
@@ -49,10 +49,10 @@ public class ComedienRepositoryIntegrationTest {
     @Test 
     public void whenDelete_thenReturnNoComedien() {
     	// given
-        Comedien comedien1 = new Comedien(1L, "Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
+        Comedien comedien1 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
         entityManager.persist(comedien1);
         
-        Comedien comedien2 = new Comedien(2L, "Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
+        Comedien comedien2 = new Comedien("Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
         entityManager.persist(comedien2);
         entityManager.flush();
         Collection<Comedien> listeComediens = new ArrayList<Comedien>();
@@ -73,7 +73,7 @@ public class ComedienRepositoryIntegrationTest {
     @Test
     public void whenFindById3T_thenReturnComedien() {
         // given
-        Comedien comedien = new Comedien(1L, "Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
+        Comedien comedien = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
         entityManager.persist(comedien);
         entityManager.flush();
      
@@ -127,7 +127,7 @@ public class ComedienRepositoryIntegrationTest {
     	listeIndispos.add(p2);
     	entityManager.persist(p1);
     	entityManager.persist(p2);
-        Comedien comedien = new Comedien(1L, "Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
+        Comedien comedien = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
         comedien.setListeIndispos(listeIndispos);
         entityManager.persist(comedien);
         entityManager.flush();

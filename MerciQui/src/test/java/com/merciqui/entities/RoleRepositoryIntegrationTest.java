@@ -196,13 +196,13 @@ public class RoleRepositoryIntegrationTest {
     public void whengetListeRemplacants_thenReturnListComedien() {
         // given
     	
-Comedien comedien1 = new Comedien(1L, "Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
+Comedien comedien1 = new Comedien("Digne", "Sarah", null, null, null, "fdigne@me.com", null, null);
         
-        Comedien comedien2 = new Comedien(2L, "Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
+        Comedien comedien2 = new Comedien("Digne", "Florian", null, null, null, "fdigne2@me.com", null, null);
         
-        Comedien comedien3 = new Comedien(3L, "Vilardell", "Julie", null, null, null, "fdigne3@me.com", null, null);
+        Comedien comedien3 = new Comedien("Vilardell", "Julie", null, null, null, "fdigne3@me.com", null, null);
         
-        Comedien comedien4 = new Comedien(4L, "Andrieu", "Patrick", null, null, null, "fdigne4@me.com", null, null);
+        Comedien comedien4 = new Comedien("Andrieu", "Patrick", null, null, null, "fdigne4@me.com", null, null);
          
     	Spectacle spectacle1 = new Spectacle("Les Clotildes");
         Spectacle spectacle2 = new Spectacle("En toutes amitiés");
