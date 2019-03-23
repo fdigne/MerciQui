@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
@@ -75,7 +76,7 @@ public class GestionAnalyseController {
             	listEventId.add(e.getId());
             	
             }
-        MapRepairIndispo mapRepair = new MapRepairIndispo();
+        Collection<MapRepairIndispo> mapRepair = new ArrayList<MapRepairIndispo>();
 	    Map<String, String> mapErreurs = new HashMap<String, String>();
 	    Map<Long, Long> mapRepairIndispo = new HashMap<Long, Long>();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
@@ -88,10 +89,13 @@ public class GestionAnalyseController {
 		           String message = "Comedien " + com.getId3T() + " doit avoir periode "+ ev.getPeriode().getIdPeriode() + " dans ses indispos";
 		           mapErreurs.put(ev.getIdEvenement(), message);
 		           mapRepairIndispo.put(ev.getPeriode().getIdPeriode(), com.getId3T());
+		           MapRepairIndispo mri = new MapRepairIndispo();
+		           mri.setComedien(com.getId3T());
+		           mri.setPeriode(ev.getPeriode().getIdPeriode());
+		           mapRepair.add(mri);
 		       }
 		   }
 		   
-		   mapRepair.setMapRepair(mapRepairIndispo);
 		   evenementDB.add(ev.getIdEvenement());
 		}
 		for (String id : listEventId) {
@@ -114,11 +118,10 @@ public class GestionAnalyseController {
 	}
 	
 	@PostMapping("/reparerAnomalie")
-	public String reparerAnomalies(Model model, @ModelAttribute(value="mapRepairIndispo") MapRepairIndispo mapRepairIndispo) {
+	public String reparerAnomalies(Model model, @ModelAttribute(value="mapRepairIndispo") ArrayList<MapRepairIndispo> mapRepairIndispo) {
 		
-		Map<Long, Long> mapRepair = mapRepairIndispo.getMapRepair();
-		for (Entry<Long, Long> entry : mapRepair.entrySet()) {
-			merciquimetier.repairIndispos(entry.getKey(), entry.getValue());
+		for (MapRepairIndispo mri : mapRepairIndispo) {
+			merciquimetier.repairIndispos(mri.getPeriode(), mri.getComedien());
 		}
 		
 		return "redirect:/consulterAnalyses";
@@ -126,15 +129,26 @@ public class GestionAnalyseController {
 	}
 	
 	public class MapRepairIndispo {
-		  private Map<Long, Long> mapRepair = new HashMap<Long, Long>();
-
-		public Map<Long, Long> getMapRepair() {
-			return mapRepair;
+		  private Long periode;
+		  private Long comedien;
+		  
+		public MapRepairIndispo() {
+			super();
+		}
+		public Long getPeriode() {
+			return periode;
+		}
+		public void setPeriode(Long periode) {
+			this.periode = periode;
+		}
+		public Long getComedien() {
+			return comedien;
+		}
+		public void setComedien(Long comedien) {
+			this.comedien = comedien;
 		}
 
-		public void setMapRepair(Map<Long, Long> mapRepair) {
-			this.mapRepair = mapRepair;
-		}
+		
 		
 	}
 }
