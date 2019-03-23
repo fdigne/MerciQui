@@ -5,17 +5,15 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,10 +26,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-import com.merciqui.dao.PeriodeRepository;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
-import com.merciqui.entities.Periode;
 import com.merciqui.metier.IMerciQuiMetier;
 
 @Controller
@@ -45,8 +41,6 @@ public class GestionAnalyseController {
     GoogleClientSecrets clientSecrets;
     GoogleAuthorizationCodeFlow flow;
     static Credential credential;
-    
-    PeriodeRepository periodeRepository ;
 
 
     @Value("${google.client.client-id}")
@@ -81,7 +75,7 @@ public class GestionAnalyseController {
             	listEventId.add(e.getId());
             	
             }
-	    
+        MapRepairIndispo mapRepair = new MapRepairIndispo();
 	    Map<String, String> mapErreurs = new HashMap<String, String>();
 	    Map<Long, Long> mapRepairIndispo = new HashMap<Long, Long>();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenements();
@@ -96,6 +90,8 @@ public class GestionAnalyseController {
 		           mapRepairIndispo.put(ev.getPeriode().getIdPeriode(), com.getId3T());
 		       }
 		   }
+		   
+		   mapRepair.setMapRepair(mapRepairIndispo);
 		   evenementDB.add(ev.getIdEvenement());
 		}
 		for (String id : listEventId) {
@@ -108,7 +104,7 @@ public class GestionAnalyseController {
 		    String alerte = mapErreurs.size() + " anomalies ont été détectées.";
 		    model.addAttribute("alerte", alerte);
 		    model.addAttribute("mapErreurs",mapErreurs);
-		    model.addAttribute("mapRepairIndispo", mapRepairIndispo);
+		    model.addAttribute("mapRepairIndispo", mapRepair);
 		}
 		else {
 		    model.addAttribute("no_error", NO_ERROR);
@@ -118,13 +114,27 @@ public class GestionAnalyseController {
 	}
 	
 	@PostMapping("/reparerAnomalie")
-	public String reparerAnomalies(Model model, Map<Long, Long> mapRepairIndispo) {
+	public String reparerAnomalies(Model model, @ModelAttribute(value="mapRepairIndispo") MapRepairIndispo mapRepairIndispo) {
 		
-		for (Entry<Long, Long> entry : mapRepairIndispo.entrySet()) {
-			periodeRepository.repairIndispos(entry.getKey(), entry.getValue());
+		Map<Long, Long> mapRepair = mapRepairIndispo.getMapRepair();
+		for (Entry<Long, Long> entry : mapRepair.entrySet()) {
+			merciquimetier.repairIndispos(entry.getKey(), entry.getValue());
 		}
 		
 		return "redirect:/consulterAnalyses";
+		
+	}
+	
+	public class MapRepairIndispo {
+		  private Map<Long, Long> mapRepair = new HashMap<Long, Long>();
+
+		public Map<Long, Long> getMapRepair() {
+			return mapRepair;
+		}
+
+		public void setMapRepair(Map<Long, Long> mapRepair) {
+			this.mapRepair = mapRepair;
+		}
 		
 	}
 }

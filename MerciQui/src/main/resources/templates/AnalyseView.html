@@ -23,10 +23,9 @@
 				    <label style="color:green" th:text="${no_error}" th:if="no_error"></label>
 				    <label style="color:red" th:text="${alerte}" th:if="alerte"></label>
 				    <div>
-						<form th:action="@{/reparerAnomalie}" method="post"
+						<form action="#" th:action="@{/reparerAnomalie}" th:object="${mapRepairIndispo}" method="post"
 							onsubmit="return confirm('Etes-vous sûr de vouloir réparer ?');">
-							<input type="hidden" name="mapRepairIndispo"
-								th:value="${mapRepairIndispo}" />
+							<input type="hidden" name="mapRepairIndispo" th:field="*{mapRepair}" />
 							<button type="submit" class="btn btn-primary">Réparer Anomalies</button>
 						</form>
 					</div>

@@ -68,6 +68,7 @@ public interface IMerciQuiMetier {
 	public Periode consulterPeriode(Long idPeriode);
 	public void supprimerPeriode(Long idPeriode);
 	public void cleanPeriode();
+	public void repairIndispos(Long idPeriode, Long id3T);
 	
 	//Gestion des Periodes Filtres
 	public PeriodeFiltre creerPeriodeFiltre(PeriodeFiltre periodeFiltre);

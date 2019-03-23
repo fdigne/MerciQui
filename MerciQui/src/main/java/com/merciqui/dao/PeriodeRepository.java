@@ -16,8 +16,8 @@ public interface PeriodeRepository extends JpaRepository<Periode, Long> {
 	@Query(value="delete p from periode p left outer join evenement e on p.id_periode=e.id_periode where id_evenement is null and is_vacances = false ;", nativeQuery = true)
 	void cleanPeriode() ;
 	
-
-	@Query(value="insert into comedien_liste_indispos(liste_comediens_id3t, liste_indispos_id_periode) values (?2, ?1);", nativeQuery = true)
+	@Modifying(clearAutomatically = true)
+	@Query(value="INSERT INTO `comedien_liste_indispos`(`comedien_liste_indispos`.`liste_comediens_id3t`, `comedien_liste_indispos`.`liste_indispos_id_periode`) values (?2, ?1);", nativeQuery = true)
 	void repairIndispos(Long idPeriode, Long id3T);
 
 }

@@ -395,7 +395,8 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		evenementRepository.cleanIndisposComediens();
 	}
 
-	
-
-
+	@Override
+	public void repairIndispos(Long idPeriode, Long id3T) {
+		periodeRepository.repairIndispos(idPeriode, id3T);
+	}
 }
