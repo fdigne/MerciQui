@@ -97,7 +97,7 @@ public class GestionAnalyseController {
 		}
 		
 		for (Event ev : listEvents) {
-			if (! evenementDB.contains(ev.getId()) && ev.getStart().getDateTime() != null) {
+			if (! evenementDB.contains(ev.getId())) {
 			//	Date dateEvent = new Date(ev.getStart().getDateTime().getValue());
 			//	if (dateEvent.before(dateToCompare)) {
 					String message = "Evenement " + ev.getStart() + "n'apparaît que dans Google Agenda. A recréer en base.";
