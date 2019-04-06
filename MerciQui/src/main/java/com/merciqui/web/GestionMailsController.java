@@ -40,9 +40,7 @@ public class GestionMailsController {
 
 	@GetMapping("/sendEmail")
 	public String sendEmail(Model model, Long idPeriodeFiltre, String[] listeComediensAjoutes) {
-
 		
-		System.out.println(listeComediensAjoutes);
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
@@ -107,6 +105,7 @@ public class GestionMailsController {
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", "smtp.gmail.com");
 			props.put("mail.smtp.port", "587");
+			props.put("mail.smtp.ssl.trust", "*");
 
 			//create Authenticator object to pass in Session.getInstance argument
 			Authenticator auth = new Authenticator() {
