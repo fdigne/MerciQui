@@ -209,7 +209,7 @@ public class GestionAgendaController {
 
 	@PostMapping("/saisieEvenement")
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
-			String nomSpectacle, String nomSalle, String lieuEvent,String compagnie, String idEvenement, boolean notifications) {
+			String nomSpectacle, String nomSalle, String lieuEvent,String compagnie, String idEvenement) {
 
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -222,7 +222,7 @@ public class GestionAgendaController {
 		}
 
 		//update MySQL
-		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
+		//Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 
@@ -238,7 +238,7 @@ public class GestionAgendaController {
 				attendee.setId(String.valueOf(com.getId3T()));
 				attendee.setDisplayName(com.getNomPersonne()+" "+com.getPrenomPersonne())
 				.setEmail(com.getAdresseEmail());
-				comediens.add(attendee);
+				//comediens.add(attendee);
 				descriptionEvent += attendee.getDisplayName() +"\n" ;
 				listeComediensDistrib.add(com);
 			}
@@ -267,7 +267,7 @@ public class GestionAgendaController {
 		}
 		Event myEvent = new Event()
 				.setSummary(nomSpectacle)
-				.setAttendees((List<EventAttendee>) comediens)
+				//.setAttendees((List<EventAttendee>) comediens)
 				.setDescription(descriptionEvent)
 				.setColorId(mapSalleCouleur.get(nomSalle))
 				.setLocation(nomSalle);
@@ -288,7 +288,7 @@ public class GestionAgendaController {
 
 		String calendarId = "primary";
 		try {
-			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(notifications).execute();
+			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(false).execute();
 
 			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
@@ -371,7 +371,7 @@ public class GestionAgendaController {
 	}
 
 	@PostMapping("/modifierEvenement")
-	public String modifierEvenement(Model model, String idEvenement, String[] id3T, boolean notificationsModif, String compagnieModif) {
+	public String modifierEvenement(Model model, String idEvenement, String[] id3T, String compagnieModif) {
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
 
@@ -384,8 +384,8 @@ public class GestionAgendaController {
 
 		try {
 			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
-			List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
-			listeAttendees.clear();
+			//List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
+			//listeAttendees.clear();
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
 				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(keyValue[1])) ;
@@ -415,16 +415,16 @@ public class GestionAgendaController {
 				comedien.setListeIndispos(listeIndispoMAJ);
 				merciquimetier.creerComedien(comedien);
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
-				EventAttendee attendee = new EventAttendee();
-				attendee.setId(String.valueOf(comedien.getId3T()));
-				attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
-				.setEmail(comedien.getAdresseEmail());
-				listeAttendees.add(attendee);
+				//EventAttendee attendee = new EventAttendee();
+				//attendee.setId(String.valueOf(comedien.getId3T()));
+				//attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
+				//.setEmail(comedien.getAdresseEmail());
+				//listeAttendees.add(attendee);
 				listeComediensDistrib.add(comedien);
 				descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
 
 			}
-			myEvent.setAttendees(listeAttendees) ;
+			//myEvent.setAttendees(listeAttendees) ;
 			myEvent.setDescription(descriptionEvent);
 			merciquimetier.modifierEvenement(evenement);
 			evenement.setPeriode(periodeIndispoEvent);
@@ -438,7 +438,7 @@ public class GestionAgendaController {
 			}
 			merciquimetier.creerEvenement(evenement);
 
-			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();			
+			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(false).execute();			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -447,7 +447,7 @@ public class GestionAgendaController {
 	}
 
 	@PostMapping("/supprimerEvenement")
-	public String supprimerEvenement(Model model, String idEvenement, boolean notificationsSuppr) {
+	public String supprimerEvenement(Model model, String idEvenement) {
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 
@@ -455,7 +455,7 @@ public class GestionAgendaController {
 				.setApplicationName(APPLICATION_NAME).build();
 
 		try {
-			client.events().delete("primary", idEvenement).setSendNotifications(notificationsSuppr).execute();
+			client.events().delete("primary", idEvenement).setSendNotifications(false).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
