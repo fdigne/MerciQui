@@ -194,11 +194,6 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							</select>
 						</div>
 						<br />
-						<div>
-							<input class="checkbox-primary" name="notifications"
-								type="checkbox" /><label>Notifications</label>
-						</div>
-
 						<button type="submit" class="btn btn-primary">Ajouter
 							Evènement</button>
 					</form>
@@ -329,10 +324,6 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							</table>
 						</div>
 						<div>
-							<input class="checkbox-primary" name="notificationsModif"
-								type="checkbox" /><label>Notifications</label>
-						</div>
-						<div>
 							<button type="submit" class="btn btn-primary">Modifier
 								Evènement</button>
 						</div>
@@ -346,10 +337,6 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet evenement ?');">
 							<input type="hidden" name="idEvenement"
 								th:value="${evenement.idEvenement}" />
-							<div>
-								<input class="checkbox-primary" name="notificationsSuppr"
-									type="checkbox" /><label>Notifications</label>
-							</div>
 							<button type="submit" class="btn btn-primary">Supprimer
 								Evènement</button>
 						</form>
