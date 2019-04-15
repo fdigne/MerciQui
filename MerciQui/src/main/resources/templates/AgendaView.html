@@ -194,10 +194,10 @@ $("#dateEvenementModif").text(tab[2]+"-"+tab[1]+"-"+tab[0]+" "+tab[3]+":"+tab[4]
 							</select>
 						</div>
 						<br />
-						<button type="submit" class="btn btn-primary">Ajouter
-							Evènement</button>
+						<button type="submit" class="btn btn-primary">Ajouter Evènement</button>
 					</form>
 					<div class="text-danger" th:if="${error}" th:text="${error}"></div>
+					<br/><button type="submit" onClick="window.location.href='/multipleEventsIndex'" class="btn btn-primary">Ajouter plusieurs évènements</button>
 				</div>
 			</div>
 			<div class="panel panel-primary">

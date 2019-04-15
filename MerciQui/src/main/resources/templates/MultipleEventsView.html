@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="template1">
+	<head>
+		<meta charset="UTF-8" />
+		<script type="text/javascript"
+			src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+		<script src="/javascript/chosen.jquery.js"
+			type="text/javascript"></script>
+		<script src="/javascript/prism.js" type="text/javascript"
+			charset="utf-8"></script>
+		<script src="/javascript/init.js" type="text/javascript"
+			charset="utf-8"></script>
+		<title>Merci Qui ?</title>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Période</div>
+					<div class="panel-body">
+
+					</div>
+				</div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">Entrez les évènements</div>
+					<div class="panel-body">
+						<form th:action="@{/ajouterEvenementsMultiples}"
+							method="post"
+							onsubmit="return confirm('Etes-vous sûr de vouloir ajouter les évènements ?');">
+							<div>
+								<button type="submit" class="btn btn-primary">Ajouter les évènements</button>
+							</div>
+						</form>
+						<br />
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
