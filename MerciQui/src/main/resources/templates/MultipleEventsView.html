@@ -21,7 +21,18 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">Période</div>
 					<div class="panel-body">
-
+						<form id="filterForm" th:action="@{/multipleEvents/periodeFiltre}"
+						method="get">
+						<div>
+							<select id="idPeriodeFiltre" name="idPeriodeFiltre"
+								onchange="this.form.submit()">
+								<option disabled="true" selected="true">Filtrer</option>
+								<option th:each="periode:${listePeriodesFiltres}"
+									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
+									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
+							</select>
+						</div>
+					</form>
 					</div>
 				</div>
 				<div class="panel panel-primary">
@@ -31,6 +42,8 @@
 							method="post"
 							onsubmit="return confirm('Etes-vous sûr de vouloir ajouter les évènements ?');">
 							<div>
+								<label>NBRE DE JOURS : </label>
+								<label th:value="${days}"></label>
 								<button type="submit" class="btn btn-primary">Ajouter les évènements</button>
 							</div>
 						</form>
