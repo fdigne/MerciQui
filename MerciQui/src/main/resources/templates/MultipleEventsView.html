@@ -12,6 +12,7 @@
 			charset="utf-8"></script>
 		<script src="/javascript/init.js" type="text/javascript"
 			charset="utf-8"></script>
+		
 		<title>Merci Qui ?</title>
 	</head>
 
@@ -21,29 +22,101 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">Période</div>
 					<div class="panel-body">
-						<form id="filterForm" th:action="@{/multipleEvents/periodeFiltre}"
-						method="get">
-						<div>
-							<select id="idPeriodeFiltre" name="idPeriodeFiltre"
-								onchange="this.form.submit()">
-								<option disabled="true" selected="true">Filtrer</option>
-								<option th:each="periode:${listePeriodesFiltres}"
-									th:value="${periode.idPeriode}" th:text="${periode.nomPeriode}"
-									th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
-							</select>
-						</div>
-					</form>
+						<form id="filterForm"
+							th:action="@{/multipleEvents/periodeFiltre}" method="get">
+							<div>
+								<select id="idPeriodeFiltre" name="idPeriodeFiltre"
+									onchange="this.form.submit()">
+									<option disabled="true" selected="true">Filtrer</option>
+									<option th:each="periode:${listePeriodesFiltres}"
+										th:value="${periode.idPeriode}"
+										th:text="${periode.nomPeriode}"
+										th:selected="(${periode.idPeriode} == ${idPeriodeFiltre})"></option>
+								</select>
+							</div>
+						</form>
 					</div>
 				</div>
-				<div class="panel panel-primary">
-					<div class="panel-heading">Entrez les évènements</div>
+				<div class="panel panel-primary" th:if="${numberOfDays}">
+					<div class="panel-heading">Saisie d'évènements multiples</div>
 					<div class="panel-body">
 						<form th:action="@{/ajouterEvenementsMultiples}"
 							method="post"
 							onsubmit="return confirm('Etes-vous sûr de vouloir ajouter les évènements ?');">
 							<div>
-								<label>NBRE DE JOURS : </label>
-								<label th:value="${days}"></label>
+								<table class="table table-striped">
+									<tr>
+										<th>Date</th>
+										<th>Heure</th>
+										<th>Spectacle</th>
+										<th>Salle</th>
+										<th>Compagnie</th>
+									</tr>
+									<tr th:each="i: ${#numbers.sequence(0, numberOfDays - 1)}">
+										<td>
+											test date
+										</td>
+										<td>
+											<select name="heureEvenement">
+												<option value="10:00">10:00</option>
+												<option value="10:30">10:30</option>
+												<option value="11:00">11:00</option>
+												<option value="11:30">11:30</option>
+												<option value="12:00">12:00</option>
+												<option value="12:30">12:30</option>
+												<option value="13:00">13:00</option>
+												<option value="13:30">13:30</option>
+												<option value="14:00">14:00</option>
+												<option value="14:30">14:30</option>
+												<option value="15:00">15:00</option>
+												<option value="15:30">15:30</option>
+												<option value="16:00">16:00</option>
+												<option value="16:30">16:30</option>
+												<option value="17:00">17:00</option>
+												<option value="17:30">17:30</option>
+												<option value="18:00">18:00</option>
+												<option value="18:30">18:30</option>
+												<option value="19:00" selected="true">19:00</option>
+												<option value="19:30">19:30</option>
+												<option value="20:00">20:00</option>
+												<option value="20:30">20:30</option>
+												<option value="21:00">21:00</option>
+												<option value="21:30">21:30</option>
+												<option value="22:00">22:00</option>
+												<option value="22:30">22:30</option>
+												<option value="23:00">23:00</option>
+												<option value="23:30">23:30</option>
+											</select>
+										</td>
+										<td>
+											<select name="nomSpectacle">
+												<option th:value="${o.nomSpectacle}"
+													th:text="${o.nomSpectacle}" th:each="o:${listeSpectacles}" />
+											</select>
+										</td>
+										<td>
+											<select id="nomSalle" name="nomSalle">
+												<option disabled="true" selected="true">Choisir une
+													salle</option>
+												<option value="3T">3T</option>
+												<option value="3T D'A COTE">3T D'À CÔTÉ</option>
+												<option value="GRANDE SALLE">GRANDE SALLE</option>
+												<option value="PRIVÉ">PRIVÉ</option>
+											</select>
+										</td>
+										<td>
+											<select id="compagnie" name="compagnie">
+												<option disabled="true" selected="true">Choisir une
+													compagnie</option>
+												<option id="compagnie37" name="compagnie37"
+													value="Compagnie 37">Compagnie
+													37</option>
+												<option id="compagnie333" name="compagnie333"
+													value="Compagnie 333+1">Compagnie 333+1</option>
+											</select>
+										</td>
+									</tr>
+								</table>
 								<button type="submit" class="btn btn-primary">Ajouter les évènements</button>
 							</div>
 						</form>

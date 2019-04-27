@@ -19,8 +19,10 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
 import com.merciqui.entities.PeriodeFiltre;
+import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
 
 @Controller
@@ -61,16 +63,21 @@ public class MultipleEventsController {
 	
 	@RequestMapping("/multipleEvents/periodeFiltre")
 	public String ajouterMultipleEventsPeriode(Model model, Long idPeriodeFiltre) throws GeneralSecurityException, IOException {
-		Periode periodeFiltre = merciquimetier.consulterPeriode(idPeriodeFiltre);
-		//int numberOfDays = this.getNumberOfDays(periodeFiltre);
-		model.addAttribute("days", idPeriodeFiltre);
+		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
+		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
+		PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
+		model.addAttribute("numberOfDays", getNumberOfDays(periodeFiltre));
 		client = new com.google.api.services.calendar.Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, GestionAgendaController.credential)
 				.setApplicationName(APPLICATION_NAME).build();
+		Collection<Spectacle> listeSpectacle = merciquimetier.listeSpectacles();
+		model.addAttribute("listeSpectacles", listeSpectacle);
+		//Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParPeriode(periodeFiltre.getDateDebut(), periodeFiltre.getDateFin());
+		
 
 		return "MultipleEventsView";
 	}
 
-	private int getNumberOfDays(Periode periodeFiltre) {
+	private int getNumberOfDays(final PeriodeFiltre periodeFiltre) {
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		cal1.setTime(periodeFiltre.getDateDebut());
