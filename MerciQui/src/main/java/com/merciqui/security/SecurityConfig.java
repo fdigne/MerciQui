@@ -17,13 +17,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("laurence").password("3tcTa!csc").roles("USER");
         
     }
-	
-	
-	
-	
-	/*
-	 * public void configure(HttpSecurity http) throws Exception { http
-	 * .headers().frameOptions().disable() .addHeaderWriter(new
-	 * StaticHeadersWriter("X-FRAME-OPTIONS","SAMEORIGIN")); }
-	 */
 }
