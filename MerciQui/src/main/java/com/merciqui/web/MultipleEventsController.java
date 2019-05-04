@@ -7,8 +7,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +32,11 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.Periode;
 import com.merciqui.entities.PeriodeFiltre;
+import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
 
@@ -97,14 +106,87 @@ public class MultipleEventsController {
 			cal.add(java.util.Calendar.HOUR_OF_DAY,2); 
 			Date dateFin = cal.getTime();
 			Evenement ev = new Evenement();
-			ev.setIdEvenement("azerty");
+			ev.setIdEvenement(RandomStringUtils.randomAlphanumeric(26));
 			ev.setDateEvenement(mefDateEvenementSQL(dateEvenement[i], heureEvenement[i]));
 			ev.setSpectacle(merciquimetier.consulterSpectacle(nomSpectacle[i]));
 			ev.setNomSalle(nomSalle[i]);
 			ev.setPeriode(new Periode(dateDebut, dateFin));
+			ev.setCompagnie(compagnie[i]);
 			listeEvenementsSaisis.add(ev);
 		}
+		
+		for (Evenement ev : listeEvenementsSaisis) {
+			this.saisieEvenement(ev);
+		}
 		return "MultipleEventsView";	
+	}
+
+	private void saisieEvenement(Evenement ev) {
+			Collection<Role> listeRoles = ev.getSpectacle().getListeRoles();
+			Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
+			merciquimetier.creerPeriode(ev.getPeriode());
+			for (Role role : listeRoles) {
+				Comedien com = this.setDistribution(role, ev.getPeriode());
+				com.getListeIndispos().add(ev.getPeriode());
+				merciquimetier.creerComedien(com);
+				mapDistribution.put(role.getIdRole(), com);
+			}
+			ev.setDistribution(mapDistribution);
+			merciquimetier.creerEvenement(ev);
+	}
+	
+	public Comedien setDistribution(Role role, Periode periode){
+		Comedien distribComedien = new Comedien();
+		boolean isIndispoTit = false ;
+		Collection<Comedien> listeRemplacantDistrib= new ArrayList<Comedien>();
+		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
+
+
+		if (role.getComedienTitulaire() == null) {
+			isIndispoTit = true ;
+		}
+		if (! isIndispoTit) {
+			for (Periode p : role.getComedienTitulaire().getListeIndispos()) {
+
+				if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), p.getDateDebut(), p.getDateFin())) {
+					isIndispoTit = true ;
+				} 
+			}
+
+		}
+		if (role.getListeRemplas() != null && isIndispoTit) {
+			for(Comedien rempl : role.getListeRemplas()) {
+				boolean isIndispoRempl = false ;
+				for(Periode pr : rempl.getListeIndispos()) {
+					if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
+						isIndispoRempl =true ;
+
+					}
+				}
+				if (! isIndispoRempl) {
+					listeRemplacantDistrib.add(rempl);
+				}
+			}
+
+			for (Comedien comDispo : listeRemplacantDistrib) {
+				int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
+				mapComedienNbDates.put(String.valueOf(comDispo.getId3T()), nbDatesCom);	
+			}
+			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
+					Comparator.comparingInt(Entry::getValue));
+
+			distribComedien =  merciquimetier.consulterComedien(Long.valueOf(min.getKey()));
+		}
+		if(! isIndispoTit) {
+			distribComedien = role.getComedienTitulaire();
+		}
+		
+		return distribComedien ;
+	}	
+
+
+	private static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
+		return start1.before(end2) && start2.before(end1);
 	}
 
 	private int getNumberOfDays(final PeriodeFiltre periodeFiltre) {
