@@ -114,7 +114,7 @@ public class MultipleEventsController {
 			ev.setCompagnie(compagnie[i]);
 			listeEvenementsSaisis.add(ev);
 		}
-		
+
 		for (Evenement ev : listeEvenementsSaisis) {
 			this.saisieEvenement(ev);
 		}
@@ -122,19 +122,19 @@ public class MultipleEventsController {
 	}
 
 	private void saisieEvenement(Evenement ev) {
-			Collection<Role> listeRoles = ev.getSpectacle().getListeRoles();
-			Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
-			merciquimetier.creerPeriode(ev.getPeriode());
-			for (Role role : listeRoles) {
-				Comedien com = this.setDistribution(role, ev.getPeriode());
-				com.getListeIndispos().add(ev.getPeriode());
-				merciquimetier.creerComedien(com);
-				mapDistribution.put(role.getIdRole(), com);
-			}
-			ev.setDistribution(mapDistribution);
-			merciquimetier.creerEvenement(ev);
+		Collection<Role> listeRoles = ev.getSpectacle().getListeRoles();
+		Map<Long, Comedien> mapDistribution = new HashMap<Long , Comedien>();
+		merciquimetier.creerPeriode(ev.getPeriode());
+		for (Role role : listeRoles) {
+			Comedien com = this.setDistribution(role, ev.getPeriode());
+			com.getListeIndispos().add(ev.getPeriode());
+			merciquimetier.creerComedien(com);
+			mapDistribution.put(role.getIdRole(), com);
+		}
+		ev.setDistribution(mapDistribution);
+		merciquimetier.creerEvenement(ev);
 	}
-	
+
 	public Comedien setDistribution(Role role, Periode periode){
 		Comedien distribComedien = new Comedien();
 		boolean isIndispoTit = false ;
@@ -180,7 +180,7 @@ public class MultipleEventsController {
 		if(! isIndispoTit) {
 			distribComedien = role.getComedienTitulaire();
 		}
-		
+
 		return distribComedien ;
 	}	
 
