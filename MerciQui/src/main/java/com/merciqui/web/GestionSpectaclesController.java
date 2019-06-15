@@ -48,7 +48,7 @@ public class GestionSpectaclesController {
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
 		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
-		Map<String, Integer> mapTotalDateParSpectacle = new HashMap<String, Integer>();
+		Map<Long, Integer> mapTotalDateParSpectacle = new HashMap<Long, Integer>();
 		Map<Long, Collection<Comedien>> mapListeRemplasByRole = new HashMap<Long, Collection<Comedien>>();
 
 		//TRAITEMENT PERIODE FILTER
@@ -106,7 +106,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				}
 			}
 			for (Comedien c : listeComediensParSpectacle) {
-				mapTotalDateParSpectacle.put(String.valueOf(c.getId3T()), 0);
+				mapTotalDateParSpectacle.put(c.getId3T(), 0);
 			}
 
 			for(Evenement ev : listeEvenementsFiltres) {
@@ -114,10 +114,10 @@ dateFinFiltre = periodeFiltre.getDateFin();
 					if (mapTotalDateParSpectacle.containsKey(entry.getValue().getId3T())) {
 						int nbreDates = mapTotalDateParSpectacle.get(entry.getValue().getId3T());
 						nbreDates = nbreDates +1 ;
-						mapTotalDateParSpectacle.put(String.valueOf(entry.getValue().getId3T()), nbreDates);	
+						mapTotalDateParSpectacle.put(entry.getValue().getId3T(), nbreDates);	
 					}
 					else {
-						mapTotalDateParSpectacle.put(String.valueOf(entry.getValue().getId3T()),1);
+						mapTotalDateParSpectacle.put(entry.getValue().getId3T(),1);
 					}
 
 				}
