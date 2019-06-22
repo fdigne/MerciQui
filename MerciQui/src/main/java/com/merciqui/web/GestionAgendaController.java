@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -232,7 +231,7 @@ public class GestionAgendaController {
 		try {
 			for(Role role : listeRoles) {
 				roleCurrent = role; 
-				Comedien com = setDistribution(role, periodeIndispo);
+				Comedien com = setDistribution(role, periodeIndispo, mapDistribution);
 				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
 				attendee.setId(String.valueOf(com.getId3T()));
@@ -316,14 +315,14 @@ public class GestionAgendaController {
 		return isDispo;
 	}
 
-	private Comedien setDistribution(Role role, Periode periode){
+	private Comedien setDistribution(Role role, Periode periode, Map<Long, Comedien> mapDistribution){
 		Comedien distribComedien = new Comedien();
-		boolean isIndispoTit = false ;
+		boolean isIndispoTit = false;
 		Collection<Comedien> listeRemplacantDistrib= new ArrayList<Comedien>();
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
 
 
-		if (role.getComedienTitulaire() == null) {
+		if (role.getComedienTitulaire() == null || mapDistribution.values().contains(role.getComedienTitulaire())) {
 			isIndispoTit = true ;
 		}
 		if (! isIndispoTit) {
@@ -337,7 +336,10 @@ public class GestionAgendaController {
 		}
 		if (role.getListeRemplas() != null && isIndispoTit) {
 			for(Comedien rempl : role.getListeRemplas()) {
-				boolean isIndispoRempl = false ;
+				boolean isIndispoRempl = false;
+				if (mapDistribution.values().contains(rempl)) {
+					isIndispoRempl = true;
+				}
 				for(Periode pr : rempl.getListeIndispos()) {
 					if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
 						isIndispoRempl =true ;
@@ -363,8 +365,7 @@ public class GestionAgendaController {
 		}
 		
 		return distribComedien ;
-	}	
-
+	}
 
 	private static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
 		return start1.before(end2) && start2.before(end1);
