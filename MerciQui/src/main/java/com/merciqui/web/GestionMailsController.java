@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,8 +18,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,9 +40,7 @@ public class GestionMailsController {
 
 	@GetMapping("/sendEmail")
 	public String sendEmail(Model model, Long idPeriodeFiltre, String[] listeComediensAjoutes) {
-
 		
-		System.out.println(listeComediensAjoutes);
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
@@ -84,7 +78,7 @@ public class GestionMailsController {
 				allComediens= true ;
 			}
 			else {
-				listeComediensCheck.add(merciquimetier.consulterComedien(idCom));
+				listeComediensCheck.add(merciquimetier.consulterComedien(Long.valueOf(idCom)));
 			}
 		}
 		if (allComediens) {
@@ -111,6 +105,7 @@ public class GestionMailsController {
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", "smtp.gmail.com");
 			props.put("mail.smtp.port", "587");
+			props.put("mail.smtp.ssl.trust", "*");
 
 			//create Authenticator object to pass in Session.getInstance argument
 			Authenticator auth = new Authenticator() {
@@ -123,7 +118,7 @@ public class GestionMailsController {
 			String body = this.getBodyEmail(com, periodeFiltre);
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
-			this.sendEmail(session, toEmail,"Planning du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin()), body);
+			GestionMailsController.sendEmail(session, toEmail,"Planning du "+df.format(periodeFiltre.getDateDebut())+" au "+df.format(periodeFiltre.getDateFin()), body);
 
 
 		}

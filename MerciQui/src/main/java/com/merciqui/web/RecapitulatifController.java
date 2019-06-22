@@ -2,15 +2,12 @@ package com.merciqui.web;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,11 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
 import com.merciqui.entities.PeriodeFiltre;
-import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
 import com.merciqui.metier.IMerciQuiMetier;
-
-import groovy.lang.Tuple;
 
 
 @Controller
@@ -47,7 +41,7 @@ public class RecapitulatifController {
 		Map<String, Integer> mapTotalDateParSpectacleParMois = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParSpectacleParComedien = new HashMap<String, Integer>();
 		Map<String, Integer> mapTotalDateParComedienParMois = new HashMap<String, Integer>();
-		Map<String, String> mapTotalDateParComedien = new HashMap<String, String>();
+		Map<Long, String> mapTotalDateParComedien = new HashMap<Long, String>();
 
 		Map<Comedien, Collection<Spectacle>> mapSpectaclesParComedien = new HashMap<Comedien, Collection<Spectacle>>();
 
@@ -114,7 +108,8 @@ public class RecapitulatifController {
 		//////TRAITEMENT DES MAPS POUR CHAQUE EVENEMENT FILTRE ET POUR CHAQUE COMEDIEN
 		Collection<Object[]> resultGetTotalDateParComedien = merciquimetier.getNombreDatesparComedienParPeriode(dateDebutFiltre, dateFinFiltre);
 		for (Object[] o : resultGetTotalDateParComedien) {
-			mapTotalDateParComedien.put(o[0].toString(),o[1].toString());	
+		    BigInteger key = (BigInteger) o[0];
+			mapTotalDateParComedien.put(key.longValue(),o[1].toString());	
 		}
 		for (Entry<Comedien, Collection<Spectacle>> entry : mapSpectaclesParComedien.entrySet()) {
 			for (Spectacle spec : entry.getValue()) {

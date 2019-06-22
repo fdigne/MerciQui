@@ -121,7 +121,7 @@ $(document).ready(function(){
 									<th>Liste Remplaçants</th>
 								</tr>
 								<tr th:each="o:${listeRoles}">
-									<td><input th:name="nomRoleModif" th:value="${o.nomRole}"></input></td>
+									<td><label th:name="nomRoleModif" th:text="${o.nomRole}" th:value="${o.nomRole}"></label></td>
 									<td><select name="id3TModif"
 										th:if="! ${o.comedienTitulaire}">
 											<option selected="true">Pas de comédien titulaire</option>

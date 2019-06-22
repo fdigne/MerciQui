@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class GestionAgendaController {
 	GoogleClientSecrets clientSecrets;
 	GoogleAuthorizationCodeFlow flow;
 
-	static Credential credential;
+	public static Credential credential;
 
 
 	@Value("${google.client.client-id}")
@@ -192,7 +191,7 @@ public class GestionAgendaController {
 		
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		for(Comedien c : listeComediens) {
-			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
+			itemsComediens.add(new String[] {String.valueOf(c.getId3T()), c.getNomPersonne(), c.getPrenomPersonne()});
 
 		}
 		model.addAttribute("itemsComediens", itemsComediens) ;
@@ -209,7 +208,7 @@ public class GestionAgendaController {
 
 	@PostMapping("/saisieEvenement")
 	public String saisieEvenement(Model model, String dateEvenement, String heureEvenement, 
-			String nomSpectacle, String nomSalle, String lieuEvent,String compagnie, String idEvenement, boolean notifications) {
+			String nomSpectacle, String nomSalle, String lieuEvent,String compagnie, String idEvenement) {
 
 		Date dateDebut = formatDateToRFC3339(dateEvenement, heureEvenement);
 		java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -222,7 +221,7 @@ public class GestionAgendaController {
 		}
 
 		//update MySQL
-		Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
+		//Collection<EventAttendee> comediens = new ArrayList<EventAttendee>() ;
 		Collection<Role> listeRoles = merciquimetier.listeRolesParSpectacle(merciquimetier.consulterSpectacle(nomSpectacle).getIdSpectacle());
 		Set<Comedien> listeComediensDistrib = new HashSet<Comedien>();
 
@@ -232,13 +231,13 @@ public class GestionAgendaController {
 		try {
 			for(Role role : listeRoles) {
 				roleCurrent = role; 
-				Comedien com = setDistribution(role, periodeIndispo);
+				Comedien com = setDistribution(role, periodeIndispo, mapDistribution);
 				mapDistribution.put(role.getIdRole(), com);
 				EventAttendee attendee = new EventAttendee();
-				attendee.setId(com.getId3T());
+				attendee.setId(String.valueOf(com.getId3T()));
 				attendee.setDisplayName(com.getNomPersonne()+" "+com.getPrenomPersonne())
 				.setEmail(com.getAdresseEmail());
-				comediens.add(attendee);
+				//comediens.add(attendee);
 				descriptionEvent += attendee.getDisplayName() +"\n" ;
 				listeComediensDistrib.add(com);
 			}
@@ -253,7 +252,7 @@ public class GestionAgendaController {
 		
 		//Update la base SQL
 		for (Comedien com : listeComediensDistrib) {
-			Set<Periode> listeIndispos = com.getListeIndispos();
+			Collection<Periode> listeIndispos = com.getListeIndispos();
 			listeIndispos.add(periodeIndispo);
 			com.setListeIndispos(listeIndispos);
 			merciquimetier.creerComedien(com);
@@ -267,7 +266,7 @@ public class GestionAgendaController {
 		}
 		Event myEvent = new Event()
 				.setSummary(nomSpectacle)
-				.setAttendees((List<EventAttendee>) comediens)
+				//.setAttendees((List<EventAttendee>) comediens)
 				.setDescription(descriptionEvent)
 				.setColorId(mapSalleCouleur.get(nomSalle))
 				.setLocation(nomSalle);
@@ -288,7 +287,7 @@ public class GestionAgendaController {
 
 		String calendarId = "primary";
 		try {
-			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(notifications).execute();
+			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(false).execute();
 
 			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
@@ -316,14 +315,14 @@ public class GestionAgendaController {
 		return isDispo;
 	}
 
-	private Comedien setDistribution(Role role, Periode periode){
+	private Comedien setDistribution(Role role, Periode periode, Map<Long, Comedien> mapDistribution){
 		Comedien distribComedien = new Comedien();
-		boolean isIndispoTit = false ;
+		boolean isIndispoTit = false;
 		Collection<Comedien> listeRemplacantDistrib= new ArrayList<Comedien>();
 		Map<String, Integer> mapComedienNbDates = new HashMap<String, Integer>();
 
 
-		if (role.getComedienTitulaire() == null) {
+		if (role.getComedienTitulaire() == null || mapDistribution.values().contains(role.getComedienTitulaire())) {
 			isIndispoTit = true ;
 		}
 		if (! isIndispoTit) {
@@ -337,7 +336,10 @@ public class GestionAgendaController {
 		}
 		if (role.getListeRemplas() != null && isIndispoTit) {
 			for(Comedien rempl : role.getListeRemplas()) {
-				boolean isIndispoRempl = false ;
+				boolean isIndispoRempl = false;
+				if (mapDistribution.values().contains(rempl)) {
+					isIndispoRempl = true;
+				}
 				for(Periode pr : rempl.getListeIndispos()) {
 					if(isOverlapping(periode.getDateDebut(), periode.getDateFin(), pr.getDateDebut(), pr.getDateFin())) {
 						isIndispoRempl =true ;
@@ -351,27 +353,26 @@ public class GestionAgendaController {
 
 			for (Comedien comDispo : listeRemplacantDistrib) {
 				int nbDatesCom = merciquimetier.getNombreDatesTotal(comDispo.getId3T());
-				mapComedienNbDates.put(comDispo.getId3T(), nbDatesCom);	
+				mapComedienNbDates.put(String.valueOf(comDispo.getId3T()), nbDatesCom);	
 			}
 			Entry<String, Integer> min = Collections.min(mapComedienNbDates.entrySet(),
 					Comparator.comparingInt(Entry::getValue));
 
-			distribComedien =  merciquimetier.consulterComedien(min.getKey());
+			distribComedien =  merciquimetier.consulterComedien(Long.valueOf(min.getKey()));
 		}
 		if(! isIndispoTit) {
 			distribComedien = role.getComedienTitulaire();
 		}
 		
 		return distribComedien ;
-	}	
-
+	}
 
 	private static boolean isOverlapping(Date start1, Date end1, Date start2, Date end2) {
 		return start1.before(end2) && start2.before(end1);
 	}
 
 	@PostMapping("/modifierEvenement")
-	public String modifierEvenement(Model model, String idEvenement, String[] id3T, boolean notificationsModif, String compagnieModif) {
+	public String modifierEvenement(Model model, String idEvenement, String[] id3T, String compagnieModif) {
 		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME).build();
 
@@ -384,11 +385,11 @@ public class GestionAgendaController {
 
 		try {
 			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
-			List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
-			listeAttendees.clear();
+			//List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
+			//listeAttendees.clear();
 			for (String s : id3T) {
 				String[] keyValue = s.split("\\.");
-				Comedien comedien = merciquimetier.consulterComedien(keyValue[1]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(keyValue[1])) ;
 				if (! evenement.getDistribution().containsValue(comedien)) {
 					boolean comedienIndispo = false ;
 					boolean isVacances = false ;
@@ -410,21 +411,21 @@ public class GestionAgendaController {
 					}
 				}
 
-				Set<Periode> listeIndispoMAJ = comedien.getListeIndispos();
+				Collection<Periode> listeIndispoMAJ = comedien.getListeIndispos();
 				listeIndispoMAJ.add(evenement.getPeriode());
 				comedien.setListeIndispos(listeIndispoMAJ);
 				merciquimetier.creerComedien(comedien);
 				distribution.put(Long.valueOf(keyValue[0]),comedien);
-				EventAttendee attendee = new EventAttendee();
-				attendee.setId(comedien.getId3T());
-				attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
-				.setEmail(comedien.getAdresseEmail());
-				listeAttendees.add(attendee);
+				//EventAttendee attendee = new EventAttendee();
+				//attendee.setId(String.valueOf(comedien.getId3T()));
+				//attendee.setDisplayName(comedien.getNomPersonne()+" "+comedien.getPrenomPersonne())
+				//.setEmail(comedien.getAdresseEmail());
+				//listeAttendees.add(attendee);
 				listeComediensDistrib.add(comedien);
 				descriptionEvent += comedien.getNomPersonne()+" "+comedien.getPrenomPersonne()+"\n";
 
 			}
-			myEvent.setAttendees(listeAttendees) ;
+			//myEvent.setAttendees(listeAttendees) ;
 			myEvent.setDescription(descriptionEvent);
 			merciquimetier.modifierEvenement(evenement);
 			evenement.setPeriode(periodeIndispoEvent);
@@ -438,7 +439,7 @@ public class GestionAgendaController {
 			}
 			merciquimetier.creerEvenement(evenement);
 
-			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(notificationsModif).execute();			
+			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(false).execute();			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -447,7 +448,7 @@ public class GestionAgendaController {
 	}
 
 	@PostMapping("/supprimerEvenement")
-	public String supprimerEvenement(Model model, String idEvenement, boolean notificationsSuppr) {
+	public String supprimerEvenement(Model model, String idEvenement) {
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 
@@ -455,7 +456,7 @@ public class GestionAgendaController {
 				.setApplicationName(APPLICATION_NAME).build();
 
 		try {
-			client.events().delete("primary", idEvenement).setSendNotifications(notificationsSuppr).execute();
+			client.events().delete("primary", idEvenement).setSendNotifications(false).execute();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

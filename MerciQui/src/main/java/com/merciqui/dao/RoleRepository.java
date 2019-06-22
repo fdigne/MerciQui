@@ -14,8 +14,8 @@ public interface RoleRepository extends JpaRepository<Role, Long>{
 	@Query("select o from Role o where o.spectacle.idSpectacle=:x")
 	Collection<Role> getListeRolesParSpectacle(@Param("x")Long idSpectacle);
 	
-	@Query(value ="SELECT liste_remplas_id3t FROM role_liste_remplas WHERE liste_roles_rempl_id_role = ?1", nativeQuery = true)
-	Collection<String> getListeRemplacants(@Param("x")Long idRole);
+	@Query(value="select listeRemplas from Role role where role.idRole=:x")
+	Collection<Comedien> getListeRemplacants(@Param("x")Long idRole);
 	
 
 }

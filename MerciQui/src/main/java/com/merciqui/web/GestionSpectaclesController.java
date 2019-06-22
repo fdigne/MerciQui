@@ -1,12 +1,9 @@
 package com.merciqui.web;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,37 +11,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
-
-import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.calendar.Calendar.Events.List;
-import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
 import com.merciqui.entities.Comedien;
 import com.merciqui.entities.Evenement;
-import com.merciqui.entities.Periode;
 import com.merciqui.entities.PeriodeFiltre;
 import com.merciqui.entities.Role;
 import com.merciqui.entities.Spectacle;
@@ -58,8 +32,6 @@ public class GestionSpectaclesController {
 
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
-
-
 
 	@RequestMapping("/spectacleIndex")
 	public String index(Model model) {
@@ -76,7 +48,7 @@ public class GestionSpectaclesController {
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;
 		Collection<Evenement> listeEvenements37 = new ArrayList<Evenement>();
 		Collection<Evenement> listeEvenements333 = new ArrayList<Evenement>();
-		Map<String, Integer> mapTotalDateParSpectacle = new HashMap<String, Integer>();
+		Map<Long, Integer> mapTotalDateParSpectacle = new HashMap<Long, Integer>();
 		Map<Long, Collection<Comedien>> mapListeRemplasByRole = new HashMap<Long, Collection<Comedien>>();
 
 		//TRAITEMENT PERIODE FILTER
@@ -168,7 +140,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 		model.addAttribute("nomSpectacle", nomSpectacle);
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		for(Comedien c : listeComediens) {
-			itemsComediens.add(new String[] {c.getId3T(), c.getNomPersonne(), c.getPrenomPersonne()});
+			itemsComediens.add(new String[] {String.valueOf(c.getId3T()), c.getNomPersonne(), c.getPrenomPersonne()});
 
 		}
 		model.addAttribute("listeComediens", listeComediens);		
@@ -199,7 +171,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				role.setComedienTitulaire(null);
 			}
 			else {
-				Comedien comedien = merciquimetier.consulterComedien(id3T[indexRole]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(id3T[indexRole])) ;
 				role.setComedienTitulaire(comedien);	
 			}
 			role.setNomRole(s);
@@ -209,7 +181,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				for(String r : id3TRempl) {
 					String[] id3TR = r.split("\\.");
 					if (id3TR[0].equals(String.valueOf(indexRole))) {
-						Comedien remp = merciquimetier.consulterComedien(id3TR[1]) ;
+						Comedien remp = merciquimetier.consulterComedien(Long.valueOf(id3TR[1])) ;
 						listeRemplas.put(s, remp);
 						listeRemplasSQL.add(remp);
 					}
@@ -238,7 +210,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 				s.setComedienTitulaire(null);
 			}
 			else {
-				Comedien comedien = merciquimetier.consulterComedien(id3TModif[indexRole]) ;
+				Comedien comedien = merciquimetier.consulterComedien(Long.valueOf(id3TModif[indexRole])) ;
 				s.setComedienTitulaire(comedien);	
 			}
 
@@ -248,7 +220,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 					String[] key = r.split("\\.");
 					if (s.getNomRole().equals(key[0])) {
 						if (! listeRemplas.containsKey(key[1])) {
-							Comedien remp = merciquimetier.consulterComedien(key[1]) ;
+							Comedien remp = merciquimetier.consulterComedien(Long.valueOf(key[1])) ;
 							listeRemplas.put(key[1], remp);
 							listeRemplasSQL.add(remp);
 						}
@@ -293,7 +265,7 @@ dateFinFiltre = periodeFiltre.getDateFin();
 		Collection<Evenement> listeEvenements = merciquimetier.listeEvenementsParSpectacle(spectacle.getIdSpectacle());
 		for (Evenement ev : listeEvenements) {
 			try {
-				client.events().delete("primary", ev.getIdEvenement()).setSendNotifications(true).execute();
+				client.events().delete("primary", ev.getIdEvenement()).setSendNotifications(false).execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

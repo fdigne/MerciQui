@@ -6,14 +6,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
@@ -32,15 +27,15 @@ public class Comedien extends Personne implements Serializable{
 	
 	@ManyToMany
 	@OrderBy(value="date_debut")
-	private Set<Periode> listeIndispos = new HashSet<Periode>(0); ;
+	private Collection<Periode> listeIndispos = new HashSet<Periode>(0); ;
 
 	public Comedien() {
 		super();
 	}
 
-	public Comedien(String id3t, String nomClient, String prenomClient, Date dateNaissance,
-			String sexe, String adressePostale, String adresseEmail, String numTel) {
-		super(id3t, nomClient, prenomClient, dateNaissance, sexe, adressePostale, adresseEmail, numTel);
+	public Comedien(String nomClient, String prenomClient, Date dateNaissance,
+			String sexe, String adressePostale, String adresseEmail, String numTel, String numSecu) {
+		super(nomClient, prenomClient, dateNaissance, sexe, adressePostale, adresseEmail, numTel,numSecu);
 	}
 
 	
@@ -64,12 +59,12 @@ public class Comedien extends Personne implements Serializable{
 	}
 
 	
-	public Set<Periode> getListeIndispos() {
+	public Collection<Periode> getListeIndispos() {
 		return listeIndispos;
 	}
 
-	public void setListeIndispos(Set<Periode> listeIndispos) {
-		this.listeIndispos = listeIndispos;
+	public void setListeIndispos(Collection<Periode> listeIndispos2) {
+		this.listeIndispos = listeIndispos2;
 	}
 
 	public Set<Role> getListeRolesRempl() {
