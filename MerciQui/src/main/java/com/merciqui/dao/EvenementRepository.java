@@ -53,4 +53,7 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	@Modifying(clearAutomatically = true)
 	@Query(value="delete c from comedien_liste_indispos c left outer join evenement e on c.liste_indispos_id_periode = e.id_periode inner join periode on periode.id_periode = liste_indispos_id_periode where id_evenement is null and is_vacances = false ;", nativeQuery = true)
 	void cleanIndisposComediens() ;
+
+    @Query(value="select o from Evenement o where o.dateEvenement >=:x ORDER BY o.dateEvenement")
+	Collection<Evenement> getListEvenementsFuturs(@Param("x") Date today);
 }

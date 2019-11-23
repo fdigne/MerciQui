@@ -61,7 +61,8 @@ public interface IMerciQuiMetier {
 			Date dateFinFiltre);
 	public int existeEvenementFuturParComedien(Long id3t);
 	public void cleanIndisposComediens();
-	
+	public Collection<Evenement> listeEvenementsFuturs();
+
 	//Gestion des Periodes
 	public Periode creerPeriode(Periode periode);
 	public Periode consulterPeriode(Periode periode);
@@ -76,9 +77,4 @@ public interface IMerciQuiMetier {
 	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre);
 	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre);
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) ;
-	
-	
-
-	
-	
 }
