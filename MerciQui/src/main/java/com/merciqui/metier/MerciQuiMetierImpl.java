@@ -396,6 +396,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
+	public Collection<Evenement> listeEvenementsFuturs() {
+		Date today = new Date();
+		return evenementRepository.getListEvenementsFuturs(today);
+	}
+
+	@Override
 	public void repairIndispos(Long idPeriode, Long id3T) {
 		periodeRepository.repairIndispos(idPeriode, id3T);
 	}
