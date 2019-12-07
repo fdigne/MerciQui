@@ -144,7 +144,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		for (Comedien comedien : evenement.getDistribution().values()) {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
-
+		}
+		for (Comedien comedien : evenement.getListeComediens()) {
+			if (comedien.getListeIndispos().contains(evenement.getPeriode())) {
+				comedien.getListeIndispos().remove(evenement.getPeriode());
+				comedienRepository.save(comedien);
+			}
 		}
 		evenement.setDistribution(null);
 		evenementRepository.save(evenement);
@@ -159,6 +164,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
 
+		}
+		for (Comedien comedien : evenement.getListeComediens()) {
+			if (comedien.getListeIndispos().contains(evenement.getPeriode())) {
+				comedien.getListeIndispos().remove(evenement.getPeriode());
+				comedienRepository.save(comedien);
+			}
 		}
 		evenement.setDistribution(null);
 		evenementRepository.save(evenement);
