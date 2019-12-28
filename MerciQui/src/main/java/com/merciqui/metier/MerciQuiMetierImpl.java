@@ -256,6 +256,11 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
+	public Collection<Evenement> listeEvenementsParComedienParPeriode(Long id3t, Date dateDebut, Date dateFin) {
+		return evenementRepository.getListEvenementsParComedienParPeriode(id3t, dateDebut, dateFin);
+	}
+
+	@Override
 	public Collection<Evenement> listeEvenementParSalle(String nomSalle) {
 		return evenementRepository.getListEvenementsParSalle(nomSalle);
 	}
@@ -294,6 +299,11 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		}
 
 		return listeComediensparSpectacle;
+	}
+
+	@Override
+	public Collection<Comedien> getListeComediensParPeriode(Date dateDebutFiltre, Date dateFinFiltre) {
+		return comedienRepository.getListeComediensParPeriode(dateDebutFiltre, dateFinFiltre);
 	}
 
 	@Override
