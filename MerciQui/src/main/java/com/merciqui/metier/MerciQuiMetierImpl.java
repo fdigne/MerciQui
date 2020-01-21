@@ -144,7 +144,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		for (Comedien comedien : evenement.getDistribution().values()) {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
-
+		}
+		for (Comedien comedien : evenement.getListeComediens()) {
+			if (comedien.getListeIndispos().contains(evenement.getPeriode())) {
+				comedien.getListeIndispos().remove(evenement.getPeriode());
+				comedienRepository.save(comedien);
+			}
 		}
 		evenement.setDistribution(null);
 		evenementRepository.save(evenement);
@@ -159,6 +164,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 			comedien.getListeIndispos().remove(evenement.getPeriode());
 			comedienRepository.save(comedien);
 
+		}
+		for (Comedien comedien : evenement.getListeComediens()) {
+			if (comedien.getListeIndispos().contains(evenement.getPeriode())) {
+				comedien.getListeIndispos().remove(evenement.getPeriode());
+				comedienRepository.save(comedien);
+			}
 		}
 		evenement.setDistribution(null);
 		evenementRepository.save(evenement);
@@ -245,6 +256,11 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	}
 
 	@Override
+	public Collection<Evenement> listeEvenementsParComedienParPeriode(Long id3t, Date dateDebut, Date dateFin) {
+		return evenementRepository.getListEvenementsParComedienParPeriode(id3t, dateDebut, dateFin);
+	}
+
+	@Override
 	public Collection<Evenement> listeEvenementParSalle(String nomSalle) {
 		return evenementRepository.getListEvenementsParSalle(nomSalle);
 	}
@@ -283,6 +299,11 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 		}
 
 		return listeComediensparSpectacle;
+	}
+
+	@Override
+	public Collection<Comedien> getListeComediensParPeriode(Date dateDebutFiltre, Date dateFinFiltre) {
+		return comedienRepository.getListeComediensParPeriode(dateDebutFiltre, dateFinFiltre);
 	}
 
 	@Override
@@ -393,6 +414,12 @@ public class MerciQuiMetierImpl implements IMerciQuiMetier {
 	@Override
 	public void cleanIndisposComediens() {
 		evenementRepository.cleanIndisposComediens();
+	}
+
+	@Override
+	public Collection<Evenement> listeEvenementsFuturs() {
+		Date today = new Date();
+		return evenementRepository.getListEvenementsFuturs(today);
 	}
 
 	@Override

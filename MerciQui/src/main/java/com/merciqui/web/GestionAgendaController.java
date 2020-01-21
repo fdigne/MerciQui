@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -132,6 +131,8 @@ public class GestionAgendaController {
 
 	@RequestMapping("/consulterCalendrier")
 	public String consulterCalendrier(Model model, String idEvenement, Long idPeriodeFiltre, String error, String errorModif) {
+
+		Collection<Evenement> listeEvenementsFiltres;
 		model.addAttribute("idEvenement", idEvenement);
 		Collection<PeriodeFiltre> listePeriodesFiltres = merciquimetier.listePeriodeFiltre();
 		model.addAttribute("listePeriodesFiltres", listePeriodesFiltres);
@@ -159,34 +160,17 @@ public class GestionAgendaController {
 		model.addAttribute("listeSpectacles", merciquimetier.listeSpectacles());
 
 		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH,1);
-		cal.set(Calendar.HOUR_OF_DAY,  0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		
-
-		Date dateDebutFiltre = cal.getTime();
-		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.set(Calendar.MINUTE, 59);
-		cal.set(Calendar.SECOND, 59);
-
-
-		Date dateFinFiltre = cal.getTime();
-		
 		if (idPeriodeFiltre != null) {
 
 			PeriodeFiltre periodeFiltre = merciquimetier.consulterPeriodeFiltre(idPeriodeFiltre);
-			dateDebutFiltre = periodeFiltre.getDateDebut();
-			dateFinFiltre = periodeFiltre.getDateFin();
-			
+			Date dateDebutFiltre = periodeFiltre.getDateDebut();
+			Date dateFinFiltre = periodeFiltre.getDateFin();
+			listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
+		}
+		else {
+			listeEvenementsFiltres = merciquimetier.listeEvenementsFuturs();
 		}
 		
-		Collection<Evenement> listeEvenementsFiltres = merciquimetier.listeEvenementsParPeriode(dateDebutFiltre, dateFinFiltre);
 		Collection<Comedien> listeComediens = merciquimetier.listeComediens();
 		
 		Collection<String[]> itemsComediens = new ArrayList<String[]>() ;

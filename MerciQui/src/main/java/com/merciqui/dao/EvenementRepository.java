@@ -28,6 +28,9 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	@Query(value = "select * from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement AND d.distribution_id3t=:x AND e.compagnie=:w AND e.date_evenement>=:y AND e.date_evenement<=:z ORDER BY e.date_evenement ASC", nativeQuery = true)
 	Collection<Evenement> getListEvenementsParComedienParPeriode(@Param("x")Long id3t, @Param("y")Date dateDebut,@Param("z")Date dateFin, @Param("w")String compagnie );
 
+	@Query(value = "select * from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement AND d.distribution_id3t=:x AND e.date_evenement>=:y AND e.date_evenement<=:z ORDER BY e.date_evenement ASC", nativeQuery = true)
+	Collection<Evenement> getListEvenementsParComedienParPeriode(@Param("x")Long id3t, @Param("y")Date dateDebut,@Param("z")Date dateFin);
+
 	@Query(value = "select count(*) from evenement_distribution d INNER JOIN evenement e ON d.evenement_id_evenement=e.id_evenement AND d.distribution_id3t=:x AND e.code_spectacle=:v AND e.compagnie=:w AND e.date_evenement>=:y AND e.date_evenement<=:z", nativeQuery = true)
 	int getNbreDatesParComedienParSpectacleParPeriodeParCompagnie(@Param("x")Long id3t,@Param("v")Long idSpectacle, @Param("y")Date dateDebut,@Param("z")Date dateFin, @Param("w")String compagnie );
 	
@@ -53,4 +56,7 @@ public interface EvenementRepository extends JpaRepository<Evenement, String> {
 	@Modifying(clearAutomatically = true)
 	@Query(value="delete c from comedien_liste_indispos c left outer join evenement e on c.liste_indispos_id_periode = e.id_periode inner join periode on periode.id_periode = liste_indispos_id_periode where id_evenement is null and is_vacances = false ;", nativeQuery = true)
 	void cleanIndisposComediens() ;
+
+    @Query(value="select o from Evenement o where o.dateEvenement >=:x ORDER BY o.dateEvenement")
+	Collection<Evenement> getListEvenementsFuturs(@Param("x") Date today);
 }

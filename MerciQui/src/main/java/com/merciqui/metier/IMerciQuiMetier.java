@@ -22,6 +22,7 @@ public interface IMerciQuiMetier {
 	public int getNombreDatesParSpectacleParComedien(Long idSpectacle, Long id3T);
 	public int getNombreDatesParComedienParEvenement(Long idSpectacle, Long id3t, String nomSalle, Date dateDebutFiltre, Date dateFinFiltre);
 	public Collection<Comedien> getListeComediensParSpectacles(Long idSpectacle);
+	public Collection<Comedien> getListeComediensParPeriode(Date dateDebutFiltre, Date dateFinFiltre);
 	
 	
 	//Gestion des Spectacles
@@ -54,6 +55,7 @@ public interface IMerciQuiMetier {
 	public Collection<Evenement> listeEvenementsParComedien(Long id3T);
 	public Collection<Evenement> listeEvenementParSalle(String nomSalle);
 	public Collection<Evenement> listeEvenementsParComedienParPeriodeParCompagnie(Long id3t, Date dateDebut, Date dateFin, String compagnie);
+	public Collection<Evenement> listeEvenementsParComedienParPeriode(Long id3t, Date dateDebut, Date dateFin);
 	public int getNombreDatesparComedienParSpectacleParPeriodeParCompagnie(Long id3T, Long idSpectacle,Date dateDebut, Date dateFin, String compagnie );
 	public Collection<BigInteger> listeSpectacleParComedienParPeriodeParCompagnie(Long id3t, Date dateDebut, Date dateFin, String compagnie);
 	public Collection<Object[]> getNombreDatesparComedienParPeriode(Date dateDebutFiltre, Date dateFinFiltre);
@@ -61,7 +63,8 @@ public interface IMerciQuiMetier {
 			Date dateFinFiltre);
 	public int existeEvenementFuturParComedien(Long id3t);
 	public void cleanIndisposComediens();
-	
+	public Collection<Evenement> listeEvenementsFuturs();
+
 	//Gestion des Periodes
 	public Periode creerPeriode(Periode periode);
 	public Periode consulterPeriode(Periode periode);
@@ -76,9 +79,4 @@ public interface IMerciQuiMetier {
 	public PeriodeFiltre consulterPeriodeFiltre(Long idPeriodeFiltre);
 	public PeriodeFiltre modifierPeriodeFiltre(PeriodeFiltre periodeFiltre);
 	public void supprimerPeriodeFiltre(Long idPeriodeFiltre) ;
-	
-	
-
-	
-	
 }
