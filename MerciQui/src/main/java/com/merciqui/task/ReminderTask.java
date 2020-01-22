@@ -49,6 +49,8 @@ public class ReminderTask {
         Date dateFin = today.getTime();
 
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        System.out.println("TWILIO ACCOUNT: " + ACCOUNT_SID);
+        System.out.println("TOKEN: " + AUTH_TOKEN);
         Map<String, String> mapComediensSMS = new HashMap<>();
         Collection<Comedien> listeComediensNonPrevenus = new ArrayList<>();
         for (Comedien comedien : merciquimetier.getListeComediensParPeriode(dateDebut, dateFin)) {
