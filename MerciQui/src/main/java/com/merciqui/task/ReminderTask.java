@@ -27,8 +27,8 @@ public class ReminderTask {
     private final String fromEmail = "les3tcafetheatreagenda@gmail.com"; //requires valid gmail id
     private final String password = "les3tcafetheatre"; // correct password for gmail id
 
-    public static final String ACCOUNT_SID = "AC5004a7c3df22a2936423fb717614709a";
-    public static final String AUTH_TOKEN = "c7a878ea2ada71f5b49289aa8eccd414";
+    public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
+    public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
 
     public static final List<String> ADMIN_LIST = Collections.unmodifiableList(Arrays.asList("fdigne@me.com",
             "laurence@3tcafetheatre.com", "peycorinne@gmail.com"));
