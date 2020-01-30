@@ -26,8 +26,8 @@ import com.twilio.type.PhoneNumber;
 @Component
 public class ReminderTask {
 
-    private final String fromEmail = "les3tcafetheatreagenda@gmail.com"; //requires valid gmail id
-    private final String password = "les3tcafetheatre"; // correct password for gmail id
+    private String fromEmail;
+    private String password;
 
     public static final List<String> ADMIN_LIST = Collections.unmodifiableList(Arrays.asList("fdigne@me.com",
             "laurence@3tcafetheatre.com", "peycorinne@gmail.com"));
@@ -42,6 +42,7 @@ public class ReminderTask {
     public void sendDailyReminder()  throws IOException{
 
         initTwilioToken();
+        initMailAccount();
 
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR, 1);
@@ -84,6 +85,14 @@ public class ReminderTask {
         this.ACCOUNT_SID = p.getProperty("TWILIO_ACCOUNT_SID");
         this.AUTH_TOKEN = p.getProperty("TWILIO_AUTH_TOKEN");
 
+    }
+
+    private void initMailAccount() throws IOException {
+        FileReader reader=new FileReader("/root/MerciQui/merciqui.properties");
+        Properties p=new Properties();
+        p.load(reader);
+        this.fromEmail = p.getProperty("3T_MAIL");
+        this.password = p.getProperty("3T_MAIL_PASSWORD");
     }
 
     private void sendAdminNotifMail(Map<String, String> mapComediensSMS, Collection<Comedien> comediensNonPrevenus) {
@@ -161,6 +170,8 @@ public class ReminderTask {
 
     @Scheduled(cron = "0 0 17 * * SUN")
     public void sendWeeklyReminder() {
+
+        initMailAccount();
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

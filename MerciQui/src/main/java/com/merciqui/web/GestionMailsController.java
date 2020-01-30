@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -34,13 +36,13 @@ public class GestionMailsController {
 	@Autowired
 	IMerciQuiMetier merciquimetier ;
 
-	private final String fromEmail = "les3tcafetheatreagenda@gmail.com"; //requires valid gmail id
-	private final String password = "les3tcafetheatre"; // correct password for gmail id
+	private String fromEmail;
+	private String password;
 
 
 	@GetMapping("/sendEmail")
-	public String sendEmail(Model model, Long idPeriodeFiltre, String[] listeComediensAjoutes) {
-		
+	public String sendEmail(Model model, Long idPeriodeFiltre, String[] listeComediensAjoutes) throws IOException {
+		initMailAccount();
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
@@ -125,6 +127,14 @@ public class GestionMailsController {
 
 
 		return "redirect:/" ;	
+	}
+
+	private void initMailAccount() throws IOException {
+		FileReader reader=new FileReader("/root/MerciQui/merciqui.properties");
+		Properties p=new Properties();
+		p.load(reader);
+		this.fromEmail = p.getProperty("3T_MAIL");
+		this.password = p.getProperty("3T_MAIL_PASSWORD");
 	}
 
 	private String getBodyEmail(Comedien com, PeriodeFiltre periodeFiltre) {
