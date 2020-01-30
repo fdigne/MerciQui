@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,18 +29,20 @@ public class ReminderTask {
     private final String fromEmail = "les3tcafetheatreagenda@gmail.com"; //requires valid gmail id
     private final String password = "les3tcafetheatre"; // correct password for gmail id
 
-    public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
-    public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
-
     public static final List<String> ADMIN_LIST = Collections.unmodifiableList(Arrays.asList("fdigne@me.com",
             "laurence@3tcafetheatre.com", "peycorinne@gmail.com"));
 
-
+    public String ACCOUNT_SID;
+    public String AUTH_TOKEN;
     @Autowired
     IMerciQuiMetier merciquimetier ;
 
+
     @Scheduled(cron = "0 0 18 * * *")
-    public void sendDailyReminder() {
+    public void sendDailyReminder()  throws IOException{
+
+        initTwilioToken();
+
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR, 1);
         today.set(Calendar.MINUTE, 0);
@@ -47,7 +51,8 @@ public class ReminderTask {
         Date dateDebut = today.getTime();
         today.add(Calendar.DATE, 1);
         Date dateFin = today.getTime();
-
+        System.out.println("TWILIO ACCOUNT: " + ACCOUNT_SID);
+        System.out.println("TOKEN: " + AUTH_TOKEN);
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Map<String, String> mapComediensSMS = new HashMap<>();
         Collection<Comedien> listeComediensNonPrevenus = new ArrayList<>();
@@ -69,6 +74,15 @@ public class ReminderTask {
             }
         }
         this.sendAdminNotifMail(mapComediensSMS, listeComediensNonPrevenus);
+
+    }
+
+    private void initTwilioToken() throws IOException {
+        FileReader reader=new FileReader("/root/MerciQui/twilio.properties");
+        Properties p=new Properties();
+        p.load(reader);
+        this.ACCOUNT_SID = p.getProperty("TWILIO_ACCOUNT_SID");
+        this.AUTH_TOKEN = p.getProperty("TWILIO_AUTH_TOKEN");
 
     }
 
