@@ -30,6 +30,7 @@ public class ReminderTask {
 
     public static final List<String> ADMIN_LIST = Collections.unmodifiableList(Arrays.asList("fdigne@me.com",
             "laurence@3tcafetheatre.com", "peycorinne@gmail.com"));
+    private static final String DEFAULT_SIGNATURE = "A demain.\nLaurence.";
 
     public String ACCOUNT_SID;
     public String AUTH_TOKEN;
@@ -263,12 +264,22 @@ public class ReminderTask {
             String dateEv = dateFormat.format(evenement.getDateEvenement());
             body += dateEv + " " + evenement.getSpectacle().getNomSpectacle() + "\n";
         }
-        if (com.getId3T() == 33) {
-            body += "Je t'aime.\nTon doudou qui t'écrit un message spécial que pour toi.";
-        } else {
-            body += "A demain.\nLaurence.";
-        }
+
+        body += getSignature(com.getId3T());
 
         return body;
+    }
+
+    private String getSignature(Long id){
+        String signature = null;
+        try {
+            FileReader reader = new FileReader("/root/MerciQui/merciqui.properties");
+            Properties p=new Properties();
+            p.load(reader);
+            signature = p.getProperty(String.valueOf(id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return signature != null && !signature.isEmpty() ? signature : DEFAULT_SIGNATURE;
     }
 }
