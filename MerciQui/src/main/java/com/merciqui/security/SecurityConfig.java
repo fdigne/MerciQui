@@ -5,16 +5,28 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import java.io.FileReader;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private String USERNAME;
+	private String PASSWORD;
 	
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+		FileReader reader=new FileReader("/root/MerciQui/merciqui.properties");
+		Properties p=new Properties();
+		p.load(reader);
+		this.USERNAME = p.getProperty("USERNAME");
+		this.PASSWORD = p.getProperty("PASSWORD");
+
         auth
             .inMemoryAuthentication()
-                .withUser("laurence").password("3tcTa!csc").roles("USER");
+                .withUser(USERNAME).password(PASSWORD).roles("USER");
         
     }
 	
