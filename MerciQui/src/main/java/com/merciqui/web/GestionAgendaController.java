@@ -3,16 +3,8 @@ package com.merciqui.web;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,6 +55,9 @@ public class GestionAgendaController {
 	public static HttpTransport httpTransport;
 	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static com.google.api.services.calendar.Calendar client;
+
+	private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
 
 
 	private static final Map<String, String> mapSalleCouleur = new HashMap<String, String>();
@@ -243,46 +238,46 @@ public class GestionAgendaController {
 		}
 
 		//Update le Google Calendar
-		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-				.setApplicationName(APPLICATION_NAME).build();
+		//client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+		//		.setApplicationName(APPLICATION_NAME).build();
 		if (nomSalle.equals("PRIVÉ")) {
 			nomSalle =nomSalle+ " - "+lieuEvent;
 		}
-		Event myEvent = new Event()
-				.setSummary(nomSpectacle)
+		//Event myEvent = new Event()
+		//		.setSummary(nomSpectacle)
 				//.setAttendees((List<EventAttendee>) comediens)
-				.setDescription(descriptionEvent)
-				.setColorId(mapSalleCouleur.get(nomSalle))
-				.setLocation(nomSalle);
+		//		.setDescription(descriptionEvent)
+		//		.setColorId(mapSalleCouleur.get(nomSalle))
+		//		.setLocation(nomSalle);
 		DateTime startDateTime = new DateTime(dateDebut);
 
-		EventDateTime start = new EventDateTime()
-				.setDateTime(startDateTime);
-		myEvent.setStart(start);   
+		//EventDateTime start = new EventDateTime()
+		//		.setDateTime(startDateTime);
+		//myEvent.setStart(start);
 
 
 
 		DateTime endDateTime = new DateTime(dateFin);
-		EventDateTime end = new EventDateTime()
-				.setDateTime(endDateTime);    
-		myEvent.setEnd(end);
+		//EventDateTime end = new EventDateTime()
+		//		.setDateTime(endDateTime);
+		//myEvent.setEnd(end);
 
 
 
 		String calendarId = "primary";
-		try {
-			myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(false).execute();
+		//try {
+			//myEvent = client.events().insert(calendarId, myEvent).setSendNotifications(false).execute();
 
-			Evenement ev = new Evenement(myEvent.getId(), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
+		Evenement ev = new Evenement(generateString(28), mefDateEvenementSQL(dateEvenement,heureEvenement), merciquimetier.consulterSpectacle(nomSpectacle), nomSalle, listeComediensDistrib);
 			ev.setPeriode(periodeIndispo);
 			ev.setDistribution(mapDistribution);
 			ev.setCompagnie(compagnie);
 			merciquimetier.creerEvenement(ev);
 			return "redirect:/consulterCalendrier?idEvenement="+ev.getIdEvenement() ;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "redirect:/consulterCalendrier?error="+e.getMessage();
-		}
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//	return "redirect:/consulterCalendrier?error="+e.getMessage();
+		//}
 
 	}
 
@@ -367,8 +362,8 @@ public class GestionAgendaController {
 		Periode periodeIndispoEvent = evenement.getPeriode();
 
 
-		try {
-			Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
+		//try {
+			//Event myEvent = client.events().get("primary", evenement.getIdEvenement()).execute();
 			//List<EventAttendee> listeAttendees = myEvent.getAttendees() ;
 			//listeAttendees.clear();
 			for (String s : id3T) {
@@ -410,7 +405,7 @@ public class GestionAgendaController {
 
 			}
 			//myEvent.setAttendees(listeAttendees) ;
-			myEvent.setDescription(descriptionEvent);
+			//myEvent.setDescription(descriptionEvent);
 			merciquimetier.modifierEvenement(evenement);
 			evenement.setPeriode(periodeIndispoEvent);
 			evenement.setDistribution(distribution);
@@ -423,10 +418,10 @@ public class GestionAgendaController {
 			}
 			merciquimetier.creerEvenement(evenement);
 
-			client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(false).execute();			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			//client.events().update("primary", evenement.getIdEvenement(), myEvent).setSendNotifications(false).execute();
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
 
 		return "redirect:/consulterCalendrier?idEvenement="+idEvenement ;	
 	}
@@ -436,14 +431,14 @@ public class GestionAgendaController {
 		Evenement evenement = merciquimetier.consulterEvenement(idEvenement);
 		merciquimetier.supprimerEvenement(evenement);
 
-		client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-				.setApplicationName(APPLICATION_NAME).build();
+		//client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+		//		.setApplicationName(APPLICATION_NAME).build();
 
-		try {
-			client.events().delete("primary", idEvenement).setSendNotifications(false).execute();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//try {
+		//	client.events().delete("primary", idEvenement).setSendNotifications(false).execute();
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
 		return "redirect:/";		
 	}
 
@@ -512,6 +507,17 @@ public class GestionAgendaController {
 		}
 		authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
 		return authorizationUrl.build();
+	}
+
+	public String generateString(int length) {
+		Random random = new Random();
+		StringBuilder builder = new StringBuilder(length);
+
+		for (int i = 0; i < length; i++) {
+			builder.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
+		}
+
+		return builder.toString();
 	}
 
 }
